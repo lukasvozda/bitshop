@@ -2,39 +2,16 @@
   <img width="240"  src="./src/frontend/static/logo.png">
 </p>
 
-# SvelteKit Dapp template
+# BitShop
 
-This repository is meant to give [SvelteKit](https://kit.svelte.dev/) developers an easy on-ramp to get started with developing decentralized applications (Dapps in short) for the Internet Computer blockchain.
-
-## What is the Internet Computer?
-
-The Internet Computer is a novel blockchain that has the unique capability to serve web content while not requiring the end users to use a browser extension, such as Metamask.
-
-Coupled with super fast execution the Internet Computer provides the worlds first truly user friendly Web 3.0 experience.
-
-## What are canisters?
-
-Dapps on the Internet Computer live in canisters, which are special smart contracts that run WebAssembly, and can respond to regular HTTP requests, among other capabilities.
-
-This repository uses Svelte for the frontend, and can upload it to an `asset` type canister that can host your frontend on the Internet Computer.
-
-## Security Considerations and Security Best Practices
-
-If you base your application on this example, we recommend you familiarize yourself with and adhere to the [Security Best Practices](https://internetcomputer.org/docs/current/references/security/) for developing on the Internet Computer. This example may not implement all the best practices.
-
-For example, the following aspects are particularly relevant for creating frontends:
-
-- [Use a well-audited authentication service and client side IC libraries](https://internetcomputer.org/docs/current/references/security/web-app-development-security-best-practices#use-a-well-audited-authentication-service-and-client-side-ic-libraries)
-- [Define security headers including a Content Security Policy (CSP)](https://internetcomputer.org/docs/current/references/security/web-app-development-security-best-practices#define-security-headers-including-a-content-security-policy-csp)
-- [Don’t load JavaScript (and other assets) from untrusted domains](https://internetcomputer.org/docs/current/references/security/web-app-development-security-best-practices#dont-load-javascript-and-other-assets-from-untrusted-domains)
+TBD
 
 ## Getting started
 
 Make sure you have [node.js](https://nodejs.org/) installed.
 
 ```
-git clone https://github.com/dfinity/examples
-cd svelte/sveltekit-starter
+clone this repo
 npm ci
 ```
 
