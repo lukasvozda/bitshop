@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { createActor } from '../../../declarations/backend';
 
-
 	// Canister IDs are automatically expanded to .env config - see vite.config.ts
 	const canisterId = import.meta.env.VITE_BACKEND_CANISTER_ID;
 
@@ -43,8 +42,8 @@
 		}
 	};
 
-	const submitProduct = async() => {
-		let result = await actor.create_product({title: title, price: BigInt(price)}) // BigInt TS wtf
+	const submitProduct = async () => {
+		let result = await actor.create_product({ title: title, price: BigInt(price) }); // BigInt TS wtf
 		// TODO handle errors
 		console.log(result);
 		list_products();

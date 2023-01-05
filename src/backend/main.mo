@@ -55,15 +55,24 @@ actor {
 	private stable var stableproducts : [(ProductId, Product)] = []; // to preserve products between updates (hashmap is not stable)
 	//private var orders = Map.HashMap<OrderId, Order>(0, eq, Hash.hash);
 
+	// create a default product, we will remove it later
+	let p : Product = {
+		id = 0;
+		title = "Test product 1";
+		price = 5;
+	};
+
+	products.put(0, p);
+
 	public shared (msg) func create_product(p : { title : Text; price : Nat }) : async Result.Result<(), CreateProductError> {
+
+		if (p.title == "") { return #err(#EmptyTitle) };
 
 		let productId = next;
 		next += 1;
 		// increment the counter so we never try to create a product under the same index
 
 		let product : Product = {
-			//time_created = Time.now();
-			//time_updated = Time.now();
 			title = p.title;
 			id = productId;
 			price = p.price;
@@ -81,13 +90,13 @@ actor {
 		// If the post is not found, this will return an error as result.
 	};
 
-	public shared (msg) func update_product(id : ProductId, product : { title : Text; price : Nat }) : async Result.Result<(), UpdateProductError> {
+	public shared (msg) func update_product(id : ProductId, p : { title : Text; price : Nat }) : async Result.Result<(), UpdateProductError> {
 		// commented for local development
 		// if(Principal.isAnonymous(msg.caller)){
 		//     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
 		// };
 
-		if (product.title == "") {
+		if (p.title == "") {
 			return #err(#EmptyTitle);
 		};
 
@@ -101,8 +110,8 @@ actor {
 				// If the post was found, we try to update it.
 				let edited_product : Product = {
 					id = id;
-					title = product.title;
-					price = product.price;
+					title = p.title;
+					price = p.price;
 				};
 				products.put(id, edited_product);
 			};
