@@ -1,3 +1,57 @@
+type UpdateProductError = variant {
+	EmptyTitle;
+	ProductNotFound;
+	UserNotAuthenticated;
+};
+type Result_3 = variant {
+	err : CreateProductError;
+	ok;
+};
+type Result_2 = variant {
+	err : DeleteProductError;
+	ok;
+};
+type Result_1 = variant {
+	err : GetProductError;
+	ok : Product;
+};
+type Result = variant {
+	err : UpdateProductError;
+	ok;
+};
+type ProductId = nat;
+type Product = record {
+	id : ProductId;
+	price : nat;
+	title : text;
+};
+type GetProductError = variant { ProductNotFound };
+type DeleteProductError = variant { UserNotAuthenticated };
+type CreateProductError = variant {
+	EmptyTitle;
+	UserNotAuthenticated;
+};
 service : {
+	create_product : (
+		record {
+			price : nat;
+			title : text;
+		}
+	) -> (Result_3);
+	delete : (ProductId) -> (Result_2);
+	get_product : (ProductId) -> (Result_1) query;
 	greet : (text) -> (text);
+	list_products : () -> (
+		vec record {
+			ProductId;
+			Product;
+		}
+	) query;
+	update_product : (
+		ProductId,
+		record {
+			price : nat;
+			title : text;
+		}
+	) -> (Result);
 };
