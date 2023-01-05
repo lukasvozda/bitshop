@@ -31,7 +31,7 @@
 		disabled = false;
 	};
 
-	const list_products = async () => {
+	const listProducts = async () => {
 		console.log('getting products');
 		try {
 			// Call the IC
@@ -46,10 +46,10 @@
 		let result = await actor.create_product({ title: title, price: BigInt(price) }); // BigInt TS wtf
 		// TODO handle errors
 		console.log(result);
-		list_products();
+		listProducts();
 	};
 
-	onMount(list_products);
+	onMount(listProducts);
 </script>
 
 <main>
