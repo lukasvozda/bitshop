@@ -43,10 +43,12 @@
 	};
 
 	const submitProduct = async () => {
+		disabled = true;
 		let result = await actor.create_product({ title: title, price: BigInt(price) }); // BigInt TS wtf
 		// TODO handle errors
 		console.log(result);
 		listProducts();
+		disabled = false;
 	};
 
 	onMount(listProducts);
@@ -60,7 +62,7 @@
 	<form on:submit|preventDefault={handleOnSubmit}>
 		<label for="name">Enter your name: &nbsp;</label>
 		<input id="name" alt="Name" type="text" bind:value={input} {disabled} />
-		<button type="submit">Click Me!</button>
+		<button type="submit" disabled={disabled}>Click Me!</button>
 	</form>
 
 	<section id="greeting">
@@ -74,7 +76,13 @@
 			<input id="title" alt="title" type="text" bind:value={title} {disabled} />
 			<label for="price">Price: &nbsp;</label>
 			<input id="price" alt="price" type="number" bind:value={price} {disabled} />
-			<button type="submit">Create a product</button>
+			<button type="submit" disabled={disabled}>        
+				{#if disabled === true}
+					Loading...
+				{:else}
+					Create product
+				{/if}
+			</button>
 		</form>
 		<div class="products">
 			{#each products as p}
