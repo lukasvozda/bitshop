@@ -9,6 +9,7 @@
 	const host = import.meta.env.VITE_HOST;
 
 	// Create an actor to interact with the IC for a particular canister ID
+	// TODO this is throwing TypeError: fetch failed in the terminal when exposed here (doesnt happen when called later)
 	const actor = createActor(canisterId, { agentOptions: { host } });
 
 	let input = '';
@@ -44,7 +45,7 @@
 
 	const submitProduct = async () => {
 		disabled = true;
-		let result = await actor.create_product({ title: title, price: BigInt(price) }); // BigInt TS wtf
+		let result = await actor.create_product({ title: title, price: BigInt(price), category: 0 }); // BigInt TS wtf
 		// TODO handle errors
 		console.log(result);
 		listProducts();
@@ -62,7 +63,7 @@
 	<form on:submit|preventDefault={handleOnSubmit}>
 		<label for="name">Enter your name: &nbsp;</label>
 		<input id="name" alt="Name" type="text" bind:value={input} {disabled} />
-		<button type="submit" disabled={disabled}>Click Me!</button>
+		<button type="submit" >Click Me!</button>
 	</form>
 
 	<section id="greeting">
@@ -87,8 +88,10 @@
 		<div class="products">
 			{#each products as p}
 				<div class="product">
-					<span class="title">{p[1].title}</span>
+					<span class="id">#{p[0]} - </span>
+					<span class="title">{p[1].title} - </span>
 					<span class="price">{p[1].price} BTC</span>
+					<!-- <span class="category">Category: {p[1].category}</span> --> 
 				</div>
 			{/each}
 		</div>
