@@ -4,7 +4,7 @@ import Form from "@tailwindcss/forms";
 
 module.exports = {
   plugins: [
-    Form
+    Form, DaisyUI
   ],
   content: ['./src/**/*.{svelte,js,ts}'],
 }
