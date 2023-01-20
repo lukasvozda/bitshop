@@ -59,11 +59,32 @@
 	<img src="logo2.svg" alt="DFINITY logo" />
 	<br />
 	<br />
+	<div class="alert alert-info shadow-lg">
+		<div>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+				class="stroke-current flex-shrink-0 w-6 h-6"
+				><path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+				/></svg
+			>
+			<span>Test version</span>
+		</div>
+	</div>
 
 	<form on:submit|preventDefault={handleOnSubmit}>
 		<label for="name">Enter your name: &nbsp;</label>
 		<input id="name" alt="Name" type="text" bind:value={input} {disabled} />
-		<button type="submit" >Click Me!</button>
+		{#if disabled === true}
+			<button type="submit" class="btn btn-primary loading">Click Me!</button>
+		{:else}
+			<button type="submit" class="btn btn-primary">Click Me!</button>
+		{/if}
 	</form>
 
 	<section id="greeting">
@@ -77,13 +98,11 @@
 			<input id="title" alt="title" type="text" bind:value={title} {disabled} />
 			<label for="price">Price: &nbsp;</label>
 			<input id="price" alt="price" type="number" bind:value={price} {disabled} />
-			<button type="submit" disabled={disabled}>        
-				{#if disabled === true}
-					Loading...
-				{:else}
-					Create product
-				{/if}
-			</button>
+			{#if disabled === true}
+				<button type="submit" class="btn btn-primary loading">Create product</button>
+			{:else}
+				<button type="submit" class="btn btn-primary">Create product</button>
+			{/if}
 		</form>
 		<div class="products">
 			{#each products as p}
@@ -91,14 +110,18 @@
 					<span class="id">#{p[0]} - </span>
 					<span class="title">{p[1].title} - </span>
 					<span class="price">{p[1].price} BTC</span>
-					<!-- <span class="category">Category: {p[1].category}</span> --> 
+					<!-- <span class="category">Category: {p[1].category}</span> -->
 				</div>
 			{/each}
 		</div>
 	</section>
 </main>
 
-<style lang="scss">
+<style global lang="postcss">
+	@tailwind base;
+	@tailwind components;
+	@tailwind utilities;
+
 	img {
 		max-width: 50vw;
 		max-height: 25vw;
