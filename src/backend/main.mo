@@ -6,6 +6,17 @@ import Array "mo:base/Array";
 import Result "mo:base/Result";
 import Principal "mo:base/Principal";
 
+//import Bip32 "motoko-bitcoin/src/Bip32";
+import Debug "mo:base/Debug";
+//import Base58Check "motoko-bitcoin/src/Base58Check";
+//import SHA256 "motoko-bitcoin/motoko-sha/src/SHA256";
+
+import Text "mo:base/Text";
+import Nat "mo:base/Nat";
+
+import Types "motoko-bitcoin/src/bitcoin/Types";
+import Payments "./Payments";
+
 actor {
 	public func greet(name : Text) : async Text {
 		return "Hello, " # name # "!";
@@ -86,6 +97,11 @@ actor {
 	// to preserve products between updates (hashmap is not stable)
 	private stable var stablecategories : [(CategoryId, Category)] = [];
 	//private var orders = Map.HashMap<OrderId, Order>(0, eq, Hash.hash);
+
+	//    private stable var childPubIndex : Nat = 0;
+
+	private stable var ownerExtendedPublicKeyBase58Check : Text = "";
+	private stable var currentChildKeyIndex : Nat = 0;
 
 	// create a default product, we will remove it later
 	let p : Product = {
@@ -264,5 +280,44 @@ actor {
 			eq,
 			Hash.hash
 		);
+	};
+
+    // payments
+
+	public query func getOwnerXPUB() : async Text {
+		return ownerExtendedPublicKeyBase58Check;
+	};
+
+	public func setOwnerXPUB(xpub : Text) : async Result.Result<(), Payments.GetParseError> {
+		switch (Payments.parse(xpub, #Mainnet)) {
+			case null return #err(#Base58PubKeyWrongFormatError);
+			case (?parsedPublicKey) {
+				ownerExtendedPublicKeyBase58Check := xpub;
+				return #ok(());
+			};
+		};
+	};
+
+	public func deleteOwnerXPUB() {
+		ownerExtendedPublicKeyBase58Check := "";
+        currentChildKeyIndex := 0;
+
+	};
+
+	public func generateNextPaymentAddress() : async Result.Result<Text, Payments.GetDerivationError> {
+		let path : Text = Payments.getRelativePath(currentChildKeyIndex);
+        currentChildKeyIndex := currentChildKeyIndex + 1;
+		return switch (Payments.parse(ownerExtendedPublicKeyBase58Check, #Mainnet)) {
+			case null return #err(#Base58PubKeyWrongFormatError);
+			case (?parsedPublicKey) {
+				return switch (parsedPublicKey.derivePath(path)) {
+					case null return #err(#ChildKeyDerivationError);
+					case (?derived) {
+						let address : Text = Payments.getP2PKHAddress(derived.key);
+						return #ok(address);
+					};
+				};
+			};
+		};
 	};
 };

@@ -8,29 +8,37 @@ type UpdateCategoryError = variant {
 	EmptyName;
 	UserNotAuthenticated;
 };
-type Result_7 = variant {
+type Result_9 = variant {
 	err : CreateCategoryError;
 	ok;
 };
-type Result_6 = variant {
+type Result_8 = variant {
 	err : CreateProductError;
 	ok;
 };
-type Result_5 = variant {
+type Result_7 = variant {
 	err : DeleteCategoryError;
 	ok;
 };
-type Result_4 = variant {
+type Result_6 = variant {
 	err : DeleteProductError;
 	ok;
 };
-type Result_3 = variant {
+type Result_5 = variant {
+	err : GetDerivationError;
+	ok : text;
+};
+type Result_4 = variant {
 	err : GetCategoryError;
 	ok : Category;
 };
-type Result_2 = variant {
+type Result_3 = variant {
 	err : GetProductError;
 	ok : Product;
+};
+type Result_2 = variant {
+	err : GetParseError;
+	ok;
 };
 type Result_1 = variant {
 	err : UpdateCategoryError;
@@ -48,6 +56,11 @@ type Product = record {
 	title : text;
 };
 type GetProductError = variant { ProductNotFound };
+type GetParseError = variant { Base58PubKeyWrongFormatError };
+type GetDerivationError = variant {
+	Base58PubKeyWrongFormatError;
+	ChildKeyDerivationError;
+};
 type GetCategoryError = variant { CategoryNotFound };
 type DeleteProductError = variant { UserNotAuthenticated };
 type DeleteCategoryError = variant { UserNotAuthenticated };
@@ -72,18 +85,21 @@ service : {
 			name : text;
 			slug : text;
 		}
-	) -> (Result_7);
+	) -> (Result_9);
 	create_product : (
 		record {
 			category : CategoryId;
 			price : nat;
 			title : text;
 		}
-	) -> (Result_6);
-	delete_category : (CategoryId) -> (Result_5);
-	delete_product : (ProductId) -> (Result_4);
-	get_category : (CategoryId) -> (Result_3) query;
-	get_product : (ProductId) -> (Result_2) query;
+	) -> (Result_8);
+	deleteOwnerXPUB : () -> () oneway;
+	delete_category : (CategoryId) -> (Result_7);
+	delete_product : (ProductId) -> (Result_6);
+	generateNextPaymentAddress : () -> (Result_5);
+	getOwnerXPUB : () -> (text) query;
+	get_category : (CategoryId) -> (Result_4) query;
+	get_product : (ProductId) -> (Result_3) query;
 	greet : (text) -> (text);
 	list_categories : () -> (
 		vec record {
@@ -97,6 +113,7 @@ service : {
 			Product;
 		}
 	) query;
+	setOwnerXPUB : (text) -> (Result_2);
 	update_category : (
 		CategoryId,
 		record {

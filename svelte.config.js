@@ -22,7 +22,12 @@ const config = {
 	kit: {
 		adapter: adapter({
 			fallback: 'index.html',
-			precompress: false
+			precompress: false,
+			vite: {
+				define: {
+					global: {}
+				}
+			}
 		}),
 		files: {
 			assets: filesPath('static'),
