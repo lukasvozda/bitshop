@@ -56,6 +56,7 @@
 </script>
 
 <main>
+	<h1>Homepage</h1>
 	<img src="logo2.svg" alt="DFINITY logo" />
 	<br />
 	<br />
@@ -117,11 +118,7 @@
 	</section>
 </main>
 
-<style global lang="postcss">
-	@tailwind base;
-	@tailwind components;
-	@tailwind utilities;
-
+<style lang="postcss">
 	img {
 		max-width: 50vw;
 		max-height: 25vw;
