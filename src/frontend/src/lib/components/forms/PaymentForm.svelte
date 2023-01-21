@@ -1,6 +1,5 @@
 <script>
   import { onMount } from "svelte";
-
   import QRCode from "qrcode";
   import { alerts, createAlert } from "@/stores/alerts";
   import { STATUS } from "@/types";
@@ -11,6 +10,7 @@
   const generateQRCode = (address) => {
     QRCode.toCanvas(QRCodeCanvas, address, (err) => {
       if (err) {
+        console.log(err);
         alerts.update((alerts) => {
           alerts.push(createAlert(err, STATUS.ERROR));
           return alerts;
@@ -19,10 +19,12 @@
     });
   };
 
-  $: generateQRCode($paymentAddress);
-
-  onMount(() => {
-    getNewPaymentAddress();
+  onMount(async () => {
+    let result = await getNewPaymentAddress();
+    if (result) {
+      generateQRCode(result);
+    }
+    console.log(result);
   });
 </script>
 

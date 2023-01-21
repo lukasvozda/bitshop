@@ -61,16 +61,21 @@ export const validateShippingDetailsStep = derived(
   ([$shippingPerson, $shippingLocation]) => {
     for (const field in $shippingPerson) {
       const fieldValue = $shippingPerson[field as keyof typeof $shippingPerson];
-      if (fieldValue == null || fieldValue["invalid"] || fieldValue["dirty"]) {
+      if (fieldValue == null || fieldValue["invalid"] || !fieldValue["dirty"]) {
         return false;
       }
     }
-    return !(
+    if (
       $shippingLocation.country == null ||
       $shippingLocation.country["invalid"] ||
+      !$shippingLocation.country["dirty"]
+    ) {
+      return false;
+    }
+    return !(
       $shippingLocation.city == null ||
       $shippingLocation.city["invalid"] ||
-      !("name" in $shippingLocation.city["value"])
+      !$shippingLocation.city["dirty"]
     );
   }
 );

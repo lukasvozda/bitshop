@@ -1,10 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-import DaisyUI from "daisyui";
 import Form from "@tailwindcss/forms";
+import DaisyUI from "daisyui";
 
 module.exports = {
-  plugins: [
-    Form, DaisyUI
-  ],
-  content: ['./src/**/*.{svelte,js,ts}'],
-}
+  plugins: [Form, DaisyUI],
+  content: ["./src/**/*.{svelte,js,ts}"]
+};

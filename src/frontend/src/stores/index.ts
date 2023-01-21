@@ -1,4 +1,4 @@
-import { createActor } from '../../../declarations/backend';
+import { createActor } from "../../../declarations/backend";
 
 // Canister IDs are automatically expanded to .env config - see vite.config.ts
 const canisterId = import.meta.env.VITE_BACKEND_CANISTER_ID;

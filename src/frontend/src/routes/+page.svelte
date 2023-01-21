@@ -57,49 +57,6 @@
     disabled = false;
   };
 
-  const setOwnerXPUB = async () => {
-    let result = await actor.setOwnerXPUB(owner_xpub);
-    console.log(result);
-  };
-
-  const deleteOwnerXPUB = async () => {
-    await actor.deleteOwnerXPUB();
-  };
-
-  const getOwnerXPUB = async () => {
-    await actor.getOwnerXPUB();
-  };
-
-  const generateNextChildAddress = async () => {
-    try {
-      let result = await actor.generateNextPaymentAddress();
-      console.log(result.ok);
-      if (result.ok !== null) {
-        derived_address = result.ok;
-        QRCode.toCanvas(QRCodeCanvas, derived_address, function (error) {
-          if (error) {
-            console.log(error);
-          } else {
-            console.log("success!");
-          }
-        });
-      }
-    } catch (err: unknown) {
-      console.error(err);
-    }
-  };
-
-  // const getaChildP2PKH = async () => {
-  // 	console.log('getting public key');
-  // 	derived_address = await actor.getaChildP2PKH(xpub);
-  // 	console.log('address', derived_address[0]);
-  // 	console.log(QRCodeCanvas);
-  // 	QRCode.toCanvas(QRCodeCanvas, derived_address[0], function (error) {
-  // 		if (error) console.error(error);
-  // 		console.log('success!');
-  // 	});
-  // };
-
   onMount(async () => {
     await listProducts();
   });
@@ -120,53 +77,6 @@
     {greeting}
   </section>
   <hr />
-  <section>
-    <h1>Input xpub</h1>
-    <form on:submit|preventDefault={setOwnerXPUB}>
-      <label for="title">xpub: &nbsp;</label>
-      <input
-        id="title"
-        alt="title"
-        type="text"
-        bind:value={owner_xpub}
-        {disabled}
-        style="width: 600px;"
-      />
-      <button type="submit" {disabled}>
-        {#if disabled === true}
-          Loading...
-        {:else}
-          Set owners public key
-        {/if}
-      </button>
-    </form>
-    <form on:submit|preventDefault={generateNextChildAddress}>
-      <button type="submit" {disabled}>
-        {#if disabled === true}
-          Loading...
-        {:else}
-          Derive child key
-        {/if}
-      </button>
-    </form>
-    <div>
-      <label for="title">derived address: &nbsp;</label>
-      <input
-        id="title"
-        alt="title"
-        type="text"
-        bind:value={derived_address}
-        disabled
-        style="width: 600px;"
-      />
-    </div>
-    <div>
-      <div class="container" hidden={derived_address === ""}>
-        <canvas bind:this={QRCodeCanvas} />
-      </div>
-    </div>
-    <hr />
-  </section>
   <section>
     <h1>Products</h1>
     <form on:submit|preventDefault={submitProduct}>

@@ -2,11 +2,15 @@
 @tailwind components;
 @tailwind base;
 
-[type='text'], [type='email'] {
-    border-color: rgb(209 213 219 / var(--tw-border-opacity));
-    border-radius: 0.375rem!important;
+[type="text"],
+[type="email"] {
+  border-color: rgb(209 213 219 / var(--tw-border-opacity));
+  border-radius: 0.375rem !important;
 }
 
-button, [type='button'], [type='reset'], [type='submit'] {
-    background-color: blue;
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
+  background-color: blue;
 }

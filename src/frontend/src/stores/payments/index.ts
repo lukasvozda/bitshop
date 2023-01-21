@@ -1,6 +1,7 @@
 import { actor } from "@/stores";
 import { alerts, createAlert } from "@/stores/alerts";
-import type { ApiResponse, STATUS } from "@/types";
+import type { ApiResponse } from "@/types";
+import { STATUS } from "@/types";
 import { writable } from "svelte/store";
 
 export const paymentAddress = writable(null);
@@ -17,15 +18,17 @@ export const getOwnerXPUB = async () => {
   return await actor.getOwnerXPUB();
 };
 
-export const getNewPaymentAddress = () => {
-  actor.generateNextPaymentAddress().then((response: ApiResponse) => {
+export const getNewPaymentAddress = async () => {
+  return actor.generateNextPaymentAddress().then((response: ApiResponse) => {
     if (response.ok) {
       paymentAddress.set(response.ok);
+      return response.ok;
     } else {
       alerts.update((alerts) => {
         alerts.push(createAlert(response.err, STATUS.ERROR));
         return alerts;
       });
+      return null;
     }
   });
 };

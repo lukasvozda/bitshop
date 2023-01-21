@@ -1,55 +1,55 @@
 export type Product = {
-	title: string;
-	id: number;
-	price: number;
-	category: number;
+  title: string;
+  id: number;
+  price: number;
+  category: number;
 };
 
 export type Category = {
-	name: string;
-	id: number;
-	slug: string;
+  name: string;
+  id: number;
+  slug: string;
 };
 
 export type ShippingAddress = {
-	email: string;
-	firstName: string;
-	lastName: string;
-	street: string;
-	city: string;
-	postCode: string;
-	country: string;
-	county: string | null;
+  email: string;
+  firstName: string;
+  lastName: string;
+  street: string;
+  city: string;
+  postCode: string;
+  country: string;
+  county: string | null;
 };
 
 export enum OrderStatus {
-	INITIATED,
-	WAITING_FOR_PAYMENT,
-	CONFIRMED,
-	FINISHED
+  INITIATED,
+  WAITING_FOR_PAYMENT,
+  CONFIRMED,
+  FINISHED
 }
 
 export type Order = {
-	id: number;
-	shippingAddress: ShippingAddress;
-	products: Product[];
-	totalPrice: number;
-	status: OrderStatus;
-	paymentAddress: string;
+  id: number;
+  shippingAddress: ShippingAddress;
+  products: Product[];
+  totalPrice: number;
+  status: OrderStatus;
+  paymentAddress: string;
 };
 
 export type ApiResponse = {
-	ok?: any;
-	err?: any;
+  ok?: any;
+  err?: any;
 };
 
 export enum STATUS {
-	SUCCESS,
-	ERROR
+  SUCCESS,
+  ERROR
 }
 
 export type Alert = {
-	time: string;
-	type: STATUS;
-	message: string;
+  time: string;
+  type: STATUS;
+  message: string;
 };
