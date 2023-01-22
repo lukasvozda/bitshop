@@ -22,7 +22,7 @@
     try {
       // Call the IC
       const response = await $actor.list_products();
-      //console.log(response);
+      console.log(response);
       products.set(response);
     } catch (err) {
       console.error(err);

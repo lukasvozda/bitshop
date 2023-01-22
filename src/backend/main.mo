@@ -5,97 +5,46 @@ import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Result "mo:base/Result";
 import Principal "mo:base/Principal";
+import Time "mo:base/Time";
+import Blob "mo:base/Blob";
+import Text "mo:base/Text";
+import Nat "mo:base/Nat";
+import Utils "utils";
+import Types "types";
 
 //import Bip32 "motoko-bitcoin/src/Bip32";
 import Debug "mo:base/Debug";
 //import Base58Check "motoko-bitcoin/src/Base58Check";
 //import SHA256 "motoko-bitcoin/motoko-sha/src/SHA256";
 
-import Text "mo:base/Text";
-import Nat "mo:base/Nat";
-
-import Types "motoko-bitcoin/src/bitcoin/Types";
+import BitcoinTypes "motoko-bitcoin/src/bitcoin/Types";
 import Payments "./Payments";
 
 actor {
-  public func greet(name : Text) : async Text {
-    return "Hello, " # name # "!";
-  };
 
-  type ProductId = Nat;
-  type CategoryId = Nat;
-  //type OrderId = Nat;
   private stable var next_product : ProductId = 1;
-  private stable var next_category : CategoryId = 1;
   //private stable var nextOrderId : OrderId = 1;
 
-  // TODO add more possible errors
-  type CreateProductError = {
-    #UserNotAuthenticated;
-    #EmptyTitle;
-  };
+  // Type import
+  type ProductId = Types.ProductId;
+  type SlugId = Types.SlugId;
+  type CreateProductError = Types.CreateProductError;
+  type GetProductError = Types.GetProductError;
+  type UpdateProductError = Types.UpdateProductError;
+  type DeleteProductError = Types.DeleteProductError;
+  type CreateCategoryError = Types.CreateCategoryError;
+  type GetCategoryError = Types.GetCategoryError;
+  type UpdateCategoryError = Types.UpdateCategoryError;
+  type DeleteCategoryError = Types.DeleteCategoryError;
+  type Category = Types.Category;
+  type UserProduct = Types.UserProduct;
+  type Product = Types.Product;
 
-  type GetProductError = {
-    #ProductNotFound;
-  };
-
-  type UpdateProductError = {
-    #UserNotAuthenticated;
-    #EmptyTitle;
-    #ProductNotFound;
-  };
-
-  type DeleteProductError = {
-    #UserNotAuthenticated;
-  };
-
-  type CreateCategoryError = {
-    #UserNotAuthenticated;
-    #EmptyName;
-    #CategoryAlreadyExists; // TODO add verification to category_create function
-  };
-
-  type GetCategoryError = {
-    #CategoryNotFound;
-  };
-
-  type UpdateCategoryError = {
-    #UserNotAuthenticated;
-    #EmptyName;
-    #CategoryNotFound;
-  };
-
-  type DeleteCategoryError = {
-    #UserNotAuthenticated;
-  };
-
-  type Category = {
-    name : Text;
-    id : CategoryId;
-    slug : Text;
-  };
-
-  type Product = {
-    title : Text;
-    id : ProductId;
-    price : Nat;
-    category : CategoryId;
-    //add these parameters later
-    //status : { #active; #paused }; TODO
-    //slug : Text; TODO
-    //img : Text; TODO
-    //stock : Nat8; TODO
-    //description : Text; TODO
-    //time_created : Time; TODO
-    //time_updated : Time; TODO
-  };
-
-  let eq : (Nat, Nat) -> Bool = func(x, y) { x == y };
-  private var products = Map.HashMap<ProductId, Product>(0, eq, Hash.hash);
-  private var categories = Map.HashMap<CategoryId, Category>(0, eq, Hash.hash);
-  private stable var stableproducts : [(ProductId, Product)] = [];
+  private var products = Map.HashMap<SlugId, Product>(0, Text.equal, Text.hash);
+  private var categories = Map.HashMap<SlugId, Category>(0, Text.equal, Text.hash);
+  private stable var stableproducts : [(SlugId, Product)] = [];
   // to preserve products between updates (hashmap is not stable)
-  private stable var stablecategories : [(CategoryId, Category)] = [];
+  private stable var stablecategories : [(SlugId, Category)] = [];
   //private var orders = Map.HashMap<OrderId, Order>(0, eq, Hash.hash);
 
   // for testing
@@ -106,22 +55,28 @@ actor {
   let p : Product = {
     id = 0;
     title = "Test product 1";
-    category = 0;
-    price = 5;
+    category = "t-shirts";
+    price = 5.0;
+    inventory = 10;
+    description = "Test product";
+    status = #active;
+    img = Blob.fromArray([0]);
+    slug = "test-product-0";
+    time_created = Time.now();
+    time_updated = Time.now();
   };
 
-  products.put(0, p);
+  products.put("test-product-0", p);
 
   // create a default category, we will remove it later
   let c : Category = {
-    id = 0;
     name = "T-shirts";
     slug = "t-shirts";
   };
 
-  categories.put(0, c);
+  categories.put("t-shirts", c);
 
-  public shared (msg) func create_product(p : { title : Text; price : Nat; category : CategoryId }) : async Result.Result<(), CreateProductError> {
+  public shared (msg) func create_product(p : UserProduct) : async Result.Result<(), CreateProductError> {
 
     if (p.title == "") { return #err(#EmptyTitle) };
 
@@ -129,28 +84,37 @@ actor {
     next_product += 1;
     // increment the counter so we never try to create a product under the same index
 
+    let new_slug = Utils.slugify(p.title) # "-" # Nat.toText(next_product); //this should keep slug always unique and we can key hashMap with it
+
     let product : Product = {
       title = p.title;
       id = productId;
       price = p.price;
       category = p.category;
-      //add missing parameters later
+      inventory = p.inventory;
+      description = p.description;
+      status = p.status;
+      img = Blob.fromArray([0]);
+      // Lets deal with product images later
+      slug = new_slug;
+      time_created = Time.now();
+      time_updated = Time.now();
     };
 
-    products.put(productId, product);
+    products.put(new_slug, product);
     return #ok(());
     // Return an OK result
   };
 
-  public query func get_product(id : ProductId) : async Result.Result<Product, GetProductError> {
+  public query func get_product(id : SlugId) : async Result.Result<Product, GetProductError> {
     let product = products.get(id);
     return Result.fromOption(product, #ProductNotFound);
     // If the post is not found, this will return an error as result.
   };
 
   public shared (msg) func update_product(
-    id : ProductId,
-    p : { title : Text; price : Nat; category : CategoryId }
+    id : SlugId,
+    p : UserProduct
   ) : async Result.Result<(), UpdateProductError> {
     // commented for local development
     // if(Principal.isAnonymous(msg.caller)){
@@ -170,10 +134,19 @@ actor {
       case (?v) {
         // If the post was found, we try to update it.
         let product : Product = {
-          id = id;
           title = p.title;
+          id = v.id;
           price = p.price;
           category = p.category;
+          inventory = p.inventory;
+          description = p.description;
+          status = p.status;
+          img = Blob.fromArray([0]);
+          // keep persistent URLS
+          slug = v.slug;
+          time_created = v.time_created;
+          // only update time_updated
+          time_updated = Time.now();
         };
         products.put(id, product);
       };
@@ -182,7 +155,7 @@ actor {
     // If all goes fine, return an OK result.
   };
 
-  public shared (msg) func delete_product(id : ProductId) : async Result.Result<(), DeleteProductError> {
+  public shared (msg) func delete_product(id : SlugId) : async Result.Result<(), DeleteProductError> {
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -190,30 +163,38 @@ actor {
     return #ok(());
   };
 
-  public query func list_products() : async [(ProductId, Product)] {
+  public query func list_products() : async [(SlugId, Product)] {
     return Iter.toArray(products.entries());
   };
 
-  public shared (msg) func create_category(c : { name : Text; slug : Text }) : async Result.Result<(), CreateCategoryError> {
+  public shared (msg) func create_category(name : Text) : async Result.Result<(), CreateCategoryError> {
 
-    if (c.name == "") { return #err(#EmptyName) };
+    if (name == "") { return #err(#EmptyName) };
 
-    let categoryId = next_category;
-    next_category += 1;
+    let new_slug = Utils.slugify(name);
 
-    let category : Category = {
-      id = categoryId;
-      name = c.name;
-      slug = c.slug; // TODO decide whether slug will be created in the backend or in the frontend
+    let result = categories.get(new_slug);
+    switch (result) {
+      case null {
+        let category : Category = {
+          name = c.name;
+          slug = new_slug;
+        };
+
+        categories.put(new_slug, category);
+        return #ok(());
+      };
+      case (?v) {
+        // We want category to exist only once
+        return #err(#CategoryAlreadyExists);
+      };
     };
-
-    categories.put(categoryId, category);
     return #ok(());
   };
 
   public shared (msg) func update_category(
-    id : CategoryId,
-    c : { name : Text; slug : Text }
+    id : SlugId,
+    name : Text
   ) : async Result.Result<(), UpdateCategoryError> {
     // commented for local development
     // if(Principal.isAnonymous(msg.caller)){
@@ -231,9 +212,8 @@ actor {
       };
       case (?v) {
         let category : Category = {
-          id = id;
           name = c.name;
-          slug = c.slug;
+          slug = v.slug; // URL should stay the same
         };
         categories.put(id, category);
       };
@@ -241,13 +221,13 @@ actor {
     return #ok(());
   };
 
-  public query func get_category(id : CategoryId) : async Result.Result<Category, GetCategoryError> {
+  public query func get_category(id : SlugId) : async Result.Result<Category, GetCategoryError> {
     let category = categories.get(id);
     return Result.fromOption(category, #CategoryNotFound);
     // If the post is not found, this will return an error as result.
   };
 
-  public shared (msg) func delete_category(id : CategoryId) : async Result.Result<(), DeleteCategoryError> {
+  public shared (msg) func delete_category(id : SlugId) : async Result.Result<(), DeleteCategoryError> {
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -255,7 +235,7 @@ actor {
     return #ok(());
   };
 
-  public query func list_categories() : async [(CategoryId, Category)] {
+  public query func list_categories() : async [(SlugId, Category)] {
     return Iter.toArray(categories.entries());
   };
 
@@ -267,17 +247,17 @@ actor {
 
   // Postupgrade function will then poppulate HashMap with posts after the update is finished
   system func postupgrade() {
-    products := Map.fromIter<ProductId, Product>(
+    products := Map.fromIter<SlugId, Product>(
       stableproducts.vals(),
       10,
-      eq,
-      Hash.hash
+      Text.equal,
+      Text.hash
     );
-    categories := Map.fromIter<CategoryId, Category>(
+    categories := Map.fromIter<SlugId, Category>(
       stablecategories.vals(),
       10,
-      eq,
-      Hash.hash
+      Text.equal,
+      Text.hash
     );
   };
 
