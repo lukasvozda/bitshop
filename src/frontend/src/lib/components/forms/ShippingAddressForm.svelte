@@ -2,7 +2,7 @@
   import { email, required } from "svelte-forms/validators";
   import { field, form } from "svelte-forms";
   import CountryStateCityDropdown from "@/lib/components/ui/CountryStateCityDropdown.svelte";
-  import { firstName, lastName, mail, postCode, street } from "@/stores/shoppingCart";
+  import { firstName, lastName, mail, postCode, street } from "@/stores/cart";
 
   const formMail = field("mail", null, [email()]);
   const formFirstName = field("firstName", null, [required()]);

@@ -57,47 +57,47 @@ module {
         Debug.print(debug_show ("fingerprint", fingerprint));
         Debug.print(debug_show ("index", fingerprint));
 
-        // if (depth == 0) {
-        // 	// With depth = 0 we are parsing the master public key which must be
-        // 	// of index > 0 and does not have a parent.
-        // 	if (
-        // 		parentPubKey != null or fingerprint != [0, 0, 0, 0] or index > 0
-        // 	) {
-        // 		Debug.print(debug_show ("depth == 0", parentPubKey, fingerprint, index));
-        // 		return null;
-        // 	};
-        // } else {
-        // 	// Parsing a child public key.
-        // 	// Verify that the specified parent public key or its fingerprint
-        // 	// matches the parsed fingerprint.
-        // 	switch (parentPubKey) {
-        // 		case (?(#publicKeyData publicKeyData)) {
-        // 			let parentPubKeyHash = Hash.hash160(publicKeyData);
-        // 			for (i in Iter.range(0, 3)) {
-        // 				if (parentPubKeyHash[i] != fingerprint[i]) {
-        // 					Debug.print(debug_show ("parentPubKeyHash[i] != fingerprint[i]", parentPubKeyHash[i], fingerprint[i], i));
-        // 					return null;
-        // 				};
-        // 			};
-        // 		};
-        // 		case (?(#fingerprint parentPublicKeyFingerprint)) {
-        // 			if (parentPublicKeyFingerprint.size() > 0) {
-        // 				for (i in Iter.range(0, 3)) {
-        // 					if (parentPublicKeyFingerprint[i] != fingerprint[i]) {
-        // 						Debug.print(debug_show ("parentPublicKeyFingerprint[i] != fingerprint[i]", parentPublicKeyFingerprint[i], fingerprint[i], i));
-        // 						return null;
-        // 					};
-        // 				};
-        // 			} else {
-        // 				parentPubKey := ?(#fingerprint(fingerprint));
-        // 			};
-        // 		};
-        // 		case (null) {
-        // 			Debug.print(debug_show ("Parsing a child public key. case null"));
-        // 			return null;
-        // 		};
-        // 	};
-        // };
+        if (depth == 0) {
+          // With depth = 0 we are parsing the master public key which must be
+          // of index > 0 and does not have a parent.
+          if (
+            parentPubKey != null or fingerprint != [0, 0, 0, 0] or index > 0
+          ) {
+            Debug.print(debug_show ("depth == 0", parentPubKey, fingerprint, index));
+            return null;
+          };
+        } else {
+          // Parsing a child public key.
+          // Verify that the specified parent public key or its fingerprint
+          // matches the parsed fingerprint.
+          switch (parentPubKey) {
+            case (?(#publicKeyData publicKeyData)) {
+              let parentPubKeyHash = Hash.hash160(publicKeyData);
+              for (i in Iter.range(0, 3)) {
+                if (parentPubKeyHash[i] != fingerprint[i]) {
+                  Debug.print(debug_show ("parentPubKeyHash[i] != fingerprint[i]", parentPubKeyHash[i], fingerprint[i], i));
+                  return null;
+                };
+              };
+            };
+            case (?(#fingerprint parentPublicKeyFingerprint)) {
+              if (parentPublicKeyFingerprint.size() > 0) {
+                for (i in Iter.range(0, 3)) {
+                  if (parentPublicKeyFingerprint[i] != fingerprint[i]) {
+                    Debug.print(debug_show ("parentPublicKeyFingerprint[i] != fingerprint[i]", parentPublicKeyFingerprint[i], fingerprint[i], i));
+                    return null;
+                  };
+                };
+              } else {
+                parentPubKey := ?(#fingerprint(fingerprint));
+              };
+            };
+            case (null) {
+              Debug.print(debug_show ("Parsing a child public key. case null"));
+              return null;
+            };
+          };
+        };
 
         let chaincode = Array.tabulate<Nat8>(
           32,
