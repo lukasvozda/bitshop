@@ -40,7 +40,6 @@
     "sass": "^1.56.1",
     "svelte": "^3.44.0",
     "svelte-check": "^2.7.1",
-    "svelte-loading-spinners": "^0.3.4",
     "svelte-preprocess": "^4.10.7",
     "tailwindcss": "^3.1.5",
     "tslib": "^2.3.1",
@@ -52,9 +51,9 @@
     "@dfinity/agent": "^0.14.1",
     "@dfinity/candid": "^0.14.1",
     "@dfinity/principal": "^0.14.1",
+    "daisyui": "^2.47.0",
     "@tailwindcss/forms": "^0.5.3",
     "country-state-city": "^3.1.2",
-    "daisyui": "^2.47.0",
     "qrcode": "^1.5.1",
     "svelte-feather-icons": "^4.0.0",
     "svelte-forms": "^2.3.1"

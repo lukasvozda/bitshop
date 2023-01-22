@@ -1,3 +1,14 @@
+type UserProduct = record {
+  category : SlugId__1;
+  description : text;
+  inventory : nat8;
+  price : float64;
+  status : variant {
+    active;
+    paused;
+  };
+  title : text;
+};
 type UpdateProductError = variant {
   EmptyTitle;
   ProductNotFound;
@@ -8,6 +19,9 @@ type UpdateCategoryError = variant {
   EmptyName;
   UserNotAuthenticated;
 };
+type Time = int;
+type SlugId__1 = text;
+type SlugId = text;
 type Result_9 = variant {
   err : CreateCategoryError;
   ok;
@@ -50,9 +64,19 @@ type Result = variant {
 };
 type ProductId = nat;
 type Product = record {
-  category : CategoryId;
+  category : SlugId__1;
+  description : text;
   id : ProductId;
-  price : nat;
+  img : blob;
+  inventory : nat8;
+  price : float64;
+  slug : text;
+  status : variant {
+    active;
+    paused;
+  };
+  time_created : Time;
+  time_updated : Time;
   title : text;
 };
 type GetProductError = variant { ProductNotFound };
@@ -74,60 +98,33 @@ type CreateCategoryError = variant {
   EmptyName;
   UserNotAuthenticated;
 };
-type CategoryId = nat;
 type Category = record {
-  id : CategoryId;
   name : text;
   slug : text;
 };
 service : {
-  create_category : (
-    record {
-      name : text;
-      slug : text;
-    }
-  ) -> (Result_9);
-  create_product : (
-    record {
-      category : CategoryId;
-      price : nat;
-      title : text;
-    }
-  ) -> (Result_8);
+  create_category : (text) -> (Result_9);
+  create_product : (UserProduct) -> (Result_8);
   deleteOwnerXPUB : () -> () oneway;
-  delete_category : (CategoryId) -> (Result_7);
-  delete_product : (ProductId) -> (Result_6);
+  delete_category : (SlugId) -> (Result_7);
+  delete_product : (SlugId) -> (Result_6);
   generateNextPaymentAddress : () -> (Result_5);
   getOwnerXPUB : () -> (text) query;
-  get_category : (CategoryId) -> (Result_4) query;
-  get_product : (ProductId) -> (Result_3) query;
-  greet : (text) -> (text);
+  get_category : (SlugId) -> (Result_4) query;
+  get_product : (SlugId) -> (Result_3) query;
   list_categories : () -> (
     vec record {
-      CategoryId;
+      SlugId;
       Category;
     }
   ) query;
   list_products : () -> (
     vec record {
-      ProductId;
+      SlugId;
       Product;
     }
   ) query;
   setOwnerXPUB : (text) -> (Result_2);
-  update_category : (
-    CategoryId,
-    record {
-      name : text;
-      slug : text;
-    }
-  ) -> (Result_1);
-  update_product : (
-    ProductId,
-    record {
-      category : CategoryId;
-      price : nat;
-      title : text;
-    }
-  ) -> (Result);
+  update_category : (SlugId, text) -> (Result_1);
+  update_product : (SlugId, UserProduct) -> (Result);
 };
