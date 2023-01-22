@@ -10,7 +10,6 @@
   const generateQRCode = (address) => {
     QRCode.toCanvas(QRCodeCanvas, address, (err) => {
       if (err) {
-        console.log(err);
         alerts.update((alerts) => {
           alerts.push(createAlert(err, STATUS.ERROR));
           return alerts;

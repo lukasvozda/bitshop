@@ -1,5 +1,5 @@
 <script>
-  import { currentStep, Steps, validateShippingDetailsStep } from "@/stores/shoppingCart/index.ts";
+  import { currentStep, Steps, validateShippingDetailsStep } from "@/stores/cart/index.ts";
   import ShippingAddressForm from "@/lib/components/forms/ShippingAddressForm.svelte";
   import PaymentForm from "@/lib/components/forms/PaymentForm.svelte";
 </script>

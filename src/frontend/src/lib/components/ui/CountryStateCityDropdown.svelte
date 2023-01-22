@@ -2,7 +2,7 @@
   import { Country, State, City } from "country-state-city";
   import { field } from "svelte-forms";
   import { mustBeInList, mustHaveSpecifiedName } from "@/lib/utils/validators/index.ts";
-  import { city, country, county } from "@/stores/shoppingCart/index.ts";
+  import { city, country, county } from "@/stores/cart/index.ts";
   import AutoCompleteInput from "@/lib/components/ui/AutoCompleteInput.svelte";
 
   const filterItems = (input, item) => item.name.toLowerCase().startsWith(input.name.toLowerCase());
