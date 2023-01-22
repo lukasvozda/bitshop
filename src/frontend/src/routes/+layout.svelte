@@ -11,7 +11,6 @@
 
   const init = async () => {
     try {
-      actor.init();
       await listProducts();
     } catch (err) {
       console.error(err);

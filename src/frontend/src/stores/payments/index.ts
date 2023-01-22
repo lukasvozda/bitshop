@@ -7,11 +7,39 @@ import { get, writable } from "svelte/store";
 export const paymentAddress = writable(null);
 
 export const setOwnerXPUB = async (newOwnerXPUB: string) => {
-  return await get(actor).setOwnerXPUB(newOwnerXPUB);
+  return get(actor)
+    .setOwnerXPUB(newOwnerXPUB)
+    .then((response: ApiResponse) => {
+      if (response.ok) {
+        alerts.addAlert("Successfully updated value of the extended public key.", Status.SUCCESS);
+        return response.ok;
+      } else {
+        alerts.addAlert(response.err, Status.ERROR);
+        return null;
+      }
+    })
+    .catch((err) => {
+      alerts.addAlert(err, Status.ERROR);
+      return null;
+    });
 };
 
 export const deleteOwnerXPUB = async () => {
-  return await get(actor).deleteOwnerXPUB();
+  return get(actor)
+    .deleteOwnerXPUB()
+    .then((response: ApiResponse) => {
+      if (response.ok) {
+        alerts.addAlert("Successfully deleted value of the extended public key.", Status.SUCCESS);
+        return response.ok;
+      } else {
+        alerts.addAlert(response.err, Status.ERROR);
+        return null;
+      }
+    })
+    .catch((err) => {
+      alerts.addAlert(err, Status.ERROR);
+      return null;
+    });
 };
 
 export const getOwnerXPUB = async () => {
@@ -29,5 +57,9 @@ export const getNewPaymentAddress = async () => {
         alerts.addAlert(response.err, Status.ERROR);
         return null;
       }
+    })
+    .catch((err) => {
+      alerts.addAlert(err, Status.ERROR);
+      return null;
     });
 };
