@@ -1,8 +1,15 @@
+import type { OrderStatus, Status } from "@/lib/utils";
+
 export type Product = {
   title: string;
   id: number;
   price: number;
   category: number;
+};
+
+export type CartProduct = {
+  product: Product;
+  quantity: number;
 };
 
 export type Category = {
@@ -22,13 +29,6 @@ export type ShippingAddress = {
   county: string | null;
 };
 
-export enum OrderStatus {
-  INITIATED,
-  WAITING_FOR_PAYMENT,
-  CONFIRMED,
-  FINISHED
-}
-
 export type Order = {
   id: number;
   shippingAddress: ShippingAddress;
@@ -43,13 +43,8 @@ export type ApiResponse = {
   err?: any;
 };
 
-export enum STATUS {
-  SUCCESS,
-  ERROR
-}
-
 export type Alert = {
   time: string;
-  type: STATUS;
+  type: Status;
   message: string;
 };

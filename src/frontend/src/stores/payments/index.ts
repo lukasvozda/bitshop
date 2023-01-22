@@ -1,7 +1,7 @@
+import { Status } from "@/lib/utils";
 import { actor } from "@/stores";
-import { alerts, createAlert } from "@/stores/alerts";
+import { alerts } from "@/stores/alerts";
 import type { ApiResponse } from "@/types";
-import { STATUS } from "@/types";
 import { get, writable } from "svelte/store";
 
 export const paymentAddress = writable(null);
@@ -26,10 +26,7 @@ export const getNewPaymentAddress = async () => {
         paymentAddress.set(response.ok);
         return response.ok;
       } else {
-        alerts.update((alerts) => {
-          alerts.push(createAlert(response.err, STATUS.ERROR));
-          return alerts;
-        });
+        alerts.addAlert(response.err, Status.ERROR);
         return null;
       }
     });
