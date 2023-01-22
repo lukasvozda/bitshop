@@ -1,10 +1,29 @@
 import { Status } from "@/lib/utils";
 import { actor } from "@/stores";
-import { alerts } from "@/stores/alerts";
+import { alerts, alertVisibility } from "@/stores/alerts";
 import type { ApiResponse } from "@/types";
 import { get, writable } from "svelte/store";
 
 export const paymentAddress = writable(null);
+
+export const callTestNoOp = async () => {
+  return get(actor)
+    .noOp()
+    .then((response: ApiResponse) => {
+      console.log(response);
+      if ("ok" in response) {
+        alerts.addAlert("Successfully called no-op.", Status.SUCCESS);
+      } else {
+        alerts.addAlert(response.err, Status.ERROR);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      alerts.addAlert(err, Status.ERROR);
+      return null;
+    })
+    .finally(() => alertVisibility.showAlert());
+};
 
 export const setOwnerXPUB = async (newOwnerXPUB: string) => {
   return get(actor)

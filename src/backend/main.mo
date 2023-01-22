@@ -301,4 +301,13 @@ actor {
       };
     };
   };
+
+  public type NoOpError = {
+    #NoOpError;
+  };
+
+  public func noOp() : async Result.Result<(), NoOpError> {
+    return #ok(());
+  };
+
 };

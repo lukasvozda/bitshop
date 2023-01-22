@@ -11,6 +11,8 @@
 </script>
 
 <div>
+  <PaymentForm />
+
   <ul class="steps">
     <li data-content="1" class="step" class:step-primary={$currentStep >= Steps.PRODUCTS}>
       Products

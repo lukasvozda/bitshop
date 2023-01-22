@@ -8,7 +8,7 @@
 </script>
 
 {#if $alertVisibility}
-  <div class="alert alert-error shadow-lg">
+  <div class="alert shadow-lg {Status.SUCCESS ? 'alert-error' : 'alert-success'}">
     <div>
       <svelte:component
         this={alert?.type === Status.SUCCESS ? CheckCircleIcon : AlertTriangleIcon}

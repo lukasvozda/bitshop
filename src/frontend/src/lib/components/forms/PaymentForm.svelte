@@ -3,7 +3,7 @@
   import QRCode from "qrcode";
   import { alerts } from "@/stores/alerts";
   import { Status } from "@/lib/utils";
-  import { getNewPaymentAddress, paymentAddress } from "@/stores/payments";
+  import { getNewPaymentAddress, paymentAddress, callTestNoOp } from "@/stores/payments";
   import { Circle2 } from "svelte-loading-spinners";
 
   let QRCodeCanvas;
@@ -30,7 +30,7 @@
       <canvas bind:this={QRCodeCanvas} />
       <div>{$paymentAddress}</div>
     </div>
-    <button class="btn btn-primary">confirm</button>
+    <button class="btn btn-primary" on:click={callTestNoOp()}>I call no-op, click me</button>
   </div>
 {:else}
   <Circle2 size="60" color="#FF3E00" unit="px" duration="1s" />

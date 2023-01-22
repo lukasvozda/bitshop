@@ -18,6 +18,7 @@ export type GetDerivationError =
   | { Base58PubKeyWrongFormatError: null };
 export type GetParseError = { Base58PubKeyWrongFormatError: null };
 export type GetProductError = { ProductNotFound: null };
+export type NoOpError = { NoOpError: null };
 export interface Product {
   id: ProductId;
   img: Uint8Array;
@@ -34,14 +35,15 @@ export interface Product {
 export type ProductId = bigint;
 export type Result = { ok: null } | { err: UpdateProductError };
 export type Result_1 = { ok: null } | { err: UpdateCategoryError };
+export type Result_10 = { ok: null } | { err: CreateCategoryError };
 export type Result_2 = { ok: null } | { err: GetParseError };
-export type Result_3 = { ok: Product } | { err: GetProductError };
-export type Result_4 = { ok: Category } | { err: GetCategoryError };
-export type Result_5 = { ok: string } | { err: GetDerivationError };
-export type Result_6 = { ok: null } | { err: DeleteProductError };
-export type Result_7 = { ok: null } | { err: DeleteCategoryError };
-export type Result_8 = { ok: null } | { err: CreateProductError };
-export type Result_9 = { ok: null } | { err: CreateCategoryError };
+export type Result_3 = { ok: null } | { err: NoOpError };
+export type Result_4 = { ok: Product } | { err: GetProductError };
+export type Result_5 = { ok: Category } | { err: GetCategoryError };
+export type Result_6 = { ok: string } | { err: GetDerivationError };
+export type Result_7 = { ok: null } | { err: DeleteProductError };
+export type Result_8 = { ok: null } | { err: DeleteCategoryError };
+export type Result_9 = { ok: null } | { err: CreateProductError };
 export type SlugId = string;
 export type SlugId__1 = string;
 export type Time = bigint;
@@ -62,17 +64,18 @@ export interface UserProduct {
   price: number;
 }
 export interface _SERVICE {
-  create_category: ActorMethod<[string], Result_9>;
-  create_product: ActorMethod<[UserProduct], Result_8>;
+  create_category: ActorMethod<[string], Result_10>;
+  create_product: ActorMethod<[UserProduct], Result_9>;
   deleteOwnerXPUB: ActorMethod<[], undefined>;
-  delete_category: ActorMethod<[SlugId], Result_7>;
-  delete_product: ActorMethod<[SlugId], Result_6>;
-  generateNextPaymentAddress: ActorMethod<[], Result_5>;
+  delete_category: ActorMethod<[SlugId], Result_8>;
+  delete_product: ActorMethod<[SlugId], Result_7>;
+  generateNextPaymentAddress: ActorMethod<[], Result_6>;
   getOwnerXPUB: ActorMethod<[], string>;
-  get_category: ActorMethod<[SlugId], Result_4>;
-  get_product: ActorMethod<[SlugId], Result_3>;
+  get_category: ActorMethod<[SlugId], Result_5>;
+  get_product: ActorMethod<[SlugId], Result_4>;
   list_categories: ActorMethod<[], Array<[SlugId, Category]>>;
   list_products: ActorMethod<[], Array<[SlugId, Product]>>;
+  noOp: ActorMethod<[], Result_3>;
   setOwnerXPUB: ActorMethod<[string], Result_2>;
   update_category: ActorMethod<[SlugId, string], Result_1>;
   update_product: ActorMethod<[SlugId, UserProduct], Result>;
