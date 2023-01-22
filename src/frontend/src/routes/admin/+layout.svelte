@@ -1,8 +1,8 @@
 <script>
-	import { page } from '$app/stores';
+  import { page } from "$app/stores";
 
-	$: routeId = $page.route.id;
-	export const prerender = true;
+  $: routeId = $page.route.id;
+  export const prerender = true;
 </script>
 
 <h2>Submenu</h2>

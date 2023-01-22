@@ -1,14 +1,14 @@
-const config = {
-	content: ['./src/**/*.{html,js,svelte,ts}'],
+// require("@tailwindcss/forms");
+// import DaisyUI from "daisyui";
 
+const config = {
+	content: ["./src/**/*.{html,js,svelte,ts}"],
 	theme: {
 		extend: {}
 	},
-
-	plugins: [require('daisyui')],
-
+	plugins: [require("daisyui"), require("@tailwindcss/forms")],
 	daisyui: {
-		themes: ['light']
+		themes: ["light"]
 	}
 };
 
