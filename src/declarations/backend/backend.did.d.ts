@@ -1,11 +1,9 @@
 import type { ActorMethod } from "@dfinity/agent";
 
 export interface Category {
-  id: CategoryId;
   name: string;
   slug: string;
 }
-export type CategoryId = bigint;
 export type CreateCategoryError =
   | { CategoryAlreadyExists: null }
   | { UserNotAuthenticated: null }
@@ -22,9 +20,16 @@ export type GetParseError = { Base58PubKeyWrongFormatError: null };
 export type GetProductError = { ProductNotFound: null };
 export interface Product {
   id: ProductId;
+  img: Uint8Array;
+  status: { active: null } | { paused: null };
+  time_created: Time;
   title: string;
-  category: CategoryId;
-  price: bigint;
+  inventory: number;
+  slug: string;
+  description: string;
+  time_updated: Time;
+  category: SlugId__1;
+  price: number;
 }
 export type ProductId = bigint;
 export type Result = { ok: null } | { err: UpdateProductError };
@@ -37,6 +42,9 @@ export type Result_6 = { ok: null } | { err: DeleteProductError };
 export type Result_7 = { ok: null } | { err: DeleteCategoryError };
 export type Result_8 = { ok: null } | { err: CreateProductError };
 export type Result_9 = { ok: null } | { err: CreateCategoryError };
+export type SlugId = string;
+export type SlugId__1 = string;
+export type Time = bigint;
 export type UpdateCategoryError =
   | { CategoryNotFound: null }
   | { UserNotAuthenticated: null }
@@ -45,23 +53,27 @@ export type UpdateProductError =
   | { ProductNotFound: null }
   | { UserNotAuthenticated: null }
   | { EmptyTitle: null };
+export interface UserProduct {
+  status: { active: null } | { paused: null };
+  title: string;
+  inventory: number;
+  description: string;
+  category: SlugId__1;
+  price: number;
+}
 export interface _SERVICE {
-  create_category: ActorMethod<[{ name: string; slug: string }], Result_9>;
-  create_product: ActorMethod<[{ title: string; category: CategoryId; price: bigint }], Result_8>;
+  create_category: ActorMethod<[string], Result_9>;
+  create_product: ActorMethod<[UserProduct], Result_8>;
   deleteOwnerXPUB: ActorMethod<[], undefined>;
-  delete_category: ActorMethod<[CategoryId], Result_7>;
-  delete_product: ActorMethod<[ProductId], Result_6>;
+  delete_category: ActorMethod<[SlugId], Result_7>;
+  delete_product: ActorMethod<[SlugId], Result_6>;
   generateNextPaymentAddress: ActorMethod<[], Result_5>;
   getOwnerXPUB: ActorMethod<[], string>;
-  get_category: ActorMethod<[CategoryId], Result_4>;
-  get_product: ActorMethod<[ProductId], Result_3>;
-  greet: ActorMethod<[string], string>;
-  list_categories: ActorMethod<[], Array<[CategoryId, Category]>>;
-  list_products: ActorMethod<[], Array<[ProductId, Product]>>;
+  get_category: ActorMethod<[SlugId], Result_4>;
+  get_product: ActorMethod<[SlugId], Result_3>;
+  list_categories: ActorMethod<[], Array<[SlugId, Category]>>;
+  list_products: ActorMethod<[], Array<[SlugId, Product]>>;
   setOwnerXPUB: ActorMethod<[string], Result_2>;
-  update_category: ActorMethod<[CategoryId, { name: string; slug: string }], Result_1>;
-  update_product: ActorMethod<
-    [ProductId, { title: string; category: CategoryId; price: bigint }],
-    Result
-  >;
+  update_category: ActorMethod<[SlugId, string], Result_1>;
+  update_product: ActorMethod<[SlugId, UserProduct], Result>;
 }

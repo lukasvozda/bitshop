@@ -1,13 +1,19 @@
 export type Product = {
   title: string;
   id: number;
+  slug: string;
   price: number;
-  category: number;
+  category: string;
+  inventory: number;
+  description: string;
+  status: string;
+  time_updated: number;
+  time_created: number;
+  img: Uint8Array;
 };
 
 export type Category = {
   name: string;
-  id: number;
   slug: string;
 };
 
