@@ -10,7 +10,6 @@ export const callTestNoOp = async () => {
   return get(actor)
     .noOp()
     .then((response: ApiResponse) => {
-      console.log(response);
       if ("ok" in response) {
         alerts.addAlert("Successfully called no-op.", Status.SUCCESS);
       } else {
@@ -18,7 +17,6 @@ export const callTestNoOp = async () => {
       }
     })
     .catch((err) => {
-      console.log(err);
       alerts.addAlert(err, Status.ERROR);
       return null;
     })
@@ -29,7 +27,7 @@ export const setOwnerXPUB = async (newOwnerXPUB: string) => {
   return get(actor)
     .setOwnerXPUB(newOwnerXPUB)
     .then((response: ApiResponse) => {
-      if (response.ok) {
+      if ("ok" in response) {
         alerts.addAlert("Successfully updated value of the extended public key.", Status.SUCCESS);
         return response.ok;
       } else {
@@ -47,7 +45,7 @@ export const deleteOwnerXPUB = async () => {
   return get(actor)
     .deleteOwnerXPUB()
     .then((response: ApiResponse) => {
-      if (response.ok) {
+      if ("ok" in response) {
         alerts.addAlert("Successfully deleted value of the extended public key.", Status.SUCCESS);
         return response.ok;
       } else {
@@ -69,7 +67,7 @@ export const getNewPaymentAddress = async () => {
   return get(actor)
     .generateNextPaymentAddress()
     .then((response: ApiResponse) => {
-      if (response.ok) {
+      if ("ok" in response) {
         paymentAddress.set(response.ok);
         return response.ok;
       } else {

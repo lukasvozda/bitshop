@@ -4,7 +4,7 @@
     Steps,
     validateShippingDetailsStep,
     validateProductsStep
-  } from "@/stores/cart/index.ts";
+  } from "@/stores/cart";
   import ShippingAddressForm from "@/lib/components/forms/ShippingAddressForm.svelte";
   import PaymentForm from "@/lib/components/forms/PaymentForm.svelte";
   import ProductsForm from "@/lib/components/forms/ProductsForm.svelte";
@@ -12,21 +12,6 @@
 
 <div>
   <PaymentForm />
-
-  <ul class="steps">
-    <li data-content="1" class="step" class:step-primary={$currentStep >= Steps.PRODUCTS}>
-      Products
-    </li>
-    <li data-content="2" class="step" class:step-primary={$currentStep >= Steps.SHIPPING}>
-      Shipping details
-    </li>
-    <li data-content="3" class="step" class:step-primary={$currentStep >= Steps.PAYMENT}>
-      Payment
-    </li>
-    <li data-content="4" class="step" class:step-primary={$currentStep >= Steps.CONFIRMATION}>
-      Confirmation
-    </li>
-  </ul>
 
   <div>
     {#if $currentStep === Steps.PRODUCTS}
