@@ -4,6 +4,8 @@
   import { products } from "@/stores/products";
   import { actor } from "@/stores";
   import "@/app.postcss";
+  import Alert from "@/lib/components/ui/Alert.svelte";
+  import { alertVisibility } from "@/stores/alerts";
 
   $: routeId = $page.route.id;
 
@@ -27,8 +29,9 @@
     }
   };
 
+  alertVisibility.hideAlert();
+
   onMount(init);
-  // export const prerender = true;
 </script>
 
 <img src="bsvg.svg" width="200" alt="DFINITY logo" />
@@ -38,4 +41,7 @@
 <a class="link link-primary" class:active={routeId == "/admin"} href="/admin">Admin</a>
 <a class="link link-primary" class:active={routeId == "/cart"} href="/cart">Cart</a>
 <div class="divider" />
+
+<Alert />
+
 <slot />

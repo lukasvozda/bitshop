@@ -32,6 +32,18 @@ module {
 
   let curve : Curves.Curve = Curves.secp256k1;
 
+  func encodeVersion(network : Types.Network) : Nat8 {
+    // https://en.bitcoin.it/wiki/List_of_address_prefixes
+    return switch (network) {
+      case (#Mainnet) {
+        0x00; // mainnet
+      };
+      case (#Testnet) {
+        0x6f; // testnet
+      };
+    };
+  };
+
   func encodePublicPrefix(network : Types.Network) : Nat32 {
     return switch (network) {
       case (#Mainnet) {
@@ -48,19 +60,18 @@ module {
   };
 
   // gets P2PKH address from a public key in compressed form
-  public func getP2PKHAddress(compressedPubKey : [Nat8]) : Text {
+  public func getP2PKHAddress(compressedPubKey : [Nat8], network : Types.Network) : Text {
     let ripemd160Hash : [Nat8] = Ripemd160.hash(SHA256.sha256(compressedPubKey));
     let versionedHash : [Nat8] = Array.tabulate<Nat8>(
       ripemd160Hash.size() + 1,
       func(i) {
         if (i == 0) {
-          return 0x00;
+          return encodeVersion(network);
         } else {
           ripemd160Hash[i - 1];
         };
       }
     );
-    Debug.print("all ok tu");
     return Base58Check.encode(versionedHash);
   };
   // parse extended public key in Base58Check form
@@ -69,9 +80,6 @@ module {
       case (?b58Decoded) {
         let version : Nat32 = Common.readBE32(b58Decoded, 0);
         // Public key version must match desired network
-        Debug.print(debug_show (encodePublicPrefix(network)));
-        Debug.print(debug_show (version));
-
         if (version != encodePublicPrefix(network)) {
           return null;
         };

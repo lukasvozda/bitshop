@@ -1,4 +1,4 @@
-import type { Product } from "@/types";
+import type { CartProduct, Product } from "@/types";
 import { derived, writable } from "svelte/store";
 
 export enum Steps {
@@ -10,7 +10,47 @@ export enum Steps {
 
 export const currentStep = writable(Steps.PRODUCTS);
 
-export const products = writable([]);
+function fetchProducts() {
+  const { subscribe, update } = writable([]);
+
+  const findProductIndex = (products: CartProduct[], productId: number) =>
+    products.findIndex((cartProduct) => cartProduct.product.id === productId);
+
+  const addProduct = (newProduct: Product) =>
+    update((products: CartProduct[]) => {
+      const cartProductIndex = findProductIndex(products, newProduct.id);
+      if (cartProductIndex > -1) {
+        products[cartProductIndex].quantity += 1;
+      } else {
+        products.push({ product: newProduct, quantity: 1 });
+      }
+      return products;
+    });
+
+  const removeProduct = (productId: number) =>
+    update((products: CartProduct[]) => {
+      const cartProductIndex = findProductIndex(products, productId);
+      if (cartProductIndex > -1) {
+        if (products[cartProductIndex].quantity > 1) {
+          products[cartProductIndex].quantity -= 1;
+        } else {
+          products.splice(cartProductIndex, 1);
+        }
+      }
+      return products;
+    });
+
+  const clear = () => update(() => []);
+
+  return {
+    subscribe,
+    addProduct,
+    removeProduct,
+    clear
+  };
+}
+
+export const productsInCart = fetchProducts();
 
 export const mail = writable(null);
 export const firstName = writable(null);
@@ -52,9 +92,13 @@ export const shippingAddress = derived(
   }
 );
 
-export const totalPrice = derived(products, ($products) =>
-  $products.reduce((acc, product: Product) => acc + product.price, 0)
-);
+export const totalPrice = derived(productsInCart, ($products) => {
+  const result = $products.reduce(
+    (acc, item: CartProduct) => acc + item.product.price * item.quantity,
+    0
+  );
+  return result;
+});
 
 export const validateShippingDetailsStep = derived(
   [shippingPerson, shippingLocation],
@@ -78,6 +122,11 @@ export const validateShippingDetailsStep = derived(
       !$shippingLocation.city["dirty"]
     );
   }
+);
+
+export const validateProductsStep = derived(
+  productsInCart,
+  ($productsInCart) => $productsInCart.length > 0
 );
 
 // export const time = readable(new Date(), function start(set) {

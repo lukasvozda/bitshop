@@ -69,7 +69,7 @@
       >
         {#each filteredItems as item}
           <li on:click={() => selectItem(item)}>
-            <a href="">
+            <a>
               <slot {item}>{item.name}</slot>
             </a>
           </li>
