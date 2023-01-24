@@ -48,7 +48,7 @@ actor {
   //private var orders = Map.HashMap<OrderId, Order>(0, eq, Hash.hash);
 
   // for testing
-  private stable var ownerExtendedPublicKeyBase58Check : Text = "tpubD9vWrYUauLBjG5d1DLoUqtUBV3bTpbZ3t6QRZDQF4RV1nScdabEijjcCiwAoRDpBwooVZLbWkvjdFiGAFyLew8fo3cyAqagY5zLdJA4XoZQ";
+  private stable var ownerExtendedPublicKeyBase58Check : Text = "tpubDD9S94RYo2MraS7QbRhA64Nr56BzCYN2orJUkk2LE4RkB2npb9SFyiCuofbapC9wNW2hLJqkWwSpGoaE9pZC6fLBQdms5HYS9dsvw79nSWy";
   private stable var currentChildKeyIndex : Nat = 0;
 
   // create a default product, we will remove it later
@@ -283,19 +283,23 @@ actor {
   };
 
   public func generateNextPaymentAddress() : async Result.Result<Text, Payments.GetDerivationError> {
-    let path : Text = Payments.getRelativePath(currentChildKeyIndex);
-    currentChildKeyIndex := currentChildKeyIndex + 1;
     if (ownerExtendedPublicKeyBase58Check == "") {
       return #err(#OwnerExtendedPubKeyNotSet);
     };
     return switch (Payments.parse(ownerExtendedPublicKeyBase58Check, #Testnet)) {
       case null return #err(#Base58PubKeyWrongFormatError);
       case (?parsedPublicKey) {
-        return switch (parsedPublicKey.derivePath(path)) {
+        switch (parsedPublicKey.derivePath(Payments.getRelativePath(0))) {
           case null return #err(#ChildKeyDerivationError);
-          case (?derived) {
-            let address : Text = Payments.getP2PKHAddress(derived.key, #Testnet);
-            return #ok(address);
+          case (?derivedFirstNonHardenedChild) {
+            switch (derivedFirstNonHardenedChild.derivePath(Payments.getRelativePath(currentChildKeyIndex))) {
+              case null return #err(#ChildKeyDerivationError);
+              case (?derived) {
+                currentChildKeyIndex := currentChildKeyIndex + 1;
+                let address : Text = Payments.getP2PKHAddress(derived.key, #Testnet);
+                return #ok(address);
+              };
+            };
           };
         };
       };
