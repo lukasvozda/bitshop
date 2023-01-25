@@ -11,8 +11,6 @@
 </script>
 
 <div>
-  <PaymentForm />
-
   <div>
     {#if $currentStep === Steps.PRODUCTS}
       <div>

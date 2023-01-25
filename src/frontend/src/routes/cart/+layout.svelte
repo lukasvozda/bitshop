@@ -3,6 +3,7 @@
   import { currentStep, Steps } from "@/stores/cart";
 
   $: if ($navigating) currentStep.set(Steps.PRODUCTS);
+  export const prerender = true;
 </script>
 
 <h2>Cart page</h2>

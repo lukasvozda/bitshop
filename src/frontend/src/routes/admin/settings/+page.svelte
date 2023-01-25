@@ -4,9 +4,7 @@
 
   let xpub = "";
   onMount(async () => {
-    console.log("tu");
     xpub = await getOwnerXPUB();
-    console.log("tu2", xpub);
   });
 </script>
 
