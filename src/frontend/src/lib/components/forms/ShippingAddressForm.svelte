@@ -99,10 +99,10 @@
                   <CountryStateCityDropdown />
                 </div>
 
-                <div class="col-span-6 sm:col-span-3 lg:col-span-2">
-                  <label for="postal-code" class="block text-sm font-medium text-gray-700"
-                    >ZIP / Postal code*</label
-                  >
+                <div class="col-span-6 sm:col-span-3 lg:col-span-3">
+                  <label for="postal-code" class="block text-sm font-medium text-gray-700">
+                    ZIP / Postal code*
+                  </label>
                   <input
                     type="text"
                     bind:value={$formPostCode.value}

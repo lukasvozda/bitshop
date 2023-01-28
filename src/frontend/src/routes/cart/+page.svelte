@@ -4,7 +4,7 @@
     Steps,
     validateShippingDetailsStep,
     validateProductsStep
-  } from "@/stores/cart/index.ts";
+  } from "@/stores/cart";
   import ShippingAddressForm from "@/lib/components/forms/ShippingAddressForm.svelte";
   import PaymentForm from "@/lib/components/forms/PaymentForm.svelte";
   import ProductsForm from "@/lib/components/forms/ProductsForm.svelte";

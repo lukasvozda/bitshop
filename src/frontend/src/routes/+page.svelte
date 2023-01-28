@@ -9,7 +9,14 @@
   // This will later be in the admin section
   const submitProduct = async () => {
     disabled = true;
-    let product = { title: title, price: price, category: "t-shirts", description: "Product description", inventory:10, status: {active: null}  };
+    let product = {
+      title: title,
+      price: price,
+      category: "t-shirts",
+      description: "Product description",
+      inventory: 10,
+      status: { active: null }
+    };
     let res = await $actor.create_product(product); // BigInt TS wtf
     // TODO handle errors
     console.log(res);
@@ -66,7 +73,7 @@
         <div class="product">
           <!-- <span class="id">#{p[0]} - </span> -->
           <span class="title">{p[1].title}</span>
-          <div class="title">Category: {p[1].category} </div>
+          <div class="title">Category: {p[1].category}</div>
           <div class="price">Price: {p[1].price} BTC</div>
           <a class="link link-primary" href="/product/{p[1].slug}">Detail</a>
           <!-- <span class="category">Category: {p[1].category}</span> -->

@@ -23,35 +23,39 @@ type Time = int;
 type SlugId__1 = text;
 type SlugId = text;
 type Result_9 = variant {
-  err : CreateCategoryError;
-  ok;
-};
-type Result_8 = variant {
   err : CreateProductError;
   ok;
 };
-type Result_7 = variant {
+type Result_8 = variant {
   err : DeleteCategoryError;
   ok;
 };
-type Result_6 = variant {
+type Result_7 = variant {
   err : DeleteProductError;
   ok;
 };
-type Result_5 = variant {
+type Result_6 = variant {
   err : GetDerivationError;
   ok : text;
 };
-type Result_4 = variant {
+type Result_5 = variant {
   err : GetCategoryError;
   ok : Category;
 };
-type Result_3 = variant {
+type Result_4 = variant {
   err : GetProductError;
   ok : Product;
 };
+type Result_3 = variant {
+  err : NoOpError;
+  ok;
+};
 type Result_2 = variant {
   err : GetParseError;
+  ok;
+};
+type Result_10 = variant {
+  err : CreateCategoryError;
   ok;
 };
 type Result_1 = variant {
@@ -79,6 +83,7 @@ type Product = record {
   time_updated : Time;
   title : text;
 };
+type NoOpError = variant { NoOpError };
 type GetProductError = variant { ProductNotFound };
 type GetParseError = variant { Base58PubKeyWrongFormatError };
 type GetDerivationError = variant {
@@ -103,15 +108,15 @@ type Category = record {
   slug : text;
 };
 service : {
-  create_category : (text) -> (Result_9);
-  create_product : (UserProduct) -> (Result_8);
+  create_category : (text) -> (Result_10);
+  create_product : (UserProduct) -> (Result_9);
   deleteOwnerXPUB : () -> () oneway;
-  delete_category : (SlugId) -> (Result_7);
-  delete_product : (SlugId) -> (Result_6);
-  generateNextPaymentAddress : () -> (Result_5);
+  delete_category : (SlugId) -> (Result_8);
+  delete_product : (SlugId) -> (Result_7);
+  generateNextPaymentAddress : () -> (Result_6);
   getOwnerXPUB : () -> (text) query;
-  get_category : (SlugId) -> (Result_4) query;
-  get_product : (SlugId) -> (Result_3) query;
+  get_category : (SlugId) -> (Result_5) query;
+  get_product : (SlugId) -> (Result_4) query;
   list_categories : () -> (
     vec record {
       SlugId;
@@ -124,6 +129,7 @@ service : {
       Product;
     }
   ) query;
+  noOp : () -> (Result_3);
   setOwnerXPUB : (text) -> (Result_2);
   update_category : (SlugId, text) -> (Result_1);
   update_product : (SlugId, UserProduct) -> (Result);
