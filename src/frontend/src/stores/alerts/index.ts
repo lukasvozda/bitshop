@@ -35,3 +35,10 @@ function fetchAlerts() {
 }
 
 export const alerts = fetchAlerts();
+
+export const delayedAlert = (message: string, status: Status, duration = 1000) => {
+  return setTimeout(() => {
+    alerts.addAlert(message, status);
+    alertVisibility.showAlert();
+  }, duration);
+};
