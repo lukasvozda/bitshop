@@ -7,8 +7,15 @@ const host = import.meta.env.VITE_HOST;
 function fetchActor() {
   const { subscribe, set } = writable(null);
   const init = () => set(createActor(canisterId, { agentOptions: { host } }));
+  // const loadProducts = async (actor) => { 
+  //   console.log("getting products from hooks")
+  //   const products = await actor.list_products()
+  //   console.log(products)
+  //   return products;
+  // }
   return {
     subscribe,
+    //loadProducts,
     init
   };
 }
