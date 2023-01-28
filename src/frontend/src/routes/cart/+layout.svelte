@@ -5,24 +5,41 @@
     validateShippingDetailsStep,
     validateProductsStep
   } from "@/stores/cart/index.ts";
+  import { Steps as StepsComponent } from "svelte-steps";
+  import {
+    ShoppingCartIcon,
+    HomeIcon,
+    CreditCardIcon,
+    CheckCircleIcon
+  } from "svelte-feather-icons";
 
-  const stepButtons = [
+  let steps = [];
+
+  $: steps = [
     {
       disabled: !$validateProductsStep,
       onClick: () => ($currentStep = Steps.SHIPPING),
-      text: "go to shipping address"
+      buttonText: "go to shipping address",
+      icon: ShoppingCartIcon
     },
     {
       disabled: !$validateShippingDetailsStep,
       onClick: () => ($currentStep = Steps.PAYMENT),
-      text: "continue to payment"
+      buttonText: "continue to payment",
+      icon: HomeIcon
+    },
+    {
+      icon: CreditCardIcon
+    },
+    {
+      icon: CheckCircleIcon
     }
   ];
 </script>
 
 <div class="container mx-auto my-9">
   <h2
-    class="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-900 md:text-4xl lg:text-5xl dark:text-white"
+    class="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-700 md:text-4xl lg:text-5xl dark:text-white"
   >
     Your items in cart
   </h2>
@@ -31,35 +48,33 @@
   <div class="grid grid-cols-4 ">
     <div class="mr-auto">
       {#if $currentStep > Steps.PRODUCTS}
-        <button on:click={stepButtons[$currentStep - 1].onClick}>
-          {stepButtons[$currentStep - 1].text}
+        <button on:click={steps[$currentStep - 1].onClick}>
+          {steps[$currentStep - 1].text}
         </button>
       {/if}
     </div>
 
-    <ul class="steps col-span-2">
-      <li data-content="1" class="step" class:step-primary={$currentStep >= Steps.PRODUCTS}>
-        Products
-      </li>
-      <li data-content="2" class="step" class:step-primary={$currentStep >= Steps.SHIPPING}>
-        Shipping details
-      </li>
-      <li data-content="3" class="step" class:step-primary={$currentStep >= Steps.PAYMENT}>
-        Payment
-      </li>
-      <li data-content="4" class="step" class:step-primary={$currentStep >= Steps.CONFIRMATION}>
-        Confirmation
-      </li>
-    </ul>
+    <div class="col-span-2">
+      <StepsComponent
+        {steps}
+        size="3rem"
+        line="0.1rem"
+        clickable={false}
+        current={$currentStep}
+        primary="rgb(55, 65, 81, 70)"
+      />
+    </div>
+
+    {$currentStep}
 
     <div class="ml-auto">
       {#if $currentStep < Steps.PAYMENT}
         <button
-          disabled={stepButtons[$currentStep].disabled}
-          on:click={stepButtons[$currentStep].onClick}
+          disabled={steps[$currentStep].disabled}
+          on:click={steps[$currentStep].onClick}
           class="btn"
         >
-          {stepButtons[$currentStep].text}
+          {steps[$currentStep].buttonText}
         </button>
       {/if}
     </div>

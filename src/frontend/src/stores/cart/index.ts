@@ -107,7 +107,7 @@ export const totalPrice = derived(productsInCart, ($products) => {
     (acc, item: CartProduct) => acc + item.product.price * item.quantity,
     0
   );
-  return result;
+  return result.toFixed(8);
 });
 
 export const validateShippingDetailsStep = derived(

@@ -17,27 +17,27 @@
 
 <div class="my-10 ml-10">
   <div class="grid grid-cols-4 gap-4">
-    <div class="text-primary col-span-2">Product</div>
-    <div class="text-primary">Price</div>
-    <div class="text-primary">Quantity</div>
+    <div class="text-gray-700 col-span-2 font-bold uppercase">Product</div>
+    <div class="text-gray-700 font-bold uppercase">Price</div>
+    <div class="text-gray-700 font-bold uppercase">Quantity</div>
     {#each $productsInCart as item, index}
       <div class="col-span-2 flex">
         <div class="max-w-[15%]">
           <img src="/paper.jpeg" alt="Image 1" class="mask mask-squircle" />
         </div>
         <div class="flex flex-col justify-center">
-          <div class="font-bold">{item.product.title}</div>
+          <div class="font-bold text-gray-700">{item.product.title}</div>
           <div class="text-gray-400 text-sm">{item.product.category}</div>
         </div>
       </div>
-      <div class="flex items-center">
-        {item.product.price * item.quantity}
-        <div class="mt-1 ml-1">
+      <div class="flex items-center font-mono">
+        {(item.product.price * item.quantity).toFixed(8)}
+        <div class="ml-1">
           <Btc size="16" />
         </div>
       </div>
       <div class="grid grid-cols-3 gap-2 items-center">
-        <div>{item.quantity}</div>
+        <div class="font-mono">{item.quantity}</div>
         <div class="col-span-2">
           <button
             class="btn btn-circle btn-sm"
@@ -64,7 +64,13 @@
       </div>
     {/each}
   </div>
-  <div>
-    <div class="text-primary font-bold">total price: {$totalPrice} BTC</div>
+  <div class="mt-12">
+    <div class="text-gray-500 text-lg uppercase">total</div>
+    <div class="flex">
+      <span class="font-bold text-gray-700 text-2xl font-mono">{$totalPrice}</span>
+      <div class="ml-1 mt-1">
+        <Btc size="25" />
+      </div>
+    </div>
   </div>
 </div>
