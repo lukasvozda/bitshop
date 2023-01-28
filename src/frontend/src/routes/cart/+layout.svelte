@@ -12,27 +12,40 @@
     CreditCardIcon,
     CheckCircleIcon
   } from "svelte-feather-icons";
+  import { navigating } from "$app/stores";
+
+  $: if ($navigating) {
+    $currentStep = 0;
+  }
 
   let steps = [];
 
   $: steps = [
     {
       disabled: !$validateProductsStep,
+      onClick: () => ($currentStep = Steps.PRODUCTS),
+      buttonText: "products",
+      icon: ShoppingCartIcon,
+      title: "Your items in cart"
+    },
+    {
+      // disabled: !$validateShippingDetailsStep,
       onClick: () => ($currentStep = Steps.SHIPPING),
-      buttonText: "go to shipping address",
-      icon: ShoppingCartIcon
+      buttonText: "shipping address",
+      icon: HomeIcon,
+      title: "Your shipping address"
     },
     {
-      disabled: !$validateShippingDetailsStep,
       onClick: () => ($currentStep = Steps.PAYMENT),
-      buttonText: "continue to payment",
-      icon: HomeIcon
+      icon: CreditCardIcon,
+      buttonText: "payment",
+      title: "Your payment"
     },
     {
-      icon: CreditCardIcon
-    },
-    {
-      icon: CheckCircleIcon
+      onClick: () => ($currentStep = Steps.CONFIRMATION),
+      icon: CheckCircleIcon,
+      title: "Your order confirmation",
+      buttonText: "I confirm that I have paid"
     }
   ];
 </script>
@@ -41,15 +54,15 @@
   <h2
     class="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-700 md:text-4xl lg:text-5xl dark:text-white"
   >
-    Your items in cart
+    {steps[$currentStep].title}
   </h2>
   <slot />
 
-  <div class="grid grid-cols-4 ">
+  <div class="grid grid-cols-4 mt-20">
     <div class="mr-auto">
-      {#if $currentStep > Steps.PRODUCTS}
-        <button on:click={steps[$currentStep - 1].onClick}>
-          {steps[$currentStep - 1].text}
+      {#if $currentStep > Steps.PRODUCTS && $currentStep < Steps.CONFIRMATION}
+        <button class="btn" on:click={steps[$currentStep - 1].onClick}>
+          go back to {steps[$currentStep - 1].buttonText}
         </button>
       {/if}
     </div>
@@ -65,16 +78,15 @@
       />
     </div>
 
-    {$currentStep}
-
     <div class="ml-auto">
-      {#if $currentStep < Steps.PAYMENT}
+      {#if $currentStep < Steps.CONFIRMATION}
         <button
           disabled={steps[$currentStep].disabled}
-          on:click={steps[$currentStep].onClick}
-          class="btn"
+          on:click={steps[$currentStep + 1].onClick}
+          class="btn btn-primary"
         >
-          {steps[$currentStep].buttonText}
+          {$currentStep < Steps.PAYMENT ? "continue to" : ""}
+          {steps[$currentStep + 1].buttonText}
         </button>
       {/if}
     </div>

@@ -60,6 +60,7 @@
     "qrcode": "^1.5.1",
     "svelte-cryptoicon": "^0.16.1",
     "svelte-feather-icons": "^4.0.0",
-    "svelte-forms": "^2.3.1"
+    "svelte-forms": "^2.3.1",
+    "svelte-qrcode-image": "^1.0.0-rc.2"
   }
 }

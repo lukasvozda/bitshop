@@ -15,7 +15,7 @@
   productsInCart.addProduct(testProducts[2]);
 </script>
 
-<div class="my-10 ml-10">
+<div class="my-10 mx-10">
   <div class="grid grid-cols-4 gap-4">
     <div class="text-gray-700 col-span-2 font-bold uppercase">Product</div>
     <div class="text-gray-700 font-bold uppercase">Price</div>
