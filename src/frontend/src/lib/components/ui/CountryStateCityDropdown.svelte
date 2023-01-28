@@ -1,5 +1,5 @@
 <script>
-  import { Country, State, City } from "country-state-city";
+  //import { Country, State, City } from "country-state-city";
   import { field } from "svelte-forms";
   import { mustBeInList, mustHaveSpecifiedName } from "@/lib/utils/validators/index.ts";
   import { city, country, county } from "@/stores/cart/index.ts";

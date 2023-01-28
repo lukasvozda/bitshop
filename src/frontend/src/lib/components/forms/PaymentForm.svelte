@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import QRCode from "qrcode";
   import { alerts } from "@/stores/alerts";
   import { Status } from "@/lib/utils";
@@ -16,6 +16,8 @@
     });
   };
 
+  const dispatch = createEventDispatcher();
+
   onMount(async () => {
     let result = await getNewPaymentAddress();
     if (result) {
@@ -30,7 +32,7 @@
       <canvas bind:this={QRCodeCanvas} />
       <div>{$paymentAddress}</div>
     </div>
-    <button class="btn btn-primary">confirm</button>
+    <button class="btn btn-primary" on:click={() => dispatch("userConfirmed")}>confirm</button>
   </div>
 {:else}
   <Circle2 size="60" color="#FF3E00" unit="px" duration="1s" />

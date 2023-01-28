@@ -40,12 +40,22 @@ function fetchProducts() {
       return products;
     });
 
+  const removeProductCompletely = (productId: number) =>
+    update((products: CartProduct[]) => {
+      const cartProductIndex = findProductIndex(products, productId);
+      if (cartProductIndex > -1) {
+        products.splice(cartProductIndex, 1);
+      }
+      return products;
+    });
+
   const clear = () => update(() => []);
 
   return {
     subscribe,
     addProduct,
     removeProduct,
+    removeProductCompletely,
     clear
   };
 }
