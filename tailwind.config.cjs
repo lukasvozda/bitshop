@@ -3,7 +3,7 @@ const config = {
   theme: {
     extend: {}
   },
-  plugins: [require("daisyui"), require("@tailwindcss/forms")],
+  plugins: [require("daisyui"), require("@tailwindcss/forms"), require('@tailwindcss/aspect-ratio')],
   daisyui: {
     themes: ["light"]
   }
