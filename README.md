@@ -4,7 +4,7 @@
 
 # BitShop
 
-Braking the narrative that you can't buy anything in Bitcoin.
+Breaking the narrative that you can't buy anything in Bitcoin.
 Shopify alternative running on the Internet Computer.
 
 ## Getting started
