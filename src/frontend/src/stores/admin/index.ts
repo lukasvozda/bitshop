@@ -62,21 +62,3 @@ export const deleteOwnerXPUB = async () => {
 export const getOwnerXPUB = async () => {
   return await get(actor).getOwnerXPUB();
 };
-
-export const getNewPaymentAddress = async () => {
-  return get(actor)
-    .generateNextPaymentAddress()
-    .then((response: ApiResponse) => {
-      if ("ok" in response) {
-        paymentAddress.set(response.ok);
-        return response.ok;
-      } else {
-        alerts.addAlert(response.err, Status.ERROR);
-        return null;
-      }
-    })
-    .catch((err) => {
-      alerts.addAlert(err, Status.ERROR);
-      return null;
-    });
-};

@@ -4,8 +4,7 @@ export enum Status {
 }
 
 export enum OrderStatus {
-  INITIATED,
   WAITING_FOR_PAYMENT,
-  CONFIRMED,
-  FINISHED
+  USER_CONFIRMED_PAYMENT,
+  TRANSACTION_CONFIRMED
 }

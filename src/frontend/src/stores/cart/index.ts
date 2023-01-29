@@ -1,5 +1,8 @@
-import type { CartProduct, Product } from "@/types";
-import { derived, writable } from "svelte/store";
+import { OrderStatus, Status } from "@/lib/utils";
+import { actor } from "@/stores";
+import { alerts } from "@/stores/alerts";
+import type { ApiResponse, CartProduct, Product } from "@/types";
+import { derived, get, writable } from "svelte/store";
 
 export enum Steps {
   PRODUCTS = 0,
@@ -86,8 +89,8 @@ export const shippingAddress = derived(
   [shippingLocation, shippingPerson],
   ([$shippingLocation, $shippingPerson]) => {
     return {
-      shippingLocation: $shippingLocation,
-      shippingPerson: $shippingPerson
+      ...$shippingLocation,
+      ...$shippingPerson
     };
   }
 );
@@ -99,6 +102,34 @@ export const totalPrice = derived(productsInCart, ($products) => {
   );
   return result;
 });
+
+const fetchPaymentAddress = () => {
+  const { subscribe, set } = writable(null);
+
+  const getNewPaymentAddress = async () => {
+    return get(actor)
+      .generateNextPaymentAddress()
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          set(response.ok);
+          return response.ok;
+        } else {
+          alerts.addAlert(response.err, Status.ERROR);
+          return null;
+        }
+      })
+      .catch((err) => {
+        alerts.addAlert(err, Status.ERROR);
+        return null;
+      });
+  };
+  return {
+    subscribe,
+    getNewPaymentAddress
+  };
+};
+
+export const paymentAddress = fetchPaymentAddress();
 
 export const validateShippingDetailsStep = derived(
   [shippingPerson, shippingLocation],
@@ -129,12 +160,100 @@ export const validateProductsStep = derived(
   ($productsInCart) => $productsInCart.length > 0
 );
 
-// export const time = readable(new Date(), function start(set) {
-//     const interval = setInterval(() => {
-//         set(new Date());
-//     }, 1000);
+export const clearCart = () => {};
+
+const fetchOrder = () => {
+  let orderId: string = null;
+  let status = OrderStatus.WAITING_FOR_PAYMENT;
+
+  const cartOrder = derived(
+    [shippingAddress, productsInCart, totalPrice, paymentAddress],
+    ([$shippingAddress, $productsInCart, $totalPrice, $paymentAddress]) => {
+      return {
+        id: orderId,
+        shippingAddress: { ...$shippingAddress },
+        products: [...$productsInCart],
+        totalPrice: $totalPrice,
+        paymentAddress: $paymentAddress,
+        status: status
+      };
+    }
+  );
+
+  const createOrder = async () => {
+    return get(actor)
+      .createOrder(get(cartOrder))
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          status = OrderStatus.USER_CONFIRMED_PAYMENT;
+          orderId = response.ok.id;
+          return response.ok;
+        } else {
+          alerts.addAlert(response.err, Status.ERROR);
+          return null;
+        }
+      })
+      .catch((err) => {
+        alerts.addAlert(err, Status.ERROR);
+        return null;
+      });
+  };
+
+  const validateTransactionFinished = (orderId: string) => {
+    return get(actor)
+      .checkTransaction(orderId)
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          return response.ok;
+        } else {
+          alerts.addAlert(response.err, Status.ERROR);
+          return null;
+        }
+      })
+      .catch((err) => {
+        alerts.addAlert(err, Status.ERROR);
+        return null;
+      });
+  };
+  return {
+    cartOrder,
+    createOrder,
+    validateTransactionFinished
+  };
+};
+
+export const order = fetchOrder();
+
+// export const createOrder = async () => {
+//   return get(actor)
+//     .createOrder(cartOrder)
+//     .then((response: ApiResponse) => {
+//       if ("ok" in response) {
+//         return response.ok;
+//       } else {
+//         alerts.addAlert(response.err, Status.ERROR);
+//         return null;
+//       }
+//     })
+//     .catch((err) => {
+//       alerts.addAlert(err, Status.ERROR);
+//       return null;
+//     });
+// };
 //
-//     return function stop() {
-//         clearInterval(interval);
-//     };
-// });
+// export const validateTransactionFinished = (orderId: string) => {
+//   return get(actor)
+//     .checkTransaction(orderId)
+//     .then((response: ApiResponse) => {
+//       if ("ok" in response) {
+//         return response.ok;
+//       } else {
+//         alerts.addAlert(response.err, Status.ERROR);
+//         return null;
+//       }
+//     })
+//     .catch((err) => {
+//       alerts.addAlert(err, Status.ERROR);
+//       return null;
+//     });
+// };

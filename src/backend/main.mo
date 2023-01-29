@@ -18,7 +18,7 @@ import Debug "mo:base/Debug";
 //import SHA256 "motoko-bitcoin/motoko-sha/src/SHA256";
 
 import BitcoinTypes "motoko-bitcoin/src/bitcoin/Types";
-import Payments "./Payments";
+import Payments "./payments";
 
 actor {
 
@@ -313,5 +313,36 @@ actor {
   public func noOp() : async Result.Result<(), NoOpError> {
     return #ok(());
   };
+
+  private var orders = Map.HashMap<OrderId, Order>(0, Text.equal, Text.hash);
+  private var addressToOrder = Map.HashMap<Text, Order>(0, Text.equal, Text.hash);
+
+  public func createOrder(order : Order) : async Result.Result<(), OrderError> {
+    if (p.title == "") { return #err(#EmptyTitle) };
+
+    let productId = next_product;
+    next_product += 1;
+    // increment the counter so we never try to create a product under the same index
+
+    let new_slug = Utils.slugify(p.title) # "-" # Nat.toText(next_product); //this should keep slug always unique and we can key hashMap with it
+
+    let product : Product = {
+      title = p.title;
+      id = productId;
+      price = p.price;
+      category = p.category;
+      inventory = p.inventory;
+      description = p.description;
+      status = p.status;
+      img = Blob.fromArray([0]);
+      // Lets deal with product images later
+      slug = new_slug;
+      time_created = Time.now();
+      time_updated = Time.now();
+    };
+
+    products.put(new_slug, product);
+    return #ok(());
+  }
 
 };
