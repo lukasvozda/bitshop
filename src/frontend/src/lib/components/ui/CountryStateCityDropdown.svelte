@@ -2,8 +2,8 @@
   import { getData } from "country-list";
   import { field } from "svelte-forms";
   import { required } from "svelte-forms/validators";
-  import { mustBeInList, mustHaveSpecifiedName } from "@/lib/utils/validators/index.ts";
-  import { city, country, county } from "@/stores/cart/index.ts";
+  import { mustBeInList, mustHaveSpecifiedName } from "@/lib/utils/validators";
+  import { city, country, county } from "@/stores/cart";
   import AutoCompleteInput from "@/lib/components/ui/AutoCompleteInput.svelte";
   import { countryCodeEmoji } from "country-code-emoji";
 
@@ -16,17 +16,28 @@
     flag: countryCodeEmoji(country.code)
   }));
 
-  let formCountry = field("fieldItem", {}, [mustBeInList(countries), mustHaveSpecifiedName()]);
-  let formRegion = field("fieldItem", "", []);
-  let formCity = field("fieldItem", "", [required()]);
+  const initializeCountry = () => {
+    if ($country?.value) {
+      return countries.find((c) => c.name === $country.value.name) || {};
+    } else {
+      return {};
+    }
+  };
+
+  let formCountry = field("fieldItem", initializeCountry(), [
+    mustBeInList(countries),
+    mustHaveSpecifiedName()
+  ]);
+  let formRegion = field("fieldItem", $county?.value, []);
+  let formCity = field("fieldItem", $city?.value, [required()]);
 
   $: country.set($formCountry);
   $: county.set($formRegion);
   $: city.set($formCity);
 </script>
 
-<div class="grid gap-8">
-  <div class="col-span-4 sm:col-span-3">
+<div class="grid grid-cols-12 gap-8">
+  <div class="col-span-6">
     <span class="block text-sm font-medium text-gray-700">Country*</span>
     <AutoCompleteInput
       items={countries}
@@ -44,7 +55,7 @@
       {/if}
     </AutoCompleteInput>
   </div>
-  <div class="col-span-4 sm:col-span-3">
+  <div class="col-span-6">
     <span class="block text-sm font-medium text-gray-700">State / Province / Region</span>
     <input
       tabindex="0"
@@ -52,10 +63,10 @@
       disabled={$formCountry.invalid || !$formCountry.dirty}
       placeholder="Type in your state/region/province if necessary"
       bind:value={$formRegion.value}
-      class="peer mt-1 block w-full rounded-md border-gray-300 shadow-sm disabled:bg-gray-200 focus:text-gray-600 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+      class="peer mt-1 block input-md w-full rounded-lg border border-gray-700 disabled:bg-gray-200 focus:text-gray-600 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
     />
   </div>
-  <div class="col-span-4 sm:col-span-3">
+  <div class="col-span-6">
     <span class="block text-sm font-medium text-gray-700">City*</span>
     <input
       tabindex="0"
@@ -64,7 +75,7 @@
       disabled={$formCountry.invalid || !$formCountry.dirty}
       placeholder="Type in your city"
       bind:value={$formCity.value}
-      class="peer mt-1 block w-full rounded-md border-gray-300 shadow-sm disabled:bg-gray-200 focus:text-gray-600 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {$formCity.invalid &&
+      class="peer mt-1 block input-md w-full rounded-lg border border-gray-700 disabled:bg-gray-200 focus:text-gray-600 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {$formCity.invalid &&
       $formCity.dirty
         ? 'invalid:border-red-500 invalid:text-red-500'
         : ''}"
