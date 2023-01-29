@@ -1,21 +1,19 @@
 <script>
-  import { onMount, createEventDispatcher } from "svelte";
+  import { onMount } from "svelte";
   import { QRCodeImage } from "svelte-qrcode-image";
   import { delayedAlert } from "@/stores/alerts";
   import { Status } from "@/lib/utils";
-  import { getNewPaymentAddress, paymentAddress } from "@/stores/payments";
   import { Circle } from "svelte-loading-spinners";
   import { CopyIcon } from "svelte-feather-icons";
   import { Btc } from "svelte-cryptoicon";
-  import { totalPrice } from "@/stores/cart";
+  import { totalPrice, paymentAddress } from "@/stores/cart";
 
-  const dispatch = createEventDispatcher();
   let copiedToClipBoard = "";
   let unableToLoad = false;
 
-  const copyToClipBoard = async (input) => {
-    navigator.clipboard.writeText($paymentAddress).then(() => {
-      copiedToClipBoard = input;
+  const copyToClipBoard = async (inputType, input) => {
+    navigator.clipboard.writeText(input).then(() => {
+      copiedToClipBoard = inputType;
       setTimeout(() => (copiedToClipBoard = ""), 400);
     });
   };
@@ -27,8 +25,8 @@
         Status.ERROR,
         5000
       );
-      let address = await getNewPaymentAddress();
-      if (address) {
+      await paymentAddress.getNewPaymentAddress();
+      if ($paymentAddress) {
         clearTimeout(timeout);
       } else {
         unableToLoad = true;
@@ -55,7 +53,7 @@
             data-tip="copied address do clipboard"
           >
             <div
-              on:click={() => copyToClipBoard("address")}
+              on:click={() => copyToClipBoard("address", $paymentAddress)}
               class="border border-gray-700 rounded-3xl text-xl font-mono px-5 py-2 cursor-pointer flex items-center"
             >
               <span class="mr-2">{$paymentAddress}</span>
@@ -71,7 +69,7 @@
             data-tip="copied price do clipboard"
           >
             <div
-              on:click={() => copyToClipBoard("price")}
+              on:click={() => copyToClipBoard("price", $totalPrice)}
               class="border border-gray-700 rounded-3xl text-xl font-mono px-5 py-2 cursor-pointer flex items-center"
             >
               <span class="mr-2">{$totalPrice}</span>

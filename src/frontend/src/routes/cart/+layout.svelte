@@ -3,8 +3,9 @@
     currentStep,
     Steps,
     validateShippingDetailsStep,
-    validateProductsStep
-  } from "@/stores/cart/index.ts";
+    validateProductsStep,
+    order
+  } from "@/stores/cart";
   import { Steps as StepsComponent } from "svelte-steps";
   import {
     ShoppingCartIcon,
@@ -42,7 +43,10 @@
       title: "Your payment"
     },
     {
-      onClick: () => ($currentStep = Steps.CONFIRMATION),
+      onClick: () => {
+        $currentStep = Steps.CONFIRMATION;
+        order.createOrder();
+      },
       icon: CheckCircleIcon,
       title: "Your order confirmation",
       buttonText: "I confirm that I have paid"
