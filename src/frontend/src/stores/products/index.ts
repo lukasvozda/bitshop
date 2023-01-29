@@ -1,8 +1,9 @@
 import { actor } from "@/stores";
 import { get, writable } from "svelte/store";
+import type { Product } from "@/types";
 
 function fetchProducts() {
-  const { subscribe, set, update } = writable([]);
+  const { subscribe, set, update } = writable<[string, Product][]>([]);
 
   const loadProducts = async () => {
     const actorStore = await get(actor);

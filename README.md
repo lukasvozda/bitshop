@@ -1,10 +1,11 @@
 <p align="left" >
-  <img width="240"  src="./src/frontend/static/logo.png">
+  <img width="240"  src="./src/frontend/static/bitshop_logo_small.jpg">
 </p>
 
 # BitShop
 
-TBD
+Breaking the narrative that you can't buy anything in Bitcoin.
+Shopify alternative running on the Internet Computer.
 
 ## Getting started
 
