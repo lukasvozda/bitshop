@@ -14,7 +14,7 @@ function fetchProducts() {
     subscribe,
     set,
     update,
-    loadProducts,
+    loadProducts
   };
 }
 

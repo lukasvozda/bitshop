@@ -49,6 +49,7 @@ module {
     #MissingData;
     #PaymentAddressAlreadyUsed;
     #UnableToCreate;
+    #OrderNotFound;
   };
 
   public type Category = {
@@ -76,29 +77,38 @@ module {
   };
 
   public type ShippingAddress = {
-    email: Text;
-    firstName: Text;
-    lastName: Text;
-    street: Text;
-    city: Text;
-    postCode: Text;
-    country: Text;
-    county: ?Text;
-  }
+    mail : Text;
+    firstName : Text;
+    lastName : Text;
+    street : Text;
+    city : Text;
+    postCode : Text;
+    country : Text;
+    county : Text;
+  };
 
   public type OrderId = Nat;
   public type OrderProduct = {
-    id: ProductId,
-    quantity: Nat8,
-  }
+    id : ProductId;
+    quantity : Nat8;
+  };
 
-  public type Order = {
-    id: ?OrderId;
-    shippingAddress: ShippingAddress;
-    products: [OrderProduct];
-    totalPrice: Float;
-    status: ?Text;
-    paymentAddress: Text;
-  }
+  public type OrderStatus = {
+    #UserConfirmedPayment;
+    #TransactionConfirmed;
+  };
+
+  public type NewOrder = {
+    shippingAddress : ShippingAddress;
+    products : [OrderProduct];
+    totalPrice : Float;
+    paymentAddress : Text;
+  };
+
+  public type Order = NewOrder and {
+    id : OrderId;
+    status : OrderStatus;
+    timeCreated : Time.Time;
+  };
 
 };

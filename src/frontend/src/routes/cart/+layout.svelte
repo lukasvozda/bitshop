@@ -4,8 +4,9 @@
     Steps,
     validateShippingDetailsStep,
     validateProductsStep,
-    order
+    clearCart
   } from "@/stores/cart";
+  import { createOrder } from "@/stores/orders";
   import { Steps as StepsComponent } from "svelte-steps";
   import {
     ShoppingCartIcon,
@@ -14,6 +15,7 @@
     CheckCircleIcon
   } from "svelte-feather-icons";
   import { navigating } from "$app/stores";
+  import { goto } from "$app/navigation";
 
   $: if ($navigating) {
     $currentStep = 0;
@@ -43,9 +45,15 @@
       title: "Your payment"
     },
     {
-      onClick: () => {
+      onClick: async () => {
         $currentStep = Steps.CONFIRMATION;
-        order.createOrder();
+        let result = await createOrder();
+        console.log(result);
+        // let result = { id: 111 };
+        if (result) {
+          goto(`/order/${result.id}`, { replaceState: true });
+          clearCart();
+        }
       },
       icon: CheckCircleIcon,
       title: "Your order confirmation",

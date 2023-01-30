@@ -7,7 +7,6 @@
   $: routeId = $page.route.id;
 
   alertVisibility.hideAlert();
-
 </script>
 
 <img src="/bsvg.svg" width="200" alt="DFINITY logo" />

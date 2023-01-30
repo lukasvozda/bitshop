@@ -1,12 +1,12 @@
 <script>
   import { page } from "$app/stores";
   import { products } from "@/stores/products";
-  
+
   let product;
-  let productList = $products
-  
-  $: {  
-    product = productList.find((p) => p[0] === $page.params.slug); 
+  let productList = $products;
+
+  $: {
+    product = productList.find((p) => p[0] === $page.params.slug);
   }
 </script>
 

@@ -22,8 +22,8 @@ import Payments "./payments";
 
 actor {
 
-  private stable var next_product : ProductId = 1;
-  //private stable var nextOrderId : OrderId = 1;
+  private stable var nextProduct : Types.ProductId = 1;
+  private stable var nextOrderId : Types.OrderId = 1;
 
   // Type import
   type ProductId = Types.ProductId;
@@ -39,6 +39,11 @@ actor {
   type Category = Types.Category;
   type UserProduct = Types.UserProduct;
   type Product = Types.Product;
+  type Order = Types.Order;
+  type NewOrder = Types.NewOrder;
+  type OrderId = Types.OrderId;
+  type OrderError = Types.OrderError;
+  type OrderStatus = Types.OrderStatus;
 
   private var products = Map.HashMap<SlugId, Product>(0, Text.equal, Text.hash);
   private var categories = Map.HashMap<SlugId, Category>(0, Text.equal, Text.hash);
@@ -80,11 +85,11 @@ actor {
 
     if (p.title == "") { return #err(#EmptyTitle) };
 
-    let productId = next_product;
-    next_product += 1;
+    let productId = nextProduct;
+    nextProduct += 1;
     // increment the counter so we never try to create a product under the same index
 
-    let new_slug = Utils.slugify(p.title) # "-" # Nat.toText(next_product); //this should keep slug always unique and we can key hashMap with it
+    let new_slug = Utils.slugify(p.title) # "-" # Nat.toText(nextProduct); //this should keep slug always unique and we can key hashMap with it
 
     let product : Product = {
       title = p.title;
@@ -314,35 +319,53 @@ actor {
     return #ok(());
   };
 
-  private var orders = Map.HashMap<OrderId, Order>(0, Text.equal, Text.hash);
-  private var addressToOrder = Map.HashMap<Text, Order>(0, Text.equal, Text.hash);
+  private var orders = Map.HashMap<OrderId, Order>(0, Nat.equal, Hash.hash);
+  private var addressToOrder = Map.HashMap<Text, OrderId>(0, Text.equal, Text.hash);
 
-  public func createOrder(order : Order) : async Result.Result<(), OrderError> {
-    if (p.title == "") { return #err(#EmptyTitle) };
+  public func createOrder(order : NewOrder) : async Result.Result<Order, OrderError> {
+    return switch (addressToOrder.get(order.paymentAddress)) {
+      case (?order) return #err(#PaymentAddressAlreadyUsed);
+      case null {
+        let orderId : OrderId = nextOrderId;
+        nextOrderId += 1;
 
-    let productId = next_product;
-    next_product += 1;
-    // increment the counter so we never try to create a product under the same index
+        var newOrder = {
+          id = orderId;
+          shippingAddress = order.shippingAddress;
+          products = order.products;
+          totalPrice = order.totalPrice;
+          status = #UserConfirmedPayment;
+          paymentAddress = order.paymentAddress;
+          timeCreated = Time.now();
+        };
 
-    let new_slug = Utils.slugify(p.title) # "-" # Nat.toText(next_product); //this should keep slug always unique and we can key hashMap with it
+        orders.put(orderId, newOrder);
+        addressToOrder.put(newOrder.paymentAddress, newOrder.id);
 
-    let product : Product = {
-      title = p.title;
-      id = productId;
-      price = p.price;
-      category = p.category;
-      inventory = p.inventory;
-      description = p.description;
-      status = p.status;
-      img = Blob.fromArray([0]);
-      // Lets deal with product images later
-      slug = new_slug;
-      time_created = Time.now();
-      time_updated = Time.now();
+        return #ok(newOrder);
+      };
     };
+  };
 
-    products.put(new_slug, product);
-    return #ok(());
+  public query func checkOrderStatus(orderId : Nat) : async Result.Result<OrderStatus, OrderError> {
+    return switch (orders.get(orderId)) {
+      case null return #err(#OrderNotFound);
+      case (?order) {
+
+        // todo check balance
+        var newOrder = {
+          id = orderId;
+          shippingAddress = order.shippingAddress;
+          products = order.products;
+          totalPrice = order.totalPrice;
+          status = #TransactionConfirmed;
+          paymentAddress = order.paymentAddress;
+          timeCreated = order.timeCreated;
+        };
+        orders.put(orderId, newOrder);
+        return #ok(newOrder.status);
+      };
+    };
   }
 
 };
