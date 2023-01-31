@@ -1,6 +1,6 @@
 <script lang="ts">
   import { actor } from "@/stores";
-  import { products } from "@/stores/products";
+  import { products, categories } from "@/stores/products";
   import ProductCard from "@/lib/components/products/ProductCard.svelte";
 
   let disabled = false;
@@ -69,6 +69,14 @@
         <button type="submit" class="btn btn-primary my-4">Create product</button>
       {/if}
     </form>
+    <div>
+      <h4 class="my-4">Categories</h4>
+      <button class="btn btn-outline btn-active">All</button>
+      {#each $categories as cat}
+        <button class="btn btn-outline">{cat[1].name}</button>
+      {/each}
+      <button class="btn btn-outline">Fake Cat</button>
+    </div>
     <div class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
       {#each $products as p}
         <ProductCard product={p[1]} />
@@ -83,5 +91,9 @@
     max-height: 25vw;
     display: block;
     margin: auto;
+  }
+  h4 {
+    color: gray;
+    text-transform: uppercase;
   }
 </style>
