@@ -1,5 +1,6 @@
 import { actor } from "@/stores";
-import { products } from "@/stores/products";
+import { products, categories } from "@/stores/products";
 
 actor.init();
 products.loadProducts();
+categories.loadCategories();
