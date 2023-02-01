@@ -45,6 +45,13 @@ module {
     #UserNotAuthenticated;
   };
 
+  public type OrderError = {
+    #MissingData;
+    #PaymentAddressAlreadyUsed;
+    #UnableToCreate;
+    #OrderNotFound;
+  };
+
   public type Category = {
     name : Text;
     slug : Text;
@@ -68,4 +75,40 @@ module {
     time_created : Time.Time;
     time_updated : Time.Time;
   };
+
+  public type ShippingAddress = {
+    mail : Text;
+    firstName : Text;
+    lastName : Text;
+    street : Text;
+    city : Text;
+    postCode : Text;
+    country : Text;
+    county : Text;
+  };
+
+  public type OrderId = Nat;
+  public type OrderProduct = {
+    id : ProductId;
+    quantity : Nat8;
+  };
+
+  public type OrderStatus = {
+    #UserConfirmedPayment;
+    #TransactionConfirmed;
+  };
+
+  public type NewOrder = {
+    shippingAddress : ShippingAddress;
+    products : [OrderProduct];
+    totalPrice : Float;
+    paymentAddress : Text;
+  };
+
+  public type Order = NewOrder and {
+    id : OrderId;
+    status : OrderStatus;
+    timeCreated : Time.Time;
+  };
+
 };

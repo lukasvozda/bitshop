@@ -22,6 +22,16 @@ type UpdateCategoryError = variant {
 type Time = int;
 type SlugId__1 = text;
 type SlugId = text;
+type ShippingAddress = record {
+  city : text;
+  country : text;
+  county : text;
+  firstName : text;
+  lastName : text;
+  mail : text;
+  postCode : text;
+  street : text;
+};
 type Result_9 = variant {
   err : CreateProductError;
   ok;
@@ -54,6 +64,14 @@ type Result_2 = variant {
   err : GetParseError;
   ok;
 };
+type Result_12 = variant {
+  err : OrderError;
+  ok : OrderStatus__1;
+};
+type Result_11 = variant {
+  err : OrderError;
+  ok : Order;
+};
 type Result_10 = variant {
   err : CreateCategoryError;
   ok;
@@ -83,7 +101,41 @@ type Product = record {
   time_updated : Time;
   title : text;
 };
+type OrderStatus__1 = variant {
+  TransactionConfirmed;
+  UserConfirmedPayment;
+};
+type OrderStatus = variant {
+  TransactionConfirmed;
+  UserConfirmedPayment;
+};
+type OrderProduct = record {
+  id : ProductId;
+  quantity : nat8;
+};
+type OrderId = nat;
+type OrderError = variant {
+  MissingData;
+  OrderNotFound;
+  PaymentAddressAlreadyUsed;
+  UnableToCreate;
+};
+type Order = record {
+  id : OrderId;
+  paymentAddress : text;
+  products : vec OrderProduct;
+  shippingAddress : ShippingAddress;
+  status : OrderStatus;
+  timeCreated : Time;
+  totalPrice : float64;
+};
 type NoOpError = variant { NoOpError };
+type NewOrder = record {
+  paymentAddress : text;
+  products : vec OrderProduct;
+  shippingAddress : ShippingAddress;
+  totalPrice : float64;
+};
 type GetProductError = variant { ProductNotFound };
 type GetParseError = variant { Base58PubKeyWrongFormatError };
 type GetDerivationError = variant {
@@ -108,6 +160,8 @@ type Category = record {
   slug : text;
 };
 service : {
+  checkOrderStatus : (nat) -> (Result_12) query;
+  createOrder : (NewOrder) -> (Result_11);
   create_category : (text) -> (Result_10);
   create_product : (UserProduct) -> (Result_9);
   deleteOwnerXPUB : () -> () oneway;

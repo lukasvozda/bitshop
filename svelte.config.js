@@ -1,6 +1,6 @@
 import adapter from "@sveltejs/adapter-static";
 import { readFileSync } from "fs";
-import preprocess from "svelte-preprocess";
+import sveltePreprocess from "svelte-preprocess";
 import { fileURLToPath } from "url";
 
 const file = fileURLToPath(new URL("package.json", import.meta.url));
@@ -13,11 +13,7 @@ const filesPath = (path) => `src/frontend/${path}`;
 const config = {
   // Consult https://github.com/sveltejs/svelte-preprocess
   // for more information about preprocessors
-  preprocess: [
-    preprocess({
-      postcss: true
-    })
-  ],
+  preprocess: sveltePreprocess({}),
   kit: {
     adapter: adapter({
       fallback: "index.html",

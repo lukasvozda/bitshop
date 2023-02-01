@@ -38,7 +38,7 @@ module {
       case (#Mainnet) {
         0x00; // mainnet
       };
-      case (#Testnet) {
+      case (#Testnet or #Regtest) {
         0x6f; // testnet
       };
     };

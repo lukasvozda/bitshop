@@ -1,4 +1,49 @@
 export const idlFactory = ({ IDL }) => {
+  const OrderStatus__1 = IDL.Variant({
+    UserConfirmedPayment: IDL.Null,
+    TransactionConfirmed: IDL.Null
+  });
+  const OrderError = IDL.Variant({
+    PaymentAddressAlreadyUsed: IDL.Null,
+    OrderNotFound: IDL.Null,
+    MissingData: IDL.Null,
+    UnableToCreate: IDL.Null
+  });
+  const Result_12 = IDL.Variant({ ok: OrderStatus__1, err: OrderError });
+  const ShippingAddress = IDL.Record({
+    postCode: IDL.Text,
+    street: IDL.Text,
+    country: IDL.Text,
+    city: IDL.Text,
+    mail: IDL.Text,
+    county: IDL.Text,
+    lastName: IDL.Text,
+    firstName: IDL.Text
+  });
+  const ProductId = IDL.Nat;
+  const OrderProduct = IDL.Record({ id: ProductId, quantity: IDL.Nat8 });
+  const NewOrder = IDL.Record({
+    paymentAddress: IDL.Text,
+    shippingAddress: ShippingAddress,
+    products: IDL.Vec(OrderProduct),
+    totalPrice: IDL.Float64
+  });
+  const OrderId = IDL.Nat;
+  const OrderStatus = IDL.Variant({
+    UserConfirmedPayment: IDL.Null,
+    TransactionConfirmed: IDL.Null
+  });
+  const Time = IDL.Int;
+  const Order = IDL.Record({
+    id: OrderId,
+    status: OrderStatus,
+    paymentAddress: IDL.Text,
+    timeCreated: Time,
+    shippingAddress: ShippingAddress,
+    products: IDL.Vec(OrderProduct),
+    totalPrice: IDL.Float64
+  });
+  const Result_11 = IDL.Variant({ ok: Order, err: OrderError });
   const CreateCategoryError = IDL.Variant({
     CategoryAlreadyExists: IDL.Null,
     UserNotAuthenticated: IDL.Null,
@@ -41,8 +86,6 @@ export const idlFactory = ({ IDL }) => {
   const Category = IDL.Record({ name: IDL.Text, slug: IDL.Text });
   const GetCategoryError = IDL.Variant({ CategoryNotFound: IDL.Null });
   const Result_5 = IDL.Variant({ ok: Category, err: GetCategoryError });
-  const ProductId = IDL.Nat;
-  const Time = IDL.Int;
   const Product = IDL.Record({
     id: ProductId,
     img: IDL.Vec(IDL.Nat8),
@@ -80,6 +123,8 @@ export const idlFactory = ({ IDL }) => {
   });
   const Result = IDL.Variant({ ok: IDL.Null, err: UpdateProductError });
   return IDL.Service({
+    checkOrderStatus: IDL.Func([IDL.Nat], [Result_12], ["query"]),
+    createOrder: IDL.Func([NewOrder], [Result_11], []),
     create_category: IDL.Func([IDL.Text], [Result_10], []),
     create_product: IDL.Func([UserProduct], [Result_9], []),
     deleteOwnerXPUB: IDL.Func([], [], ["oneway"]),
