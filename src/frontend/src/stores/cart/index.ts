@@ -40,12 +40,22 @@ function fetchProducts() {
       return products;
     });
 
+  const removeProductCompletely = (productId: number) =>
+    update((products: CartProduct[]) => {
+      const cartProductIndex = findProductIndex(products, productId);
+      if (cartProductIndex > -1) {
+        products.splice(cartProductIndex, 1);
+      }
+      return products;
+    });
+
   const clear = () => update(() => []);
 
   return {
     subscribe,
     addProduct,
     removeProduct,
+    removeProductCompletely,
     clear
   };
 }
@@ -97,7 +107,7 @@ export const totalPrice = derived(productsInCart, ($products) => {
     (acc, item: CartProduct) => acc + item.product.price * item.quantity,
     0
   );
-  return result;
+  return result.toFixed(8);
 });
 
 export const validateShippingDetailsStep = derived(

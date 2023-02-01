@@ -55,7 +55,7 @@
       bind:value={$fieldItem.value.name}
       bind:this={inputElement}
       on:input={filterItems}
-      class="peer mt-1 block w-full rounded-md border-gray-300 shadow-sm disabled:bg-gray-200 focus:text-gray-600 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {isValidField(
+      class="peer input-md mt-1 block w-full rounded-lg border border-gray-700 disabled:bg-gray-200 focus:text-gray-600 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {isValidField(
         $fieldItem.invalid
       )}"
     />
