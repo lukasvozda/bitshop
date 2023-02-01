@@ -38,12 +38,9 @@
     },
     {
       onClick: async () => {
-        $currentStep = Steps.CONFIRMATION;
         let result = await createOrder();
-        console.log(result);
-        // let result = { id: 111 };
         if (result) {
-          goto(`/order/${result.id}`, { replaceState: true });
+          await goto(`/orders/${result.id}`, { replaceState: true });
           clearCart();
         }
       },

@@ -4,7 +4,10 @@
   export let product: Product;
 </script>
 
-<div class="group card bg-base-100 shadow-md rounded-md hover:shadow-lg">
+<a
+  class="block group card bg-base-100 shadow-md rounded-md hover:shadow-lg"
+  href="/products/{product.slug}"
+>
   <figure class="group-hover:opacity-75 cursor-pointer transition ease-in-out duration-800">
     <img src="/product.jpg" alt={product.title} />
   </figure>
@@ -18,4 +21,4 @@
       <button class="btn btn-sm !px-5 text-xs ml-auto">detail</button>
     </div>
   </div>
-</div>
+</a>

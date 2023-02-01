@@ -19,6 +19,7 @@
   };
 
   onMount(async () => {
+    scrollTo(0, 0);
     if (!$paymentAddress) {
       const timeout = delayedAlert(
         "Unable to fetch payment address. Contact us.",
