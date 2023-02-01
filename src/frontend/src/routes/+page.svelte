@@ -1,15 +1,33 @@
 <script lang="ts">
   import { products } from "@/stores/products";
   import ProductCard from "@/lib/components/products/ProductCard.svelte";
-  import { ArrowDownIcon } from "svelte-feather-icons";
+  import { ArrowDownIcon, ArrowRightIcon, ArrowLeftIcon } from "svelte-feather-icons";
   import BitshopLogo from "@/lib/components/ui/BitshopLogo.svelte";
+
+  let showAllCategories = false;
+
+  // todo substitute with real categories
+  let categories = ["t-shirts", "sunglasses", "hoodies", "socks", "caps", "jeans", "trousers"];
+
+  let scroll;
+  let speed = 0.16;
+
+  function scrollIntoView({ target }) {
+    const el = document.querySelector(target.getAttribute("href"));
+    if (!el) return;
+    el.scrollIntoView({
+      behavior: "smooth"
+    });
+  }
 </script>
+
+<svelte:window bind:scrollY={scroll} />
 
 <main>
   <div class="hero-background">
     <div class="hero">
       <div class="hero-content sm:w-full md:w-3/4 my-20 text-center sm:text-left">
-        <div class="md:mr-auto">
+        <div class="md:mr-auto" style:transform={`translate3d(0, ${scroll * speed}px, 0)`}>
           <h1 class="flex items-end justify-center sm:justify-start">
             <span class="w-1/5 sm:pb-3">
               <BitshopLogo />
@@ -24,7 +42,8 @@
           </h2>
 
           <a
-            href="#"
+            href="#categories"
+            on:click|preventDefault={scrollIntoView}
             class="btn gap-2 bg-base-100/70 text-gray-800 border-none hover:bg-base-100/90 hover:scale-110 my-3 rounded-xl shadow-sm"
           >
             u can see me now <ArrowDownIcon class="text-gray-800" size="20" />
@@ -34,17 +53,30 @@
     </div>
   </div>
 
-  <section class="container w-4/5 mx-auto mt-16">
-    <div class="uppercase text-gray-600 text-sm my-3 mx-1">categories</div>
-    <!--    TODO foreach for categories-->
+  <section class="container w-4/5 mx-auto mt-16" id="categories">
+    <div class="uppercase text-gray-600 text-sm my-3 mx-1 py-3">categories</div>
     <div class="flex flex-wrap mb-8">
-      {#each ["t-shirts", "sunglasses", "hoodies", "socks", "caps"] as category, _}
+      {#each showAllCategories ? categories : categories.slice(0, 5) as category, _}
         <button
           class="btn btn-sm btn-outline mx-1 my-1 rounded-xl border-1 font-semibold px-3 text-md !px-5 !h-2 !py-0"
         >
           {category}
         </button>
       {/each}
+      <button
+        on:click={() => (showAllCategories = !showAllCategories)}
+        class="btn btn-sm  mx-1 my-1 rounded-xl border-1 font-semibold px-3 text-md !px-5 !h-2 !py-0 gap-2"
+      >
+        {showAllCategories ? "show less" : "show all"}
+        <span class="swap swap-rotate" class:swap-active={showAllCategories}>
+          <span class="swap-on">
+            <ArrowLeftIcon size="15" />
+          </span>
+          <span class="swap-off">
+            <ArrowRightIcon class="swap-off" size="15" />
+          </span>
+        </span>
+      </button>
     </div>
     <div class="flex flex-wrap">
       {#each $products as product, _}

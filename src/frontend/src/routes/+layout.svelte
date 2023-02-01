@@ -58,19 +58,19 @@
     </div>
     <div class="flex flex-col items-center justify-between">
       <div class="flex mt-8 mb-3">
-        <a href="https://twitter.com/bitshopicp" target="_blank">
+        <a href="https://twitter.com/bitshopicp" target="_blank" rel="noreferrer">
           <TwitterIcon
             size="60"
             class="text-white mr-6 hover:text-gray-400 ease-in-out duration-800"
           />
         </a>
-        <a href="https://github.com/lukasvozda/bitshop" target="_blank">
+        <a href="https://github.com/lukasvozda/bitshop" target="_blank" rel="noreferrer">
           <GithubIcon size="60" class="text-white hover:text-gray-400 ease-in-out duration-800" />
         </a>
       </div>
       <div>
         <div class="mb-2">
-          <img src="/ic-logo.svg" width="100" class="mx-auto" />
+          <img src="/ic-logo.svg" width="100" class="mx-auto" alt="ic-logo" />
         </div>
         <div class="text-white text-right">powered by crypto</div>
       </div>

@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { Product } from "@/types";
   import { Btc } from "svelte-cryptoicon";
-  export let product: Product = {};
-  let bla: number;
+  export let product: Product;
 </script>
 
 <div class="group card bg-base-100 shadow-md rounded-md hover:shadow-lg">
