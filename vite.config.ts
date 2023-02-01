@@ -5,7 +5,7 @@ import { join } from "path";
 import { fileURLToPath, URL } from "url";
 import type { UserConfig } from "vite";
 import { defineConfig, loadEnv } from "vite";
-import { postcss } from "./postcss.config.cjs";
+import postcss from "./postcss.config.cjs";
 
 // npm run dev = local
 // npm run build = local

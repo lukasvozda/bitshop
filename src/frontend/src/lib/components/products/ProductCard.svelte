@@ -1,26 +1,22 @@
 <script lang="ts">
   import type { Product } from "@/types";
-  export let product: Product;
+  import { Btc } from "svelte-cryptoicon";
+  export let product: Product = {};
+  let bla: number;
 </script>
 
-<div class="group relative card card-compact bg-base-100 shadow-xl">
-  <!-- TODO: add dynamic product loading later -->
-  <div class="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none">
-    <a href="/product/{product.slug}">
-      <img
-        class="h-full w-full object-cover object-center lg:h-full lg:w-full"
-        src="/product.jpg"
-        alt="Shoes"
-      />
-    </a>
-  </div>
-  <div class="card-body">
-    <div class="absolute left-5 bottom-5">
-      <h2 class="card-title">{product.title}</h2>
-      <p>{product.price} BTC</p>
-    </div>
-    <div class="card-actions h-14 justify-end">
-      <a href="/product/{product.slug}" class="btn btn-sm">Detail</a>
+<div class="group card bg-base-100 shadow-md rounded-md hover:shadow-lg">
+  <figure class="group-hover:opacity-75 cursor-pointer transition ease-in-out duration-800">
+    <img src="/product.jpg" alt={product.title} />
+  </figure>
+  <div class="card-body !px-4 !py-3">
+    <div class="capitalize text-md font-bold mb-0">{product.title}</div>
+    <div class="flex">
+      <div class="flex items-center">
+        <span class="font-mono mr-1 text-sm">{product.price}</span>
+        <Btc size="15" color="black" />
+      </div>
+      <button class="btn btn-sm !px-5 text-xs ml-auto">detail</button>
     </div>
   </div>
 </div>

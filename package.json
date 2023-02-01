@@ -41,6 +41,7 @@
     "sass": "^1.56.1",
     "svelte": "^3.44.0",
     "svelte-check": "^2.7.1",
+    "svelte-feathers": "^0.2.9",
     "svelte-loading-spinners": "^0.3.4",
     "svelte-preprocess": "^4.10.7",
     "tailwindcss": "^3.1.5",
@@ -58,6 +59,7 @@
     "country-list": "^2.3.0",
     "daisyui": "^2.47.0",
     "qrcode": "^1.5.1",
+    "svelte-cryptoicon": "^0.16.1",
     "svelte-feather-icons": "^4.0.0",
     "svelte-forms": "^2.3.1",
     "svelte-loading-spinners": "^0.3.4"

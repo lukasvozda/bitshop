@@ -1,5 +1,5 @@
 <script>
-  import { AlertTriangleIcon, CheckCircleIcon } from "svelte-feather-icons";
+  import { AlertTriangleIcon, CheckCircleIcon } from "svelte-feathers";
   import { alerts, alertVisibility } from "@/stores/alerts";
   import { Status } from "@/lib/utils";
   import { navigating } from "$app/stores";
