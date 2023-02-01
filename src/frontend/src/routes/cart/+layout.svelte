@@ -6,12 +6,7 @@
     validateProductsStep
   } from "@/stores/cart/index.ts";
   import { Steps as StepsComponent } from "svelte-steps";
-  import {
-    ShoppingCartIcon,
-    HomeIcon,
-    CreditCardIcon,
-    CheckCircleIcon
-  } from "svelte-feather-icons";
+  import { ArrowLeftIcon, ArrowRightIcon } from "svelte-feathers";
   import { navigating } from "$app/stores";
 
   $: if ($navigating) {
@@ -25,70 +20,73 @@
       disabled: !$validateProductsStep,
       onClick: () => ($currentStep = Steps.PRODUCTS),
       buttonText: "products",
-      icon: ShoppingCartIcon,
       title: "Your items in cart"
     },
     {
       // disabled: !$validateShippingDetailsStep,
       onClick: () => ($currentStep = Steps.SHIPPING),
       buttonText: "shipping address",
-      icon: HomeIcon,
       title: "Your shipping address"
     },
     {
       onClick: () => ($currentStep = Steps.PAYMENT),
-      icon: CreditCardIcon,
       buttonText: "payment",
       title: "Your payment"
     },
     {
       onClick: () => ($currentStep = Steps.CONFIRMATION),
-      icon: CheckCircleIcon,
       title: "Your order confirmation",
-      buttonText: "I confirm that I have paid"
+      buttonText: "I have paid"
     }
   ];
 </script>
 
-<div class="container mx-auto my-9">
+<div class="container mx-20 my-14">
   <h2
     class="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-700 md:text-4xl lg:text-5xl dark:text-white"
   >
     {steps[$currentStep].title}
   </h2>
+
+  <div class="w-full sm:w-1/2 sm:mx-auto my-10">
+    <StepsComponent
+      {steps}
+      size="2.8rem"
+      line="0.2rem"
+      clickable={false}
+      current={$currentStep}
+      primary="rgb(55, 65, 81, 70)"
+    />
+  </div>
+
   <slot />
 
-  <div class="grid grid-cols-4 mt-20">
+  <div class="flex px-10 mt-20">
     <div class="mr-auto">
       {#if $currentStep > Steps.PRODUCTS && $currentStep < Steps.CONFIRMATION}
-        <button class="btn" on:click={steps[$currentStep - 1].onClick}>
-          go back to {steps[$currentStep - 1].buttonText}
+        <button class="btn btn-lg gap-2 rounded-2xl" on:click={steps[$currentStep - 1].onClick}>
+          <ArrowLeftIcon />
+          {steps[$currentStep - 1].buttonText}
         </button>
       {/if}
     </div>
-
-    <div class="col-span-2">
-      <StepsComponent
-        {steps}
-        size="3rem"
-        line="0.1rem"
-        clickable={false}
-        current={$currentStep}
-        primary="rgb(55, 65, 81, 70)"
-      />
-    </div>
-
     <div class="ml-auto">
       {#if $currentStep < Steps.CONFIRMATION}
         <button
           disabled={steps[$currentStep].disabled}
           on:click={steps[$currentStep + 1].onClick}
-          class="btn btn-primary"
+          class="btn btn-lg rounded-2xl gap-2"
         >
-          {$currentStep < Steps.PAYMENT ? "continue to" : ""}
           {steps[$currentStep + 1].buttonText}
+          <ArrowRightIcon />
         </button>
       {/if}
     </div>
   </div>
 </div>
+
+<style>
+  :global(.steps__label) {
+    font-size: 12px;
+  }
+</style>
