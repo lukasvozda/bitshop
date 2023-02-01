@@ -3,11 +3,14 @@
     currentStep,
     Steps,
     validateShippingDetailsStep,
-    validateProductsStep
-  } from "@/stores/cart/index.ts";
+    validateProductsStep,
+    clearCart
+  } from "@/stores/cart";
+  import { createOrder } from "@/stores/orders";
   import { Steps as StepsComponent } from "svelte-steps";
   import { ArrowLeftIcon, ArrowRightIcon } from "svelte-feathers";
   import { navigating } from "$app/stores";
+  import { goto } from "$app/navigation";
 
   $: if ($navigating) {
     $currentStep = 0;
@@ -34,7 +37,16 @@
       title: "Your payment"
     },
     {
-      onClick: () => ($currentStep = Steps.CONFIRMATION),
+      onClick: async () => {
+        $currentStep = Steps.CONFIRMATION;
+        let result = await createOrder();
+        console.log(result);
+        // let result = { id: 111 };
+        if (result) {
+          goto(`/order/${result.id}`, { replaceState: true });
+          clearCart();
+        }
+      },
       title: "Your order confirmation",
       buttonText: "I have paid"
     }

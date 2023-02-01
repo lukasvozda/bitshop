@@ -1,5 +1,8 @@
-import type { CartProduct, Product } from "@/types";
-import { derived, writable } from "svelte/store";
+import { Status } from "@/lib/utils";
+import { actor } from "@/stores";
+import { alerts } from "@/stores/alerts";
+import type { ApiResponse, CartProduct, Product } from "@/types";
+import { derived, get, writable } from "svelte/store";
 
 export enum Steps {
   PRODUCTS = 0,
@@ -96,8 +99,8 @@ export const shippingAddress = derived(
   [shippingLocation, shippingPerson],
   ([$shippingLocation, $shippingPerson]) => {
     return {
-      shippingLocation: $shippingLocation,
-      shippingPerson: $shippingPerson
+      ...$shippingLocation,
+      ...$shippingPerson
     };
   }
 );
@@ -109,6 +112,40 @@ export const totalPrice = derived(productsInCart, ($products) => {
   );
   return result.toFixed(8);
 });
+
+const fetchPaymentAddress = () => {
+  const { subscribe, set } = writable(null);
+
+  const clear = (): any => {
+    set(null);
+    return null;
+  };
+
+  const getNewPaymentAddress = async () => {
+    return get(actor)
+      .generateNextPaymentAddress()
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          set(response.ok);
+          return response.ok;
+        } else {
+          alerts.addAlert(response.err, Status.ERROR);
+          return null;
+        }
+      })
+      .catch((err) => {
+        alerts.addAlert(err, Status.ERROR);
+        return null;
+      });
+  };
+  return {
+    subscribe,
+    clear,
+    getNewPaymentAddress
+  };
+};
+
+export const paymentAddress = fetchPaymentAddress();
 
 export const validateShippingDetailsStep = derived(
   [shippingPerson, shippingLocation],
@@ -139,12 +176,15 @@ export const validateProductsStep = derived(
   ($productsInCart) => $productsInCart.length > 0
 );
 
-// export const time = readable(new Date(), function start(set) {
-//     const interval = setInterval(() => {
-//         set(new Date());
-//     }, 1000);
-//
-//     return function stop() {
-//         clearInterval(interval);
-//     };
-// });
+export const clearCart = () => {
+  currentStep.set(0);
+  mail.set(null);
+  firstName.set(null);
+  lastName.set(null);
+  street.set(null);
+  city.set(null);
+  postCode.set(null);
+  country.set(null);
+  county.set(null);
+  paymentAddress.clear();
+};

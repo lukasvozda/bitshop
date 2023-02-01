@@ -36,11 +36,11 @@ export type ShippingAddress = {
 };
 
 export type Order = {
-  id: number;
+  id?: number;
   shippingAddress: ShippingAddress;
-  products: Product[];
+  products: CartProduct[];
   totalPrice: number;
-  status: OrderStatus;
+  status?: OrderStatus;
   paymentAddress: string;
 };
 

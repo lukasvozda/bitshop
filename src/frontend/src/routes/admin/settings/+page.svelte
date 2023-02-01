@@ -1,5 +1,5 @@
 <script>
-  import { getOwnerXPUB } from "@/stores/payments";
+  import { getOwnerXPUB } from "@/stores/admin";
   import { onMount } from "svelte";
 
   let xpub = "";
