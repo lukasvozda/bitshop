@@ -50,11 +50,15 @@ actor {
   private stable var stableproducts : [(SlugId, Product)] = [];
   // to preserve products between updates (hashmap is not stable)
   private stable var stablecategories : [(SlugId, Category)] = [];
-  //private var orders = Map.HashMap<OrderId, Order>(0, eq, Hash.hash);
+
+  private var orders = Map.HashMap<OrderId, Order>(0, Nat.equal, Hash.hash);
+  private var addressToOrder = Map.HashMap<Text, OrderId>(0, Text.equal, Text.hash);
+  private stable var stableorders : [(OrderId, Order)] = [];
 
   // for testing
   private stable var ownerExtendedPublicKeyBase58Check : Text = "tpubDD9S94RYo2MraS7QbRhA64Nr56BzCYN2orJUkk2LE4RkB2npb9SFyiCuofbapC9wNW2hLJqkWwSpGoaE9pZC6fLBQdms5HYS9dsvw79nSWy";
   private stable var currentChildKeyIndex : Nat = 0;
+  Debug.print(debug_show ("currentChildKeyIndex: ", currentChildKeyIndex));
 
   // create a default product, we will remove it later
   let p : Product = {
@@ -248,6 +252,7 @@ actor {
   system func preupgrade() {
     stableproducts := Iter.toArray(products.entries());
     stablecategories := Iter.toArray(categories.entries());
+    stableorders := Iter.toArray(orders.entries());
   };
 
   // Postupgrade function will then poppulate HashMap with posts after the update is finished
@@ -263,6 +268,12 @@ actor {
       10,
       Text.equal,
       Text.hash
+    );
+    orders := Map.fromIter<OrderId, Order>(
+      stableorders.vals(),
+      10,
+      Nat.equal,
+      Hash.hash
     );
   };
 
@@ -311,17 +322,6 @@ actor {
     };
   };
 
-  public type NoOpError = {
-    #NoOpError;
-  };
-
-  public func noOp() : async Result.Result<(), NoOpError> {
-    return #ok(());
-  };
-
-  private var orders = Map.HashMap<OrderId, Order>(0, Nat.equal, Hash.hash);
-  private var addressToOrder = Map.HashMap<Text, OrderId>(0, Text.equal, Text.hash);
-
   public func createOrder(order : NewOrder) : async Result.Result<Order, OrderError> {
     return switch (addressToOrder.get(order.paymentAddress)) {
       case (?order) return #err(#PaymentAddressAlreadyUsed);
@@ -329,7 +329,7 @@ actor {
         let orderId : OrderId = nextOrderId;
         nextOrderId += 1;
 
-        var newOrder = {
+        var newOrder : Order = {
           id = orderId;
           shippingAddress = order.shippingAddress;
           products = order.products;
@@ -337,6 +337,7 @@ actor {
           status = #UserConfirmedPayment;
           paymentAddress = order.paymentAddress;
           timeCreated = Time.now();
+          transactionId = "";
         };
 
         orders.put(orderId, newOrder);
@@ -347,20 +348,54 @@ actor {
     };
   };
 
-  public query func checkOrderStatus(orderId : Nat) : async Result.Result<OrderStatus, OrderError> {
+  public query func listOrders() : async [(OrderId, Order)] {
+    return Iter.toArray(orders.entries());
+  };
+
+  public query func getOrder(orderId : Nat) : async Result.Result<Order, OrderError> {
+    let order = orders.get(orderId);
+    return Result.fromOption(order, #OrderNotFound);
+  };
+
+  public func setUserInputTransactionId(address : Text, orderId : OrderId, transactionId : Text) : async Result.Result<OrderStatus, OrderError> {
+    return switch (orders.get(orderId)) {
+      case null return #err(#OrderNotFound);
+      case (?order) {
+        if (order.paymentAddress != address) {
+          return #err(#UnableToUpdate);
+        };
+        var newOrder : Order = {
+          id = order.id;
+          shippingAddress = order.shippingAddress;
+          products = order.products;
+          totalPrice = order.totalPrice;
+          status = #TransactionIdSet;
+          paymentAddress = order.paymentAddress;
+          timeCreated = order.timeCreated;
+          transactionId = transactionId;
+        };
+        orders.put(orderId, newOrder);
+        return #ok(newOrder.status);
+      };
+    };
+  };
+
+  public func checkOrderStatus(orderId : Nat) : async Result.Result<OrderStatus, OrderError> {
     return switch (orders.get(orderId)) {
       case null return #err(#OrderNotFound);
       case (?order) {
 
         // todo check balance
+
         var newOrder = {
           id = orderId;
           shippingAddress = order.shippingAddress;
           products = order.products;
           totalPrice = order.totalPrice;
-          status = #TransactionConfirmed;
+          status = #Verified;
           paymentAddress = order.paymentAddress;
           timeCreated = order.timeCreated;
+          transactionId = order.transactionId;
         };
         orders.put(orderId, newOrder);
         return #ok(newOrder.status);

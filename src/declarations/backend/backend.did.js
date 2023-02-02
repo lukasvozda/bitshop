@@ -1,15 +1,17 @@
 export const idlFactory = ({ IDL }) => {
-  const OrderStatus__1 = IDL.Variant({
+  const OrderStatus = IDL.Variant({
+    TransactionIdSet: IDL.Null,
     UserConfirmedPayment: IDL.Null,
-    TransactionConfirmed: IDL.Null
+    Verified: IDL.Null
   });
   const OrderError = IDL.Variant({
     PaymentAddressAlreadyUsed: IDL.Null,
     OrderNotFound: IDL.Null,
     MissingData: IDL.Null,
-    UnableToCreate: IDL.Null
+    UnableToCreate: IDL.Null,
+    UnableToUpdate: IDL.Null
   });
-  const Result_12 = IDL.Variant({ ok: OrderStatus__1, err: OrderError });
+  const Result_2 = IDL.Variant({ ok: OrderStatus, err: OrderError });
   const ShippingAddress = IDL.Record({
     postCode: IDL.Text,
     street: IDL.Text,
@@ -28,28 +30,30 @@ export const idlFactory = ({ IDL }) => {
     products: IDL.Vec(OrderProduct),
     totalPrice: IDL.Float64
   });
-  const OrderId = IDL.Nat;
-  const OrderStatus = IDL.Variant({
+  const OrderId__1 = IDL.Nat;
+  const OrderStatus__1 = IDL.Variant({
+    TransactionIdSet: IDL.Null,
     UserConfirmedPayment: IDL.Null,
-    TransactionConfirmed: IDL.Null
+    Verified: IDL.Null
   });
   const Time = IDL.Int;
   const Order = IDL.Record({
-    id: OrderId,
-    status: OrderStatus,
+    id: OrderId__1,
+    status: OrderStatus__1,
     paymentAddress: IDL.Text,
     timeCreated: Time,
     shippingAddress: ShippingAddress,
     products: IDL.Vec(OrderProduct),
-    totalPrice: IDL.Float64
+    totalPrice: IDL.Float64,
+    transactionId: IDL.Text
   });
-  const Result_11 = IDL.Variant({ ok: Order, err: OrderError });
+  const Result_6 = IDL.Variant({ ok: Order, err: OrderError });
   const CreateCategoryError = IDL.Variant({
     CategoryAlreadyExists: IDL.Null,
     UserNotAuthenticated: IDL.Null,
     EmptyName: IDL.Null
   });
-  const Result_10 = IDL.Variant({
+  const Result_11 = IDL.Variant({
     ok: IDL.Null,
     err: CreateCategoryError
   });
@@ -66,23 +70,26 @@ export const idlFactory = ({ IDL }) => {
     UserNotAuthenticated: IDL.Null,
     EmptyTitle: IDL.Null
   });
-  const Result_9 = IDL.Variant({ ok: IDL.Null, err: CreateProductError });
+  const Result_10 = IDL.Variant({
+    ok: IDL.Null,
+    err: CreateProductError
+  });
   const SlugId = IDL.Text;
   const DeleteCategoryError = IDL.Variant({
     UserNotAuthenticated: IDL.Null
   });
-  const Result_8 = IDL.Variant({
+  const Result_9 = IDL.Variant({
     ok: IDL.Null,
     err: DeleteCategoryError
   });
   const DeleteProductError = IDL.Variant({ UserNotAuthenticated: IDL.Null });
-  const Result_7 = IDL.Variant({ ok: IDL.Null, err: DeleteProductError });
+  const Result_8 = IDL.Variant({ ok: IDL.Null, err: DeleteProductError });
   const GetDerivationError = IDL.Variant({
     OwnerExtendedPubKeyNotSet: IDL.Null,
     ChildKeyDerivationError: IDL.Null,
     Base58PubKeyWrongFormatError: IDL.Null
   });
-  const Result_6 = IDL.Variant({ ok: IDL.Text, err: GetDerivationError });
+  const Result_7 = IDL.Variant({ ok: IDL.Text, err: GetDerivationError });
   const Category = IDL.Record({ name: IDL.Text, slug: IDL.Text });
   const GetCategoryError = IDL.Variant({ CategoryNotFound: IDL.Null });
   const Result_5 = IDL.Variant({ ok: Category, err: GetCategoryError });
@@ -101,12 +108,11 @@ export const idlFactory = ({ IDL }) => {
   });
   const GetProductError = IDL.Variant({ ProductNotFound: IDL.Null });
   const Result_4 = IDL.Variant({ ok: Product, err: GetProductError });
-  const NoOpError = IDL.Variant({ NoOpError: IDL.Null });
-  const Result_3 = IDL.Variant({ ok: IDL.Null, err: NoOpError });
+  const OrderId = IDL.Nat;
   const GetParseError = IDL.Variant({
     Base58PubKeyWrongFormatError: IDL.Null
   });
-  const Result_2 = IDL.Variant({ ok: IDL.Null, err: GetParseError });
+  const Result_3 = IDL.Variant({ ok: IDL.Null, err: GetParseError });
   const UpdateCategoryError = IDL.Variant({
     CategoryNotFound: IDL.Null,
     UserNotAuthenticated: IDL.Null,
@@ -123,21 +129,23 @@ export const idlFactory = ({ IDL }) => {
   });
   const Result = IDL.Variant({ ok: IDL.Null, err: UpdateProductError });
   return IDL.Service({
-    checkOrderStatus: IDL.Func([IDL.Nat], [Result_12], ["query"]),
-    createOrder: IDL.Func([NewOrder], [Result_11], []),
-    create_category: IDL.Func([IDL.Text], [Result_10], []),
-    create_product: IDL.Func([UserProduct], [Result_9], []),
+    checkOrderStatus: IDL.Func([IDL.Nat], [Result_2], []),
+    createOrder: IDL.Func([NewOrder], [Result_6], []),
+    create_category: IDL.Func([IDL.Text], [Result_11], []),
+    create_product: IDL.Func([UserProduct], [Result_10], []),
     deleteOwnerXPUB: IDL.Func([], [], ["oneway"]),
-    delete_category: IDL.Func([SlugId], [Result_8], []),
-    delete_product: IDL.Func([SlugId], [Result_7], []),
-    generateNextPaymentAddress: IDL.Func([], [Result_6], []),
+    delete_category: IDL.Func([SlugId], [Result_9], []),
+    delete_product: IDL.Func([SlugId], [Result_8], []),
+    generateNextPaymentAddress: IDL.Func([], [Result_7], []),
+    getOrder: IDL.Func([IDL.Nat], [Result_6], ["query"]),
     getOwnerXPUB: IDL.Func([], [IDL.Text], ["query"]),
     get_category: IDL.Func([SlugId], [Result_5], ["query"]),
     get_product: IDL.Func([SlugId], [Result_4], ["query"]),
+    listOrders: IDL.Func([], [IDL.Vec(IDL.Tuple(OrderId, Order))], ["query"]),
     list_categories: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Category))], ["query"]),
     list_products: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Product))], ["query"]),
-    noOp: IDL.Func([], [Result_3], []),
-    setOwnerXPUB: IDL.Func([IDL.Text], [Result_2], []),
+    setOwnerXPUB: IDL.Func([IDL.Text], [Result_3], []),
+    setUserInputTransactionId: IDL.Func([IDL.Text, OrderId, IDL.Text], [Result_2], []),
     update_category: IDL.Func([SlugId, IDL.Text], [Result_1], []),
     update_product: IDL.Func([SlugId, UserProduct], [Result], [])
   });

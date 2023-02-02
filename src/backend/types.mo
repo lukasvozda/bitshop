@@ -50,6 +50,7 @@ module {
     #PaymentAddressAlreadyUsed;
     #UnableToCreate;
     #OrderNotFound;
+    #UnableToUpdate;
   };
 
   public type Category = {
@@ -95,7 +96,8 @@ module {
 
   public type OrderStatus = {
     #UserConfirmedPayment;
-    #TransactionConfirmed;
+    #TransactionIdSet;
+    #Verified;
   };
 
   public type NewOrder = {
@@ -109,6 +111,7 @@ module {
     id : OrderId;
     status : OrderStatus;
     timeCreated : Time.Time;
+    transactionId : Text;
   };
 
 };

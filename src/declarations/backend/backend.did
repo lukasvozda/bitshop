@@ -33,20 +33,20 @@ type ShippingAddress = record {
   street : text;
 };
 type Result_9 = variant {
-  err : CreateProductError;
-  ok;
-};
-type Result_8 = variant {
   err : DeleteCategoryError;
   ok;
 };
-type Result_7 = variant {
+type Result_8 = variant {
   err : DeleteProductError;
   ok;
 };
-type Result_6 = variant {
+type Result_7 = variant {
   err : GetDerivationError;
   ok : text;
+};
+type Result_6 = variant {
+  err : OrderError;
+  ok : Order;
 };
 type Result_5 = variant {
   err : GetCategoryError;
@@ -57,23 +57,19 @@ type Result_4 = variant {
   ok : Product;
 };
 type Result_3 = variant {
-  err : NoOpError;
-  ok;
-};
-type Result_2 = variant {
   err : GetParseError;
   ok;
 };
-type Result_12 = variant {
+type Result_2 = variant {
   err : OrderError;
-  ok : OrderStatus__1;
+  ok : OrderStatus;
 };
 type Result_11 = variant {
-  err : OrderError;
-  ok : Order;
+  err : CreateCategoryError;
+  ok;
 };
 type Result_10 = variant {
-  err : CreateCategoryError;
+  err : CreateProductError;
   ok;
 };
 type Result_1 = variant {
@@ -102,34 +98,38 @@ type Product = record {
   title : text;
 };
 type OrderStatus__1 = variant {
-  TransactionConfirmed;
+  TransactionIdSet;
   UserConfirmedPayment;
+  Verified;
 };
 type OrderStatus = variant {
-  TransactionConfirmed;
+  TransactionIdSet;
   UserConfirmedPayment;
+  Verified;
 };
 type OrderProduct = record {
   id : ProductId;
   quantity : nat8;
 };
+type OrderId__1 = nat;
 type OrderId = nat;
 type OrderError = variant {
   MissingData;
   OrderNotFound;
   PaymentAddressAlreadyUsed;
   UnableToCreate;
+  UnableToUpdate;
 };
 type Order = record {
-  id : OrderId;
+  id : OrderId__1;
   paymentAddress : text;
   products : vec OrderProduct;
   shippingAddress : ShippingAddress;
-  status : OrderStatus;
+  status : OrderStatus__1;
   timeCreated : Time;
   totalPrice : float64;
+  transactionId : text;
 };
-type NoOpError = variant { NoOpError };
 type NewOrder = record {
   paymentAddress : text;
   products : vec OrderProduct;
@@ -160,17 +160,24 @@ type Category = record {
   slug : text;
 };
 service : {
-  checkOrderStatus : (nat) -> (Result_12) query;
-  createOrder : (NewOrder) -> (Result_11);
-  create_category : (text) -> (Result_10);
-  create_product : (UserProduct) -> (Result_9);
+  checkOrderStatus : (nat) -> (Result_2);
+  createOrder : (NewOrder) -> (Result_6);
+  create_category : (text) -> (Result_11);
+  create_product : (UserProduct) -> (Result_10);
   deleteOwnerXPUB : () -> () oneway;
-  delete_category : (SlugId) -> (Result_8);
-  delete_product : (SlugId) -> (Result_7);
-  generateNextPaymentAddress : () -> (Result_6);
+  delete_category : (SlugId) -> (Result_9);
+  delete_product : (SlugId) -> (Result_8);
+  generateNextPaymentAddress : () -> (Result_7);
+  getOrder : (nat) -> (Result_6) query;
   getOwnerXPUB : () -> (text) query;
   get_category : (SlugId) -> (Result_5) query;
   get_product : (SlugId) -> (Result_4) query;
+  listOrders : () -> (
+    vec record {
+      OrderId;
+      Order;
+    }
+  ) query;
   list_categories : () -> (
     vec record {
       SlugId;
@@ -183,8 +190,8 @@ service : {
       Product;
     }
   ) query;
-  noOp : () -> (Result_3);
-  setOwnerXPUB : (text) -> (Result_2);
+  setOwnerXPUB : (text) -> (Result_3);
+  setUserInputTransactionId : (text, OrderId, text) -> (Result_2);
   update_category : (SlugId, text) -> (Result_1);
   update_product : (SlugId, UserProduct) -> (Result);
 };
