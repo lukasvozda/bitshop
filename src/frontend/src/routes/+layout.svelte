@@ -14,7 +14,7 @@
 
 <div class="hero-background py-8 flex justify-center">
   <div
-    class="navbar flex justify-between transition ease-in-out duration-400 bg-base-100/70 hover:bg-base-100/100 md:w-3/4 rounded-3xl mx-4 shadow-sm"
+    class="navbar flex justify-between transition ease-in-out duration-400 bg-base-100/70 hover:bg-base-100/100 md:w-3/4 rounded-3xl mx-5 sm:mx-0 shadow-sm"
   >
     <div class="w-7 ml-2">
       <a href="/" class="transition ease-in-out duration-400">

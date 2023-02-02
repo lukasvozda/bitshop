@@ -2,28 +2,26 @@
   import { productsInCart, totalPrice } from "@/stores/cart";
   import { Btc } from "svelte-cryptoicon";
   import { PlusIcon, MinusIcon, TrashIcon } from "svelte-feather-icons";
-
-  let testProducts = [
-    { id: 1, title: "Death Eater mask", price: 0.1, category: "blabla1" },
-    { id: 2, title: "Gryffindor sword", price: 0.0005, category: "blabla2" },
-    { id: 3, title: "Toilet paper", price: 1.0, category: "blabla3" }
-  ];
-
-  productsInCart.addProduct(testProducts[0]);
-  productsInCart.addProduct(testProducts[0]);
-  productsInCart.addProduct(testProducts[1]);
-  productsInCart.addProduct(testProducts[2]);
 </script>
 
-<div class="my-10 mx-10">
+<div>
   <div class="grid grid-cols-4 gap-y-2">
     {#each $productsInCart as item, index}
-      <div class="col-span-2 flex odd:bg-gray-100 py-3 pl-1 rounded-l-box">
-        <div class="max-w-[15%]">
-          <img src="/paper.jpeg" alt="Image 1" class="mask mask-square" />
+      <div class="col-span-2 flex odd:bg-gray-100 py-3 pl-3 rounded-l-box">
+        <div class="avatar max-w-[15%] mr-4">
+          <div class="rounded-md">
+            <a
+              href="/products/{item.product.slug}"
+              class="hover:opacity-75 transition duration-200 ease-in"
+            >
+              <img src={item.product.img} alt={item.product.title} />
+            </a>
+          </div>
         </div>
         <div class="flex flex-col justify-center">
-          <div class="font-semibold text-gray-700">{item.product.title}</div>
+          <a href="/products/{item.product.slug}" class="font-semibold text-gray-700"
+            >{item.product.title}</a
+          >
         </div>
       </div>
       <div class="flex items-center font-mono even:bg-gray-100">

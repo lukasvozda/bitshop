@@ -50,9 +50,9 @@
   ];
 </script>
 
-<div class="container mx-20 my-14">
+<section class="w-5/6 md:w-3/4 mx-auto py-14">
   <h2
-    class="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-700 md:text-4xl lg:text-5xl dark:text-white"
+    class="pb-8 text-2xl font-semibold leading-none tracking-tight text-gray-700 md:text-4xl lg:text-5xl dark:text-white"
   >
     {steps[$currentStep].title}
   </h2>
@@ -70,7 +70,7 @@
 
   <slot />
 
-  <div class="flex px-10 mt-20">
+  <div class="flex mt-16">
     <div class="mr-auto">
       {#if $currentStep > Steps.PRODUCTS && $currentStep < Steps.CONFIRMATION}
         <button class="btn btn-lg gap-2 rounded-2xl" on:click={steps[$currentStep - 1].onClick}>
@@ -92,10 +92,4 @@
       {/if}
     </div>
   </div>
-</div>
-
-<style>
-  :global(.steps__label) {
-    font-size: 12px;
-  }
-</style>
+</section>

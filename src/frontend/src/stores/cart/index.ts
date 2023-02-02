@@ -1,3 +1,4 @@
+import { browser } from "$app/environment";
 import { Status } from "@/lib/utils";
 import { actor } from "@/stores";
 import { alerts } from "@/stores/alerts";
@@ -14,7 +15,9 @@ export enum Steps {
 export const currentStep = writable(Steps.PRODUCTS);
 
 function fetchProducts() {
-  const { subscribe, update } = writable([]);
+  const { subscribe, update } = writable<CartProduct[]>(
+    browser && window.localStorage.cart ? JSON.parse(window.localStorage.cart).products : []
+  );
 
   const findProductIndex = (products: CartProduct[], productId: number) =>
     products.findIndex((cartProduct) => cartProduct.product.id === productId);
@@ -64,6 +67,11 @@ function fetchProducts() {
 }
 
 export const productsInCart = fetchProducts();
+productsInCart.subscribe((products) => {
+  if (browser) {
+    window.localStorage.cart = JSON.stringify({ products });
+  }
+});
 
 export const mail = writable(null);
 export const firstName = writable(null);
@@ -133,7 +141,7 @@ const fetchPaymentAddress = () => {
           return null;
         }
       })
-      .catch((err) => {
+      .catch((err: any): any => {
         alerts.addAlert(err, Status.ERROR);
         return null;
       });
@@ -187,4 +195,5 @@ export const clearCart = () => {
   country.set(null);
   county.set(null);
   paymentAddress.clear();
+  productsInCart.clear();
 };

@@ -1,18 +1,12 @@
 <script>
-  import { currentStep, Steps } from "@/stores/cart";
-  import ShippingAddressForm from "@/lib/components/forms/ShippingAddressForm.svelte";
-  import PaymentForm from "@/lib/components/forms/PaymentForm.svelte";
-  import ProductsForm from "@/lib/components/forms/ProductsForm.svelte";
+  import { currentStep } from "@/stores/cart";
+  import ShippingAddressForm from "@/lib/components/cart/ShippingAddressStep.svelte";
+  import PaymentForm from "@/lib/components/cart/PaymentStep.svelte";
+  import ProductsForm from "@/lib/components/cart/ProductsStep.svelte";
+
+  let componentSteps = [ProductsForm, ShippingAddressForm, PaymentForm];
 </script>
 
 <div>
-  <div>
-    {#if $currentStep === Steps.PRODUCTS}
-      <ProductsForm />
-    {:else if $currentStep === Steps.SHIPPING}
-      <ShippingAddressForm />
-    {:else if $currentStep === Steps.PAYMENT}
-      <PaymentForm />
-    {/if}
-  </div>
+  <svelte:component this={componentSteps[$currentStep]} />
 </div>
