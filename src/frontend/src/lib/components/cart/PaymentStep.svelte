@@ -4,19 +4,11 @@
   import { delayedAlert } from "@/stores/alerts";
   import { Status } from "@/lib/utils";
   import { Circle } from "svelte-loading-spinners";
-  import { CopyIcon } from "svelte-feather-icons";
   import { Btc } from "svelte-cryptoicon";
   import { totalPrice, paymentAddress } from "@/stores/cart";
+  import ClipboardCopy from "@/lib/components/ui/ClipboardCopy.svelte";
 
-  let copiedToClipBoard = "";
   let unableToLoad = false;
-
-  const copyToClipBoard = async (inputType, input) => {
-    navigator.clipboard.writeText(input).then(() => {
-      copiedToClipBoard = inputType;
-      setTimeout(() => (copiedToClipBoard = ""), 400);
-    });
-  };
 
   onMount(async () => {
     scrollTo(0, 0);
@@ -48,36 +40,13 @@
       <div>
         <div class="grid grid-cols-4 items-center">
           <div class="text-gray-700 text-xl mr-3 col-span-1">Unique address</div>
-          <div
-            class:custom-tooltip-open={copiedToClipBoard === "address"}
-            class="tooltip tooltip-right tooltip-open col-span-3"
-            data-tip="copied address do clipboard"
-          >
-            <div
-              on:click={() => copyToClipBoard("address", $paymentAddress)}
-              class="border border-gray-700 rounded-3xl text-xl font-mono px-5 py-2 cursor-pointer flex items-center"
-            >
-              <span class="mr-2">{$paymentAddress}</span>
-              <CopyIcon size="16" class="ml-auto" />
-            </div>
-          </div>
+          <ClipboardCopy copyValue={$paymentAddress} />
         </div>
         <div class="grid grid-cols-4 items-center mt-5">
           <span class="text-gray-700 text-xl mr-3 col-span-1">Total amount</span>
-          <div
-            class:custom-tooltip-open={copiedToClipBoard === "price"}
-            class="tooltip tooltip-right tooltip-open col-span-3"
-            data-tip="copied price do clipboard"
-          >
-            <div
-              on:click={() => copyToClipBoard("price", $totalPrice)}
-              class="border border-gray-700 rounded-3xl text-xl font-mono px-5 py-2 cursor-pointer flex items-center"
-            >
-              <span class="mr-2">{$totalPrice}</span>
-              <Btc size="20" />
-              <CopyIcon size="16" class="ml-auto" />
-            </div>
-          </div>
+          <ClipboardCopy copyValue={$totalPrice}>
+            <Btc color="black" size="20" />
+          </ClipboardCopy>
         </div>
       </div>
     </div>
@@ -87,15 +56,3 @@
     </div>
   {/if}
 </div>
-
-<style>
-  .tooltip.tooltip-open:before,
-  .tooltip.tooltip-open:after {
-    opacity: 0;
-    transition: 0.5s;
-  }
-  .tooltip.custom-tooltip-open:before,
-  .tooltip.custom-tooltip-open:after {
-    opacity: 1;
-  }
-</style>

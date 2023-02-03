@@ -4,7 +4,10 @@
     Steps,
     validateShippingDetailsStep,
     validateProductsStep,
-    clearCart
+    clearCart,
+    productsInCart,
+    paymentAddress,
+    transactionId
   } from "@/stores/cart";
   import { createOrder } from "@/stores/orders";
   import { Steps as StepsComponent } from "svelte-steps";
@@ -17,6 +20,8 @@
   }
 
   let steps = [];
+  let loading = false;
+  let orderId = "";
 
   $: steps = [
     {
@@ -38,14 +43,27 @@
     },
     {
       onClick: async () => {
+        loading = true;
         let result = await createOrder();
         if (result) {
-          await goto(`/orders/${result.id}`, { replaceState: true });
-          clearCart();
+          orderId = result.id;
+          $currentStep = Steps.TRANSACTION_SET;
         }
+        loading = false;
       },
       title: "Your order confirmation",
       buttonText: "I have paid"
+    },
+    {
+      onClick: async () => {
+        let result = await setUserInputTransactionId($paymentAddress, orderId, $transactionId);
+        if (result) {
+          await goto(`/transactions/${result.id}`, { replaceState: true });
+          clearCart();
+        }
+      },
+      title: "Your payment transaction ID",
+      buttonText: ""
     }
   ];
 </script>
@@ -57,39 +75,44 @@
     {steps[$currentStep].title}
   </h2>
 
-  <div class="w-full sm:w-1/2 sm:mx-auto my-10">
-    <StepsComponent
-      {steps}
-      size="2.8rem"
-      line="0.2rem"
-      clickable={false}
-      current={$currentStep}
-      primary="rgb(55, 65, 81, 70)"
-    />
-  </div>
-
-  <slot />
-
-  <div class="flex mt-16">
-    <div class="mr-auto">
-      {#if $currentStep > Steps.PRODUCTS && $currentStep < Steps.CONFIRMATION}
-        <button class="btn btn-lg gap-2 rounded-2xl" on:click={steps[$currentStep - 1].onClick}>
-          <ArrowLeftIcon />
-          {steps[$currentStep - 1].buttonText}
-        </button>
-      {/if}
+  {#if $productsInCart.length === 0}
+    <div class="text-gray-700 text-2xl text-center my-20">Your cart is empty.</div>
+  {:else}
+    <div class="w-full sm:w-1/2 sm:mx-auto my-10">
+      <StepsComponent
+        {steps}
+        size="2.8rem"
+        line="0.2rem"
+        clickable={false}
+        current={$currentStep}
+        primary="rgb(55, 65, 81, 70)"
+      />
     </div>
-    <div class="ml-auto">
-      {#if $currentStep < Steps.CONFIRMATION}
-        <button
-          disabled={steps[$currentStep].disabled}
-          on:click={steps[$currentStep + 1].onClick}
-          class="btn btn-lg rounded-2xl gap-2"
-        >
-          {steps[$currentStep + 1].buttonText}
-          <ArrowRightIcon />
-        </button>
-      {/if}
+
+    <slot />
+
+    <div class="flex mt-16">
+      <div class="mr-auto">
+        {#if $currentStep > Steps.PRODUCTS && $currentStep < Steps.TRANSACTION_SET}
+          <button class="btn btn-lg gap-2 rounded-2xl" on:click={steps[$currentStep - 1].onClick}>
+            <ArrowLeftIcon />
+            {steps[$currentStep - 1].buttonText}
+          </button>
+        {/if}
+      </div>
+      <div class="ml-auto">
+        {#if $currentStep < Steps.TRANSACTION_SET}
+          <button
+            disabled={steps[$currentStep].disabled}
+            on:click={steps[$currentStep + 1].onClick}
+            class="btn btn-lg rounded-2xl gap-2"
+            class:loading
+          >
+            {steps[$currentStep + 1].buttonText}
+            <ArrowRightIcon />
+          </button>
+        {/if}
+      </div>
     </div>
-  </div>
+  {/if}
 </section>

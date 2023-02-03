@@ -9,13 +9,13 @@ export enum Steps {
   PRODUCTS = 0,
   SHIPPING = 1,
   PAYMENT = 2,
-  CONFIRMATION = 3
+  TRANSACTION_SET = 3
 }
 
 export const currentStep = writable(Steps.PRODUCTS);
 
 function fetchProducts() {
-  const { subscribe, update } = writable<CartProduct[]>(
+  const { subscribe, update, set } = writable<CartProduct[]>(
     browser && window.localStorage.cart ? JSON.parse(window.localStorage.cart).products : []
   );
 
@@ -55,7 +55,7 @@ function fetchProducts() {
       return products;
     });
 
-  const clear = () => update(() => []);
+  const clear = () => set([]);
 
   return {
     subscribe,
@@ -120,6 +120,9 @@ export const totalPrice = derived(productsInCart, ($products) => {
   );
   return result.toFixed(8);
 });
+
+export const transactionId = writable(null);
+export const orderId = writable(null);
 
 const fetchPaymentAddress = () => {
   const { subscribe, set } = writable(null);

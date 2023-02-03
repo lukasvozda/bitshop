@@ -1,5 +1,5 @@
 export const idlFactory = ({ IDL }) => {
-  const OrderStatus = IDL.Variant({
+  const OrderStatus__1 = IDL.Variant({
     TransactionIdSet: IDL.Null,
     UserConfirmedPayment: IDL.Null,
     Verified: IDL.Null
@@ -11,7 +11,7 @@ export const idlFactory = ({ IDL }) => {
     UnableToCreate: IDL.Null,
     UnableToUpdate: IDL.Null
   });
-  const Result_2 = IDL.Variant({ ok: OrderStatus, err: OrderError });
+  const Result_12 = IDL.Variant({ ok: OrderStatus__1, err: OrderError });
   const ShippingAddress = IDL.Record({
     postCode: IDL.Text,
     street: IDL.Text,
@@ -31,7 +31,7 @@ export const idlFactory = ({ IDL }) => {
     totalPrice: IDL.Float64
   });
   const OrderId__1 = IDL.Nat;
-  const OrderStatus__1 = IDL.Variant({
+  const OrderStatus = IDL.Variant({
     TransactionIdSet: IDL.Null,
     UserConfirmedPayment: IDL.Null,
     Verified: IDL.Null
@@ -39,7 +39,7 @@ export const idlFactory = ({ IDL }) => {
   const Time = IDL.Int;
   const Order = IDL.Record({
     id: OrderId__1,
-    status: OrderStatus__1,
+    status: OrderStatus,
     paymentAddress: IDL.Text,
     timeCreated: Time,
     shippingAddress: ShippingAddress,
@@ -113,6 +113,7 @@ export const idlFactory = ({ IDL }) => {
     Base58PubKeyWrongFormatError: IDL.Null
   });
   const Result_3 = IDL.Variant({ ok: IDL.Null, err: GetParseError });
+  const Result_2 = IDL.Variant({ ok: OrderId, err: OrderError });
   const UpdateCategoryError = IDL.Variant({
     CategoryNotFound: IDL.Null,
     UserNotAuthenticated: IDL.Null,
@@ -129,7 +130,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Result = IDL.Variant({ ok: IDL.Null, err: UpdateProductError });
   return IDL.Service({
-    checkOrderStatus: IDL.Func([IDL.Nat], [Result_2], []),
+    checkOrderStatus: IDL.Func([IDL.Nat], [Result_12], []),
     createOrder: IDL.Func([NewOrder], [Result_6], []),
     create_category: IDL.Func([IDL.Text], [Result_11], []),
     create_product: IDL.Func([UserProduct], [Result_10], []),
@@ -145,7 +146,7 @@ export const idlFactory = ({ IDL }) => {
     list_categories: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Category))], ["query"]),
     list_products: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Product))], ["query"]),
     setOwnerXPUB: IDL.Func([IDL.Text], [Result_3], []),
-    setUserInputTransactionId: IDL.Func([IDL.Text, OrderId, IDL.Text], [Result_2], []),
+    setUserInputTransactionId: IDL.Func([IDL.Text, IDL.Text], [Result_2], []),
     update_category: IDL.Func([SlugId, IDL.Text], [Result_1], []),
     update_product: IDL.Func([SlugId, UserProduct], [Result], [])
   });

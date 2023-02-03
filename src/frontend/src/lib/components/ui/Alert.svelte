@@ -10,12 +10,16 @@
 </script>
 
 {#if $alertVisibility}
-  <div class="alert shadow-lg {alert?.type === Status.SUCCESS ? 'alert-success' : 'alert-error'}">
-    <div>
-      <svelte:component
-        this={alert?.type === Status.SUCCESS ? CheckCircleIcon : AlertTriangleIcon}
-      />
-      <span>{alert?.message}</span>
+  <div class="w-5/6 md:w-3/4 mx-auto my-6">
+    <div
+      class="alert rounded-6xl {alert?.type === Status.SUCCESS ? 'alert-success' : 'alert-error'}"
+    >
+      <div>
+        <svelte:component
+          this={alert?.type === Status.SUCCESS ? CheckCircleIcon : AlertTriangleIcon}
+        />
+        <span>{alert?.message}</span>
+      </div>
     </div>
   </div>
 {/if}

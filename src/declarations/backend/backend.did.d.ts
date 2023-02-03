@@ -26,7 +26,7 @@ export interface NewOrder {
 }
 export interface Order {
   id: OrderId__1;
-  status: OrderStatus__1;
+  status: OrderStatus;
   paymentAddress: string;
   timeCreated: Time;
   shippingAddress: ShippingAddress;
@@ -72,7 +72,8 @@ export type Result = { ok: null } | { err: UpdateProductError };
 export type Result_1 = { ok: null } | { err: UpdateCategoryError };
 export type Result_10 = { ok: null } | { err: CreateProductError };
 export type Result_11 = { ok: null } | { err: CreateCategoryError };
-export type Result_2 = { ok: OrderStatus } | { err: OrderError };
+export type Result_12 = { ok: OrderStatus__1 } | { err: OrderError };
+export type Result_2 = { ok: OrderId } | { err: OrderError };
 export type Result_3 = { ok: null } | { err: GetParseError };
 export type Result_4 = { ok: Product } | { err: GetProductError };
 export type Result_5 = { ok: Category } | { err: GetCategoryError };
@@ -110,7 +111,7 @@ export interface UserProduct {
   price: number;
 }
 export interface _SERVICE {
-  checkOrderStatus: ActorMethod<[bigint], Result_2>;
+  checkOrderStatus: ActorMethod<[bigint], Result_12>;
   createOrder: ActorMethod<[NewOrder], Result_6>;
   create_category: ActorMethod<[string], Result_11>;
   create_product: ActorMethod<[UserProduct], Result_10>;
@@ -126,7 +127,7 @@ export interface _SERVICE {
   list_categories: ActorMethod<[], Array<[SlugId, Category]>>;
   list_products: ActorMethod<[], Array<[SlugId, Product]>>;
   setOwnerXPUB: ActorMethod<[string], Result_3>;
-  setUserInputTransactionId: ActorMethod<[string, OrderId, string], Result_2>;
+  setUserInputTransactionId: ActorMethod<[string, string], Result_2>;
   update_category: ActorMethod<[SlugId, string], Result_1>;
   update_product: ActorMethod<[SlugId, UserProduct], Result>;
 }

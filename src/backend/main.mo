@@ -54,6 +54,7 @@ actor {
   private var orders = Map.HashMap<OrderId, Order>(0, Nat.equal, Hash.hash);
   private var addressToOrder = Map.HashMap<Text, OrderId>(0, Text.equal, Text.hash);
   private stable var stableorders : [(OrderId, Order)] = [];
+  private stable var stableaddresstoorder : [(Text, OrderId)] = [];
 
   // for testing
   private stable var ownerExtendedPublicKeyBase58Check : Text = "tpubDD9S94RYo2MraS7QbRhA64Nr56BzCYN2orJUkk2LE4RkB2npb9SFyiCuofbapC9wNW2hLJqkWwSpGoaE9pZC6fLBQdms5HYS9dsvw79nSWy";
@@ -253,6 +254,7 @@ actor {
     stableproducts := Iter.toArray(products.entries());
     stablecategories := Iter.toArray(categories.entries());
     stableorders := Iter.toArray(orders.entries());
+    stableaddresstoorder := Iter.toArray(addressToOrder.entries());
   };
 
   // Postupgrade function will then poppulate HashMap with posts after the update is finished
@@ -274,6 +276,12 @@ actor {
       10,
       Nat.equal,
       Hash.hash
+    );
+    addressToOrder := Map.fromIter<Text, OrderId>(
+      stableaddresstoorder.vals(),
+      10,
+      Text.equal,
+      Text.hash
     );
   };
 
@@ -357,25 +365,27 @@ actor {
     return Result.fromOption(order, #OrderNotFound);
   };
 
-  public func setUserInputTransactionId(address : Text, orderId : OrderId, transactionId : Text) : async Result.Result<OrderStatus, OrderError> {
-    return switch (orders.get(orderId)) {
+  public func setUserInputTransactionId(address : Text, transactionId : Text) : async Result.Result<OrderId, OrderError> {
+    return switch (addressToOrder.get(address)) {
       case null return #err(#OrderNotFound);
-      case (?order) {
-        if (order.paymentAddress != address) {
-          return #err(#UnableToUpdate);
+      case (?orderId) {
+        switch (orders.get(orderId)) {
+          case null return #err(#OrderNotFound);
+          case (?order) {
+            var newOrder : Order = {
+              id = order.id;
+              shippingAddress = order.shippingAddress;
+              products = order.products;
+              totalPrice = order.totalPrice;
+              status = #TransactionIdSet;
+              paymentAddress = order.paymentAddress;
+              timeCreated = order.timeCreated;
+              transactionId = transactionId;
+            };
+            orders.put(newOrder.id, newOrder);
+            return #ok(order.id);
+          };
         };
-        var newOrder : Order = {
-          id = order.id;
-          shippingAddress = order.shippingAddress;
-          products = order.products;
-          totalPrice = order.totalPrice;
-          status = #TransactionIdSet;
-          paymentAddress = order.paymentAddress;
-          timeCreated = order.timeCreated;
-          transactionId = transactionId;
-        };
-        orders.put(orderId, newOrder);
-        return #ok(newOrder.status);
       };
     };
   };

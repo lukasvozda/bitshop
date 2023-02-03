@@ -4,7 +4,8 @@ export enum Status {
 }
 
 export enum OrderStatus {
-  WAITING_FOR_PAYMENT = "WaitingForPayment",
+  UNKNOWN = "Unknown",
   USER_CONFIRMED_PAYMENT = "UserConfirmedPayment",
-  TRANSACTION_CONFIRMED = "TransactionConfirmed"
+  TRANSACTION_ID_SET = "TransactionIdSet",
+  VERIFIED = "Verified"
 }

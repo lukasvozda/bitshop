@@ -62,7 +62,11 @@ type Result_3 = variant {
 };
 type Result_2 = variant {
   err : OrderError;
-  ok : OrderStatus;
+  ok : OrderId;
+};
+type Result_12 = variant {
+  err : OrderError;
+  ok : OrderStatus__1;
 };
 type Result_11 = variant {
   err : CreateCategoryError;
@@ -125,7 +129,7 @@ type Order = record {
   paymentAddress : text;
   products : vec OrderProduct;
   shippingAddress : ShippingAddress;
-  status : OrderStatus__1;
+  status : OrderStatus;
   timeCreated : Time;
   totalPrice : float64;
   transactionId : text;
@@ -160,7 +164,7 @@ type Category = record {
   slug : text;
 };
 service : {
-  checkOrderStatus : (nat) -> (Result_2);
+  checkOrderStatus : (nat) -> (Result_12);
   createOrder : (NewOrder) -> (Result_6);
   create_category : (text) -> (Result_11);
   create_product : (UserProduct) -> (Result_10);
@@ -191,7 +195,7 @@ service : {
     }
   ) query;
   setOwnerXPUB : (text) -> (Result_3);
-  setUserInputTransactionId : (text, OrderId, text) -> (Result_2);
+  setUserInputTransactionId : (text, text) -> (Result_2);
   update_category : (SlugId, text) -> (Result_1);
   update_product : (SlugId, UserProduct) -> (Result);
 };

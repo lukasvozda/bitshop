@@ -42,6 +42,7 @@ export type Order = {
   totalPrice: number;
   status?: OrderStatus;
   paymentAddress: string;
+  transactionId: string;
 };
 
 export type ApiResponse = {
