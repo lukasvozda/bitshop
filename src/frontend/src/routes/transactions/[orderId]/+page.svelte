@@ -15,7 +15,6 @@
     if ($page.params.orderId) {
       let checkInterval = setInterval(async () => {
         let result = await checkOrderVerified($page.params.orderId);
-        // let result = { Verified: null };
         if (result) {
           if (OrderStatus.VERIFIED in result) {
             status = OrderStatus.VERIFIED;

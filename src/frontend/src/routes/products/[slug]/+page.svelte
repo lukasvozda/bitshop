@@ -5,10 +5,13 @@
   import type { Product } from "@/types";
   import { Btc } from "svelte-cryptoicon";
   import { productsInCart } from "@/stores/cart";
+  import ConfirmationModal from "@/lib/components/ui/ConfirmationModal.svelte";
+  import { CheckCircleIcon } from "svelte-feathers";
 
   let product: Product;
   let productList: [string, Product][] = $products;
   let filteredProducts: [string, Product][];
+  let isOpenAddConfirm = false;
 
   $: {
     let item = productList.find((p) => p[0] === $page.params.slug);
@@ -50,17 +53,30 @@
           </div>
           <button
             class="btn btn-lg rounded-xl"
-            on:click|preventDefault={() => productsInCart.addProduct(product)}>add to cart</button
+            on:click={() => {
+              productsInCart.addProduct(product);
+              isOpenAddConfirm = true;
+              setTimeout(() => (isOpenAddConfirm = false), 500);
+            }}
           >
+            add to cart
+          </button>
         </div>
       </div>
     </div>
   {/if}
   <div class="divider" />
-  <h2>Other products</h2>
+  <h2>Similar products</h2>
   <div class="mt-6 grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
     {#each filteredProducts as p}
       <ProductCard product={p[1]} />
     {/each}
   </div>
 </section>
+
+<ConfirmationModal bind:isOpen={isOpenAddConfirm} displayCancel={false} displayConfirm={false}>
+  <div class="flex flex-col items-center justify-center mt-5">
+    <CheckCircleIcon size="80" class="text-success" />
+    <div class="text-gray-700 text-xl mt-4">Product added to cart</div>
+  </div>
+</ConfirmationModal>
