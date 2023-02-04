@@ -10,31 +10,47 @@
   import ClipboardCopy from "@/lib/components/ui/ClipboardCopy.svelte";
 
   let status = "";
+  let timeout = false;
+
+  const checkOrder = async () => {
+    let result = await checkOrderVerified($page.params.orderId);
+    if (result) {
+      if (OrderStatus.VERIFIED in result) {
+        return OrderStatus.VERIFIED;
+      } else if (OrderStatus.TRANSACTION_ID_SET in result) {
+        return OrderStatus.TRANSACTION_ID_SET;
+      } else if (OrderStatus.USER_CONFIRMED_PAYMENT in result) {
+        throw "User did not supply transaction ID. Unable to verify payment.";
+      } else {
+        throw "Transaction exists, but it is in unknown state.";
+      }
+    }
+  };
 
   onMount(async () => {
     if ($page.params.orderId) {
-      let checkInterval = setInterval(async () => {
-        let result = await checkOrderVerified($page.params.orderId);
-        if (result) {
-          if (OrderStatus.VERIFIED in result) {
-            status = OrderStatus.VERIFIED;
-            clearInterval(checkInterval);
-          } else if (OrderStatus.USER_CONFIRMED_PAYMENT in result) {
-            alerts.addAlert("User did not supply transaction ID. Unable to verify.", Status.ERROR);
-            alertVisibility.showAlert();
-            clearInterval(checkInterval);
-          } else if (!(OrderStatus.TRANSACTION_ID_SET in result)) {
-            alerts.addAlert("Transaction in unknown state.", Status.ERROR);
-            status = OrderStatus.UNKNOWN;
-            alertVisibility.showAlert();
-            clearInterval(checkInterval);
-          }
-        } else {
-          console.log(result);
-          status = OrderStatus.UNKNOWN;
-          clearInterval(checkInterval);
+      try {
+        status = await checkOrder();
+        if (status !== OrderStatus.VERIFIED) {
+          let tryCounter = 0;
+          let checkInterval = setInterval(async () => {
+            if (tryCounter < 100) {
+              tryCounter++;
+              status = await checkOrder();
+              if (status === OrderStatus.VERIFIED) {
+                clearInterval(checkInterval);
+              }
+            } else {
+              timeout = true;
+              clearInterval(checkInterval);
+              throw "Timeout while verifying payment.";
+            }
+          }, 20000);
         }
-      }, 0);
+      } catch (err) {
+        alerts.addAlert(err, Status.ERROR);
+        alertVisibility.showAlert();
+      }
     } else {
       alerts.addAlert("Missing order ID", Status.ERROR);
       alertVisibility.showAlert();
@@ -52,14 +68,13 @@
       <ClipboardCopy copyValue={$page.params.orderId} />
     </div>
   {:else if status === OrderStatus.TRANSACTION_ID_SET}
-    <div class="my-10 text-lg">
-      Thank you for your order, we now need to verify your transaction.<br /> It might take up to 10
-      minutes.
+    <div class="my-10 text-xl">
+      <div class="text-gray-700 font-bold text-3xl">Thank you for your order.</div>
+      <div>We now need to verify your transaction.</div>
+      <div>It might take up to 10 minutes.</div>
     </div>
     <CountUpTimer maximumElapsedSeconds={7200} />
-  {:else if status === OrderStatus.VERIFIED}
-    <div class="my-10 text-lg">Transaction has been verified.</div>
-  {:else if status === ""}
+  {:else if status === "" && !timeout}
     <div class="my-20">
       <Circle color="black" size="100" duration="2s" />
     </div>

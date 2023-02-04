@@ -27,16 +27,16 @@
 </script>
 
 <div class="flex flex-col items-center justify-center">
-  <div class="text-gray-700 text-2xl mt-4 mb-10">Input your payment transaction ID.</div>
+  <div class="text-gray-700 text-2xl mt-4 mb-10">
+    Input your payment transaction ID. You will not be able to do so again.
+  </div>
   <div class="w-2/3">
     <input
       required
-      minlength="32"
-      maxlength="32"
       type="text"
       bind:value={$formTransactionId.value}
       placeholder="Transaction ID"
-      class="mt-1 block w-full input-md rounded-lg border border-gray-700 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {isValidField(
+      class="mt-1 font-mono rounded-3xl text-2xl block w-full input-md border border-gray-700 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {isValidField(
         $transactionForm.hasError('transactionId.required')
       )}"
     />
@@ -51,6 +51,6 @@
     class:loading
     on:click={() => confirm()}
   >
-    confirm
+    confirm your transaction
   </button>
 </div>

@@ -4,24 +4,20 @@
     Steps,
     validateShippingDetailsStep,
     validateProductsStep,
-    clearCart,
-    productsInCart,
-    paymentAddress,
-    transactionId
+    productsInCart
   } from "@/stores/cart";
   import { createOrder } from "@/stores/orders";
   import { Steps as StepsComponent } from "svelte-steps";
   import { ArrowLeftIcon, ArrowRightIcon } from "svelte-feathers";
-  import { navigating } from "$app/stores";
-  import { goto } from "$app/navigation";
-
-  $: if ($navigating) {
-    $currentStep = 0;
-  }
+  import { onMount } from "svelte";
 
   let steps = [];
   let loading = false;
   let orderId = "";
+
+  onMount(() => {
+    $currentStep = 0;
+  });
 
   $: steps = [
     {
@@ -51,19 +47,8 @@
         }
         loading = false;
       },
-      title: "Your order confirmation",
+      title: "Your transaction ID",
       buttonText: "I have paid"
-    },
-    {
-      onClick: async () => {
-        let result = await setUserInputTransactionId($paymentAddress, orderId, $transactionId);
-        if (result) {
-          await goto(`/transactions/${result.id}`, { replaceState: true });
-          clearCart();
-        }
-      },
-      title: "Your payment transaction ID",
-      buttonText: ""
     }
   ];
 </script>

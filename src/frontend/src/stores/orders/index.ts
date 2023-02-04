@@ -10,18 +10,9 @@ export const cartOrder = derived(
   ([$shippingAddress, $productsInCart, $totalPrice, $paymentAddress]) => {
     return {
       shippingAddress: {
-        //...$shippingAddress
-        mail: "test@test.cz",
-        firstName: "test",
-        lastName: "test",
-        street: "test",
-        postCode: "test123",
-        country: "Test",
-        city: "TestTest",
-        county: ""
+        ...$shippingAddress
       },
-      //products: [...$productsInCart],
-      products: [{ id: 1, quantity: 2 }],
+      products: [...$productsInCart],
       totalPrice: parseFloat($totalPrice),
       paymentAddress: $paymentAddress
     };
@@ -59,8 +50,8 @@ export const checkOrderVerified = async (orderId: string) => {
         return null;
       }
     })
-    .catch((err: any): any => {
-      alerts.addAlert(err, Status.ERROR);
+    .catch((): any => {
+      alerts.addAlert(`Unable to verify order with ID ${orderId}.`, Status.ERROR);
       alertVisibility.showAlert();
       return null;
     });
