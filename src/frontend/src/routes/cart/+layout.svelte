@@ -53,7 +53,7 @@
   ];
 </script>
 
-<section class="w-5/6 md:w-3/4 mx-auto py-14">
+<section class="md:w-3/4 mx-7 md:mx-auto py-14">
   <h2
     class="pb-8 text-2xl font-semibold leading-none tracking-tight text-gray-700 md:text-4xl lg:text-5xl dark:text-white"
   >

@@ -57,7 +57,7 @@
       </div>
     </div>
     <div class="flex flex-col items-center justify-between">
-      <div class="flex mt-8 mb-3">
+      <div class="flex mt-10 mb-20  md:mb-3">
         <a href="https://twitter.com/bitshopicp" target="_blank" rel="noreferrer">
           <TwitterIcon
             size="60"
