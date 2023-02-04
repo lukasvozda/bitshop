@@ -12,6 +12,9 @@ import Nat "mo:base/Nat";
 import Utils "utils";
 import Types "types";
 
+import BitcoinIntegration "./BitcoinIntegration";
+import BitcoinApiTypes "bitcoin-api/Types";
+
 //import Bip32 "motoko-bitcoin/src/Bip32";
 import Debug "mo:base/Debug";
 //import Base58Check "motoko-bitcoin/src/Base58Check";
@@ -44,6 +47,14 @@ actor {
   type OrderId = Types.OrderId;
   type OrderError = Types.OrderError;
   type OrderStatus = Types.OrderStatus;
+
+  // Bitcoin Types
+  type GetUtxosResponse = BitcoinApiTypes.GetUtxosResponse;
+  type MillisatoshiPerByte = BitcoinApiTypes.MillisatoshiPerByte;
+  type SendRequest = BitcoinApiTypes.SendRequest;
+  type Network = BitcoinApiTypes.Network;
+  type BitcoinAddress = BitcoinApiTypes.BitcoinAddress;
+  type Satoshi = BitcoinApiTypes.Satoshi;
 
   private var products = Map.HashMap<SlugId, Product>(0, Text.equal, Text.hash);
   private var categories = Map.HashMap<SlugId, Category>(0, Text.equal, Text.hash);
@@ -345,6 +356,7 @@ actor {
           status = #UserConfirmedPayment;
           paymentAddress = order.paymentAddress;
           timeCreated = Time.now();
+          userSuppliedTransactionId = "";
           transactionId = "";
         };
 
@@ -390,25 +402,31 @@ actor {
     };
   };
 
+  public func checkIfTransactionIsConfirmed(address : BitcoinAddress, transactionIdToCheck : Text) : async Bool {
+    await BitcoinIntegration.check_if_transaction_is_confirmed(address, transactionIdToCheck);
+  };
+
   public func checkOrderStatus(orderId : Nat) : async Result.Result<OrderStatus, OrderError> {
     return switch (orders.get(orderId)) {
       case null return #err(#OrderNotFound);
       case (?order) {
-
-        // todo check balance
-
-        var newOrder = {
-          id = orderId;
-          shippingAddress = order.shippingAddress;
-          products = order.products;
-          totalPrice = order.totalPrice;
-          status = #Verified;
-          paymentAddress = order.paymentAddress;
-          timeCreated = order.timeCreated;
-          transactionId = order.transactionId;
-        };
-        orders.put(orderId, newOrder);
-        return #ok(newOrder.status);
+        if (checkIfTransactionIsConfirmed(order.paymentAddress, order.userSuppliedTransactionId)) {
+          var newOrder = {
+            id = orderId;
+            shippingAddress = order.shippingAddress;
+            products = order.products;
+            totalPrice = order.totalPrice;
+            status = #Verified;
+            paymentAddress = order.paymentAddress;
+            timeCreated = order.timeCreated;
+            transactionId = order.transactionId;
+            userSuppliedTransactionId = transactionId;
+          };
+          orders.put(orderId, newOrder);
+          return #ok(newOrder.status);
+        } else {
+          return #ok(order.status);
+        }
       };
     };
   }

@@ -29,7 +29,7 @@
     <div class="hero">
       <div class="hero-content sm:w-full md:w-3/4 my-20 text-center sm:text-left">
         <div
-          class="md:mr-auto"
+          class="md:mr-auto transform-gpu"
           style:transform={`translate3d(0, ${scroll * speed}px, ${scroll}px)`}
         >
           <h1 class="flex items-end justify-center sm:justify-start">
