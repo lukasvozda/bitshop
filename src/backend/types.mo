@@ -1,4 +1,5 @@
 import Time "mo:base/Time";
+import BitcoinApiTypes "bitcoin-api/Types";
 
 module {
 
@@ -103,7 +104,7 @@ module {
   public type NewOrder = {
     shippingAddress : ShippingAddress;
     products : [OrderProduct];
-    totalPrice : Float;
+    totalPrice : BitcoinApiTypes.Satoshi;
     paymentAddress : Text;
   };
 

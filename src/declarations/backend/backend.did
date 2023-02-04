@@ -32,6 +32,7 @@ type ShippingAddress = record {
   postCode : text;
   street : text;
 };
+type Satoshi = nat64;
 type Result_9 = variant {
   err : DeleteCategoryError;
   ok;
@@ -131,14 +132,14 @@ type Order = record {
   shippingAddress : ShippingAddress;
   status : OrderStatus;
   timeCreated : Time;
-  totalPrice : float64;
+  totalPrice : Satoshi;
   transactionId : text;
 };
 type NewOrder = record {
   paymentAddress : text;
   products : vec OrderProduct;
   shippingAddress : ShippingAddress;
-  totalPrice : float64;
+  totalPrice : Satoshi;
 };
 type GetProductError = variant { ProductNotFound };
 type GetParseError = variant { Base58PubKeyWrongFormatError };

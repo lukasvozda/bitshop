@@ -24,11 +24,12 @@ export const idlFactory = ({ IDL }) => {
   });
   const ProductId = IDL.Nat;
   const OrderProduct = IDL.Record({ id: ProductId, quantity: IDL.Nat8 });
+  const Satoshi = IDL.Nat64;
   const NewOrder = IDL.Record({
     paymentAddress: IDL.Text,
     shippingAddress: ShippingAddress,
     products: IDL.Vec(OrderProduct),
-    totalPrice: IDL.Float64
+    totalPrice: Satoshi
   });
   const OrderId__1 = IDL.Nat;
   const OrderStatus = IDL.Variant({
@@ -44,7 +45,7 @@ export const idlFactory = ({ IDL }) => {
     timeCreated: Time,
     shippingAddress: ShippingAddress,
     products: IDL.Vec(OrderProduct),
-    totalPrice: IDL.Float64,
+    totalPrice: Satoshi,
     transactionId: IDL.Text
   });
   const Result_6 = IDL.Variant({ ok: Order, err: OrderError });

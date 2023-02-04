@@ -22,7 +22,7 @@ export interface NewOrder {
   paymentAddress: string;
   shippingAddress: ShippingAddress;
   products: Array<OrderProduct>;
-  totalPrice: number;
+  totalPrice: Satoshi;
 }
 export interface Order {
   id: OrderId__1;
@@ -31,7 +31,7 @@ export interface Order {
   timeCreated: Time;
   shippingAddress: ShippingAddress;
   products: Array<OrderProduct>;
-  totalPrice: number;
+  totalPrice: Satoshi;
   transactionId: string;
 }
 export type OrderError =
@@ -81,6 +81,7 @@ export type Result_6 = { ok: Order } | { err: OrderError };
 export type Result_7 = { ok: string } | { err: GetDerivationError };
 export type Result_8 = { ok: null } | { err: DeleteProductError };
 export type Result_9 = { ok: null } | { err: DeleteCategoryError };
+export type Satoshi = bigint;
 export interface ShippingAddress {
   postCode: string;
   street: string;

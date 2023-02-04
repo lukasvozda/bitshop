@@ -402,15 +402,13 @@ actor {
     };
   };
 
-  public func checkIfTransactionIsConfirmed(address : BitcoinAddress, transactionIdToCheck : Text) : async Bool {
-    await BitcoinIntegration.check_if_transaction_is_confirmed(address, transactionIdToCheck);
-  };
-
   public func checkOrderStatus(orderId : Nat) : async Result.Result<OrderStatus, OrderError> {
     return switch (orders.get(orderId)) {
       case null return #err(#OrderNotFound);
       case (?order) {
-        if (checkIfTransactionIsConfirmed(order.paymentAddress, order.userSuppliedTransactionId)) {
+        let transactionBalance : BitcoinTypes.Satoshi = await BitcoinIntegration.get_balance_of_transaction(order.paymentAddress, order.transactionId);
+        Debug.print(debug_show (transactionBalance, order.totalPrice));
+        if (transactionBalance == order.totalPrice) {
           var newOrder = {
             id = orderId;
             shippingAddress = order.shippingAddress;
@@ -420,13 +418,11 @@ actor {
             paymentAddress = order.paymentAddress;
             timeCreated = order.timeCreated;
             transactionId = order.transactionId;
-            userSuppliedTransactionId = transactionId;
           };
           orders.put(orderId, newOrder);
           return #ok(newOrder.status);
-        } else {
-          return #ok(order.status);
-        }
+        };
+        return #ok(order.status);
       };
     };
   }

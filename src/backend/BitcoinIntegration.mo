@@ -1,6 +1,7 @@
 import Text "mo:base/Text";
 import Blob "mo:base/Blob";
 import Array "mo:base/Array";
+import Nat64 "mo:base/Nat64";
 
 import BitcoinTypes "motoko-bitcoin/src/bitcoin/Types";
 import BitcoinApi "bitcoin-api/BitcoinApi";
@@ -45,5 +46,16 @@ module {
       };
     };
     return false;
+  };
+
+  public func get_balance_of_transaction(address : BitcoinAddress, transactionIdToCheck : Text) : async Satoshi {
+    let utxoResponse = await get_utxos(address);
+    for (utxo in utxoResponse.utxos.vals()) {
+      let transactionId = parse_transaction_id(utxo.outpoint.txid);
+      if (transactionId == transactionIdToCheck) {
+        return utxo.value;
+      };
+    };
+    return 0;
   };
 };
