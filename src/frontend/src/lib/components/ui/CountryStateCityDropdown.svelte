@@ -36,8 +36,8 @@
   $: city.set($formCity);
 </script>
 
-<div class="grid grid-cols-12 gap-8">
-  <div class="col-span-6">
+<div class="grid grid-cols-12 gap-y-8 sm:gap-8">
+  <div class="col-span-12 sm:col-span-6">
     <span class="block text-sm font-medium text-gray-700">Country*</span>
     <AutoCompleteInput
       items={countries}
@@ -55,7 +55,7 @@
       {/if}
     </AutoCompleteInput>
   </div>
-  <div class="col-span-6">
+  <div class="col-span-12 sm:col-span-6">
     <span class="block text-sm font-medium text-gray-700">State / Province / Region</span>
     <input
       tabindex="0"
@@ -66,7 +66,7 @@
       class="peer mt-1 block input-md w-full rounded-lg border border-gray-700 disabled:bg-gray-200 focus:text-gray-600 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
     />
   </div>
-  <div class="col-span-6">
+  <div class="col-span-12 sm:col-span-6">
     <span class="block text-sm font-medium text-gray-700">City*</span>
     <input
       tabindex="0"

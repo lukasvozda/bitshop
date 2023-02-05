@@ -29,7 +29,7 @@
     {
       // disabled: !$validateShippingDetailsStep,
       onClick: () => ($currentStep = Steps.SHIPPING),
-      buttonText: "shipping address",
+      buttonText: "shipping",
       title: "Your shipping address"
     },
     {
@@ -63,7 +63,7 @@
   {#if $productsInCart.length === 0}
     <div class="text-gray-700 text-2xl text-center my-20">Your cart is empty.</div>
   {:else}
-    <div class="w-full sm:w-1/2 sm:mx-auto my-10">
+    <div class="w-full sm:w-2/3 sm:mx-auto my-10">
       <StepsComponent
         {steps}
         size="2.8rem"
@@ -79,8 +79,11 @@
     <div class="flex mt-16">
       <div class="mr-auto">
         {#if $currentStep > Steps.PRODUCTS && $currentStep < Steps.TRANSACTION_SET}
-          <button class="btn btn-lg gap-2 rounded-2xl" on:click={steps[$currentStep - 1].onClick}>
-            <ArrowLeftIcon />
+          <button
+            class="btn sm:btn-lg gap-2 rounded-2xl"
+            on:click={steps[$currentStep - 1].onClick}
+          >
+            <ArrowLeftIcon size="16" />
             {steps[$currentStep - 1].buttonText}
           </button>
         {/if}
@@ -90,11 +93,11 @@
           <button
             disabled={steps[$currentStep].disabled}
             on:click={steps[$currentStep + 1].onClick}
-            class="btn btn-lg rounded-2xl gap-2"
+            class="btn sm:btn-lg rounded-2xl gap-2"
             class:loading
           >
             {steps[$currentStep + 1].buttonText}
-            <ArrowRightIcon />
+            <ArrowRightIcon size="16" />
           </button>
         {/if}
       </div>

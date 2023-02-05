@@ -15,12 +15,12 @@
 
 <div
   class:custom-tooltip-open={copiedToClipBoard}
-  class="tooltip tooltip-right tooltip-open col-span-3"
+  class="tooltip tooltip-bottom tooltip-open w-full"
   data-tip="copied to clipboard"
 >
   <div
     on:click={() => copyToClipBoard()}
-    class="border border-gray-700 rounded-3xl text-xl font-mono px-5 py-2 cursor-pointer flex items-center"
+    class="border border-gray-700 rounded-3xl text-xs sm:text-xl font-mono px-5 py-2 cursor-pointer flex items-center"
   >
     <span class="mr-2">{copyValue}</span>
     <slot />
