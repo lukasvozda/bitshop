@@ -63,10 +63,10 @@
   {#if $productsInCart.length === 0}
     <div class="text-gray-700 text-2xl text-center my-20">Your cart is empty.</div>
   {:else}
-    <div class="w-full sm:w-2/3 sm:mx-auto my-10">
+    <div class="w-full lg:w-2/3 sm:mx-auto my-10">
       <StepsComponent
         {steps}
-        size="2.8rem"
+        size="2.6rem"
         line="0.2rem"
         clickable={false}
         current={$currentStep}
@@ -83,7 +83,7 @@
             class="btn sm:btn-lg gap-2 rounded-2xl"
             on:click={steps[$currentStep - 1].onClick}
           >
-            <ArrowLeftIcon size="16" />
+            <ArrowLeftIcon size="18" />
             {steps[$currentStep - 1].buttonText}
           </button>
         {/if}
@@ -97,7 +97,7 @@
             class:loading
           >
             {steps[$currentStep + 1].buttonText}
-            <ArrowRightIcon size="16" />
+            <ArrowRightIcon size="18" />
           </button>
         {/if}
       </div>

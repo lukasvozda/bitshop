@@ -58,7 +58,9 @@
   });
 </script>
 
-<div class="mx-auto my-10 text-center flex flex-col items-center">
+<div
+  class="w-5/6 md:w-3/4 mx-auto px-4 sm:px-0 mx-auto my-10 text-center flex flex-col items-center"
+>
   {#if status === OrderStatus.VERIFIED}
     <div class="flex flex-col justify-center items-center my-20">
       <CheckCircleIcon size="100" class="text-success" />

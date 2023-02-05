@@ -10,9 +10,20 @@ export const cartOrder = derived(
   ([$shippingAddress, $productsInCart, $totalPrice, $paymentAddress]) => {
     return {
       shippingAddress: {
-        ...$shippingAddress
+        //...$shippingAddress
+        mail: "test@test.cz",
+        firstName: "test",
+        lastName: "test",
+        street: "test",
+        postCode: "test123",
+        country: "Test",
+        city: "TestTest",
+        county: ""
       },
-      products: [...$productsInCart],
+      products: [...$productsInCart].map((item) => ({
+        id: parseInt(item.product.id),
+        quantity: item.quantity
+      })),
       totalPrice: parseFloat($totalPrice),
       paymentAddress: $paymentAddress
     };
@@ -32,7 +43,7 @@ export const createOrder = async () => {
       }
     })
     .catch((err: any): any => {
-      alerts.addAlert(err, Status.ERROR);
+      alerts.addAlert("Unable to create order.", Status.ERROR);
       alertVisibility.showAlert();
       return null;
     });
@@ -64,7 +75,7 @@ export const listOrders = async () => {
       return response;
     })
     .catch((err: any): any => {
-      alerts.addAlert(err, Status.ERROR);
+      alerts.addAlert("Unable to list orders.", Status.ERROR);
       alertVisibility.showAlert();
       return null;
     });
@@ -83,7 +94,7 @@ export const getOrder = async (orderId: number) => {
       }
     })
     .catch((err: any): any => {
-      alerts.addAlert(err, Status.ERROR);
+      alerts.addAlert("Unable to ger order.", Status.ERROR);
       alertVisibility.showAlert();
       return null;
     });
@@ -102,7 +113,7 @@ export const setUserInputTransactionId = async (address: Text, transactionId: Te
       }
     })
     .catch((err: any): any => {
-      alerts.addAlert(err, Status.ERROR);
+      alerts.addAlert("Unable to set transaction ID.", Status.ERROR);
       alertVisibility.showAlert();
       return null;
     });
