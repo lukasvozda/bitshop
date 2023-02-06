@@ -23,13 +23,13 @@
       : "";
 </script>
 
-<div class="my-10 mx-20">
+<div class="my-10">
   <div class="mt-10 sm:mt-0">
     <div class="md:grid md:grid-cols-2 md:gap-6">
       <div class="mt-5 md:col-span-2 md:mt-0">
         <form action="#" method="POST">
-          <div class="grid grid-cols-12 gap-8">
-            <div class="col-span-6 sm:col-span-6">
+          <div class="grid grid-cols-12 gap-y-8 sm:gap-8">
+            <div class="col-span-12 sm:col-span-6">
               <label for="first-name" class="block text-sm font-medium text-gray-700">
                 First name*
               </label>
@@ -50,7 +50,7 @@
               {/if}
             </div>
 
-            <div class="col-span-6 sm:col-span-6">
+            <div class="col-span-12 sm:col-span-6">
               <label for="last-name" class="block text-sm font-medium text-gray-700">
                 Last name*
               </label>
@@ -71,7 +71,7 @@
               {/if}
             </div>
 
-            <div class="col-span-6 sm:col-span-6">
+            <div class="col-span-12 sm:col-span-6">
               <label for="email-address" class="block text-sm font-medium text-gray-700">
                 Email address*
               </label>
@@ -97,7 +97,7 @@
               <CountryStateCityDropdown />
             </div>
 
-            <div class="col-span-6 sm:col-span-3 lg:col-span-4">
+            <div class="col-span-8 sm:col-span-3">
               <label for="postal-code" class="block text-sm font-medium text-gray-700">
                 ZIP / Postal code*
               </label>
@@ -117,7 +117,7 @@
               {/if}
             </div>
 
-            <div class="col-span-8">
+            <div class="col-span-12 sm:col-span-9">
               <label for="street-address" class="block text-sm font-medium text-gray-700"
                 >Street address*</label
               >

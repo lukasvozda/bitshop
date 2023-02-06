@@ -4,19 +4,20 @@
     Steps,
     validateShippingDetailsStep,
     validateProductsStep,
-    clearCart
+    productsInCart
   } from "@/stores/cart";
   import { createOrder } from "@/stores/orders";
   import { Steps as StepsComponent } from "svelte-steps";
   import { ArrowLeftIcon, ArrowRightIcon } from "svelte-feathers";
-  import { navigating } from "$app/stores";
-  import { goto } from "$app/navigation";
-
-  $: if ($navigating) {
-    $currentStep = 0;
-  }
+  import { onMount } from "svelte";
 
   let steps = [];
+  let loading = false;
+  let orderId = "";
+
+  onMount(() => {
+    $currentStep = 0;
+  });
 
   $: steps = [
     {
@@ -28,7 +29,7 @@
     {
       // disabled: !$validateShippingDetailsStep,
       onClick: () => ($currentStep = Steps.SHIPPING),
-      buttonText: "shipping address",
+      buttonText: "shipping",
       title: "Your shipping address"
     },
     {
@@ -38,64 +39,68 @@
     },
     {
       onClick: async () => {
+        loading = true;
         let result = await createOrder();
         if (result) {
-          await goto(`/orders/${result.id}`, { replaceState: true });
-          clearCart();
+          orderId = result.id;
+          $currentStep = Steps.TRANSACTION_SET;
         }
+        loading = false;
       },
-      title: "Your order confirmation",
+      title: "Your transaction ID",
       buttonText: "I have paid"
     }
   ];
 </script>
 
-<div class="container mx-20 my-14">
+<section class="md:w-3/4 mx-7 md:mx-auto py-14">
   <h2
-    class="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-700 md:text-4xl lg:text-5xl dark:text-white"
+    class="pb-8 text-2xl font-semibold leading-none tracking-tight text-gray-700 md:text-4xl lg:text-5xl dark:text-white"
   >
     {steps[$currentStep].title}
   </h2>
 
-  <div class="w-full sm:w-1/2 sm:mx-auto my-10">
-    <StepsComponent
-      {steps}
-      size="2.8rem"
-      line="0.2rem"
-      clickable={false}
-      current={$currentStep}
-      primary="rgb(55, 65, 81, 70)"
-    />
-  </div>
-
-  <slot />
-
-  <div class="flex px-10 mt-20">
-    <div class="mr-auto">
-      {#if $currentStep > Steps.PRODUCTS && $currentStep < Steps.CONFIRMATION}
-        <button class="btn btn-lg gap-2 rounded-2xl" on:click={steps[$currentStep - 1].onClick}>
-          <ArrowLeftIcon />
-          {steps[$currentStep - 1].buttonText}
-        </button>
-      {/if}
+  {#if $productsInCart.length === 0}
+    <div class="text-gray-700 text-2xl text-center my-20">Your cart is empty.</div>
+  {:else}
+    <div class="w-full lg:w-2/3 sm:mx-auto my-10">
+      <StepsComponent
+        {steps}
+        size="2.6rem"
+        line="0.2rem"
+        clickable={false}
+        current={$currentStep}
+        primary="rgb(55, 65, 81, 70)"
+      />
     </div>
-    <div class="ml-auto">
-      {#if $currentStep < Steps.CONFIRMATION}
-        <button
-          disabled={steps[$currentStep].disabled}
-          on:click={steps[$currentStep + 1].onClick}
-          class="btn btn-lg rounded-2xl gap-2"
-        >
-          {steps[$currentStep + 1].buttonText}
-          <ArrowRightIcon />
-        </button>
-      {/if}
-    </div>
-  </div>
-</div>
 
-<style>
-  :global(.steps__label) {
-    font-size: 12px;
-  }
-</style>
+    <slot />
+
+    <div class="flex mt-16">
+      <div class="mr-auto">
+        {#if $currentStep > Steps.PRODUCTS && $currentStep < Steps.TRANSACTION_SET}
+          <button
+            class="btn sm:btn-lg gap-2 rounded-2xl"
+            on:click={steps[$currentStep - 1].onClick}
+          >
+            <ArrowLeftIcon size="18" />
+            {steps[$currentStep - 1].buttonText}
+          </button>
+        {/if}
+      </div>
+      <div class="ml-auto">
+        {#if $currentStep < Steps.TRANSACTION_SET}
+          <button
+            disabled={steps[$currentStep].disabled}
+            on:click={steps[$currentStep + 1].onClick}
+            class="btn sm:btn-lg rounded-2xl gap-2"
+            class:loading
+          >
+            {steps[$currentStep + 1].buttonText}
+            <ArrowRightIcon size="18" />
+          </button>
+        {/if}
+      </div>
+    </div>
+  {/if}
+</section>

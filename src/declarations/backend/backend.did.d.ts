@@ -22,30 +22,38 @@ export interface NewOrder {
   paymentAddress: string;
   shippingAddress: ShippingAddress;
   products: Array<OrderProduct>;
-  totalPrice: number;
+  totalPrice: Satoshi;
 }
-export type NoOpError = { NoOpError: null };
 export interface Order {
-  id: OrderId;
+  id: OrderId__1;
   status: OrderStatus;
   paymentAddress: string;
   timeCreated: Time;
   shippingAddress: ShippingAddress;
   products: Array<OrderProduct>;
-  totalPrice: number;
+  totalPrice: Satoshi;
+  transactionId: string;
 }
 export type OrderError =
   | { PaymentAddressAlreadyUsed: null }
   | { OrderNotFound: null }
   | { MissingData: null }
-  | { UnableToCreate: null };
+  | { UnableToCreate: null }
+  | { UnableToUpdate: null };
 export type OrderId = bigint;
+export type OrderId__1 = bigint;
 export interface OrderProduct {
   id: ProductId;
   quantity: number;
 }
-export type OrderStatus = { UserConfirmedPayment: null } | { TransactionConfirmed: null };
-export type OrderStatus__1 = { UserConfirmedPayment: null } | { TransactionConfirmed: null };
+export type OrderStatus =
+  | { TransactionIdSet: null }
+  | { UserConfirmedPayment: null }
+  | { Verified: null };
+export type OrderStatus__1 =
+  | { TransactionIdSet: null }
+  | { UserConfirmedPayment: null }
+  | { Verified: null };
 export interface Product {
   id: ProductId;
   img: Uint8Array;
@@ -62,17 +70,18 @@ export interface Product {
 export type ProductId = bigint;
 export type Result = { ok: null } | { err: UpdateProductError };
 export type Result_1 = { ok: null } | { err: UpdateCategoryError };
-export type Result_10 = { ok: null } | { err: CreateCategoryError };
-export type Result_11 = { ok: Order } | { err: OrderError };
+export type Result_10 = { ok: null } | { err: CreateProductError };
+export type Result_11 = { ok: null } | { err: CreateCategoryError };
 export type Result_12 = { ok: OrderStatus__1 } | { err: OrderError };
-export type Result_2 = { ok: null } | { err: GetParseError };
-export type Result_3 = { ok: null } | { err: NoOpError };
+export type Result_2 = { ok: OrderId } | { err: OrderError };
+export type Result_3 = { ok: null } | { err: GetParseError };
 export type Result_4 = { ok: Product } | { err: GetProductError };
 export type Result_5 = { ok: Category } | { err: GetCategoryError };
-export type Result_6 = { ok: string } | { err: GetDerivationError };
-export type Result_7 = { ok: null } | { err: DeleteProductError };
-export type Result_8 = { ok: null } | { err: DeleteCategoryError };
-export type Result_9 = { ok: null } | { err: CreateProductError };
+export type Result_6 = { ok: Order } | { err: OrderError };
+export type Result_7 = { ok: string } | { err: GetDerivationError };
+export type Result_8 = { ok: null } | { err: DeleteProductError };
+export type Result_9 = { ok: null } | { err: DeleteCategoryError };
+export type Satoshi = bigint;
 export interface ShippingAddress {
   postCode: string;
   street: string;
@@ -104,20 +113,22 @@ export interface UserProduct {
 }
 export interface _SERVICE {
   checkOrderStatus: ActorMethod<[bigint], Result_12>;
-  createOrder: ActorMethod<[NewOrder], Result_11>;
-  create_category: ActorMethod<[string], Result_10>;
-  create_product: ActorMethod<[UserProduct], Result_9>;
+  createOrder: ActorMethod<[NewOrder], Result_6>;
+  create_category: ActorMethod<[string], Result_11>;
+  create_product: ActorMethod<[UserProduct], Result_10>;
   deleteOwnerXPUB: ActorMethod<[], undefined>;
-  delete_category: ActorMethod<[SlugId], Result_8>;
-  delete_product: ActorMethod<[SlugId], Result_7>;
-  generateNextPaymentAddress: ActorMethod<[], Result_6>;
+  delete_category: ActorMethod<[SlugId], Result_9>;
+  delete_product: ActorMethod<[SlugId], Result_8>;
+  generateNextPaymentAddress: ActorMethod<[], Result_7>;
+  getOrder: ActorMethod<[bigint], Result_6>;
   getOwnerXPUB: ActorMethod<[], string>;
   get_category: ActorMethod<[SlugId], Result_5>;
   get_product: ActorMethod<[SlugId], Result_4>;
+  listOrders: ActorMethod<[], Array<[OrderId, Order]>>;
   list_categories: ActorMethod<[], Array<[SlugId, Category]>>;
   list_products: ActorMethod<[], Array<[SlugId, Product]>>;
-  noOp: ActorMethod<[], Result_3>;
-  setOwnerXPUB: ActorMethod<[string], Result_2>;
+  setOwnerXPUB: ActorMethod<[string], Result_3>;
+  setUserInputTransactionId: ActorMethod<[string, string], Result_2>;
   update_category: ActorMethod<[SlugId, string], Result_1>;
   update_product: ActorMethod<[SlugId, UserProduct], Result>;
 }

@@ -1,5 +1,9 @@
 import { actor } from "@/stores";
-import { products, categories } from "@/stores/products";
+import { categories, products } from "@/stores/products";
+
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
 
 actor.init();
 products.loadProducts();

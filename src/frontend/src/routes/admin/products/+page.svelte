@@ -33,7 +33,7 @@
   };
 </script>
 
-<section class="ml-4">
+<section class="ml-4 w-5/6 md:w-3/4">
   <h1 class="my-4">Products</h1>
   <form on:submit|preventDefault={submitProduct}>
     <label for="title">Title: &nbsp;</label>

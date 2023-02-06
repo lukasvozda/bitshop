@@ -1,3 +1,4 @@
+import { browser } from "$app/environment";
 import { Status } from "@/lib/utils";
 import { actor } from "@/stores";
 import { alerts } from "@/stores/alerts";
@@ -8,13 +9,15 @@ export enum Steps {
   PRODUCTS = 0,
   SHIPPING = 1,
   PAYMENT = 2,
-  CONFIRMATION = 3
+  TRANSACTION_SET = 3
 }
 
 export const currentStep = writable(Steps.PRODUCTS);
 
 function fetchProducts() {
-  const { subscribe, update } = writable([]);
+  const { subscribe, update, set } = writable<CartProduct[]>(
+    browser && window.localStorage.cart ? JSON.parse(window.localStorage.cart).products : []
+  );
 
   const findProductIndex = (products: CartProduct[], productId: number) =>
     products.findIndex((cartProduct) => cartProduct.product.id === productId);
@@ -52,7 +55,7 @@ function fetchProducts() {
       return products;
     });
 
-  const clear = () => update(() => []);
+  const clear = () => set([]);
 
   return {
     subscribe,
@@ -64,6 +67,11 @@ function fetchProducts() {
 }
 
 export const productsInCart = fetchProducts();
+productsInCart.subscribe((products) => {
+  if (browser) {
+    window.localStorage.cart = JSON.stringify({ products });
+  }
+});
 
 export const mail = writable(null);
 export const firstName = writable(null);
@@ -113,6 +121,9 @@ export const totalPrice = derived(productsInCart, ($products) => {
   return result.toFixed(8);
 });
 
+export const transactionId = writable(null);
+export const orderId = writable(null);
+
 const fetchPaymentAddress = () => {
   const { subscribe, set } = writable(null);
 
@@ -133,7 +144,7 @@ const fetchPaymentAddress = () => {
           return null;
         }
       })
-      .catch((err) => {
+      .catch((err: any): any => {
         alerts.addAlert(err, Status.ERROR);
         return null;
       });
@@ -187,4 +198,5 @@ export const clearCart = () => {
   country.set(null);
   county.set(null);
   paymentAddress.clear();
+  productsInCart.clear();
 };

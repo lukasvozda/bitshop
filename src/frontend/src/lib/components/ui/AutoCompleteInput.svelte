@@ -60,7 +60,7 @@
       )}"
     />
     <div class="absolute right-0 inset-y-0 pr-3">
-      <div class="pt-3"><ChevronDownIcon size="17" /></div>
+      <div class="pt-4"><ChevronDownIcon size="17" /></div>
     </div>
     {#if filteredItems.length > 0}
       <ul

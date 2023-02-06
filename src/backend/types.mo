@@ -1,4 +1,5 @@
 import Time "mo:base/Time";
+import BitcoinApiTypes "bitcoin-api/Types";
 
 module {
 
@@ -50,6 +51,7 @@ module {
     #PaymentAddressAlreadyUsed;
     #UnableToCreate;
     #OrderNotFound;
+    #UnableToUpdate;
   };
 
   public type Category = {
@@ -95,13 +97,14 @@ module {
 
   public type OrderStatus = {
     #UserConfirmedPayment;
-    #TransactionConfirmed;
+    #TransactionIdSet;
+    #Verified;
   };
 
   public type NewOrder = {
     shippingAddress : ShippingAddress;
     products : [OrderProduct];
-    totalPrice : Float;
+    totalPrice : BitcoinApiTypes.Satoshi;
     paymentAddress : Text;
   };
 
@@ -109,6 +112,7 @@ module {
     id : OrderId;
     status : OrderStatus;
     timeCreated : Time.Time;
+    transactionId : Text;
   };
 
 };
