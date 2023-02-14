@@ -198,7 +198,7 @@ actor {
     switch (result) {
       case null {
         let category : Category = {
-          name = c.name;
+          name = name;
           slug = new_slug;
         };
 

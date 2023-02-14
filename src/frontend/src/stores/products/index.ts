@@ -14,9 +14,8 @@ function fetchProducts() {
       product[0],
       {
         ...product[1],
-        img: "/product.jpg",
-        description:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat malesuada malesuada. Phasellus in ligula laoreet, rhoncus dui vel, hendrerit leo. Sed aliquet blandit justo suscipit blandit."
+        img: "/product.jpg"
+        //description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat malesuada malesuada. Phasellus in ligula laoreet, rhoncus dui vel, hendrerit leo. Sed aliquet blandit justo suscipit blandit."
       }
     ]);
 
