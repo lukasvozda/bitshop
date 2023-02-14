@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { products } from "@/stores/products";
+  import { products, categories } from "@/stores/products";
   import ProductCard from "@/lib/components/products/ProductCard.svelte";
   import { ArrowDownIcon, ArrowRightIcon, ArrowLeftIcon } from "svelte-feather-icons";
   import BitshopLogo from "@/lib/components/ui/BitshopLogo.svelte";
@@ -8,7 +8,7 @@
   let showAllCategories = false;
 
   // todo substitute with real categories
-  let categories = ["t-shirts", "sunglasses", "hoodies", "socks", "caps", "jeans", "trousers"];
+  //let categories = ["t-shirts", "sunglasses", "hoodies", "socks", "caps", "jeans", "trousers"];
 
   let scroll;
   let speed = 0.35;
@@ -62,11 +62,11 @@
   <section class="container w-5/6 md:w-3/4 mx-auto mt-16 z-20" id="categories">
     <div class="uppercase text-gray-600 text-sm my-3 mx-1 py-3">categories</div>
     <div class="flex flex-wrap mb-8">
-      {#each showAllCategories ? categories : categories.slice(0, 5) as category, _}
+      {#each showAllCategories ? $categories : $categories.slice(0, 5) as category, _}
         <button
           class="btn btn-sm btn-outline mx-1 my-1 rounded-xl border-1 font-semibold px-3 text-md !px-5 !h-2 !py-0"
         >
-          {category}
+          {category[1].name}
         </button>
       {/each}
       <button
