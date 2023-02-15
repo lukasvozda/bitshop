@@ -31,7 +31,7 @@ export const idlFactory = ({ IDL }) => {
     products: IDL.Vec(OrderProduct),
     totalPrice: Satoshi
   });
-  const OrderId__1 = IDL.Nat;
+  const OrderId__1 = IDL.Text;
   const OrderStatus = IDL.Variant({
     TransactionIdSet: IDL.Null,
     UserConfirmedPayment: IDL.Null,
@@ -109,7 +109,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const GetProductError = IDL.Variant({ ProductNotFound: IDL.Null });
   const Result_4 = IDL.Variant({ ok: Product, err: GetProductError });
-  const OrderId = IDL.Nat;
+  const OrderId = IDL.Text;
   const GetParseError = IDL.Variant({
     Base58PubKeyWrongFormatError: IDL.Null
   });
@@ -131,7 +131,7 @@ export const idlFactory = ({ IDL }) => {
   });
   const Result = IDL.Variant({ ok: IDL.Null, err: UpdateProductError });
   return IDL.Service({
-    checkOrderStatus: IDL.Func([IDL.Nat], [Result_12], []),
+    checkOrderStatus: IDL.Func([IDL.Text], [Result_12], []),
     createOrder: IDL.Func([NewOrder], [Result_6], []),
     create_category: IDL.Func([IDL.Text], [Result_11], []),
     create_product: IDL.Func([UserProduct], [Result_10], []),
@@ -139,7 +139,7 @@ export const idlFactory = ({ IDL }) => {
     delete_category: IDL.Func([SlugId], [Result_9], []),
     delete_product: IDL.Func([SlugId], [Result_8], []),
     generateNextPaymentAddress: IDL.Func([], [Result_7], []),
-    getOrder: IDL.Func([IDL.Nat], [Result_6], ["query"]),
+    getOrder: IDL.Func([IDL.Text], [Result_6], ["query"]),
     getOwnerXPUB: IDL.Func([], [IDL.Text], ["query"]),
     get_category: IDL.Func([SlugId], [Result_5], ["query"]),
     get_product: IDL.Func([SlugId], [Result_4], ["query"]),

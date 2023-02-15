@@ -40,8 +40,8 @@ export type OrderError =
   | { MissingData: null }
   | { UnableToCreate: null }
   | { UnableToUpdate: null };
-export type OrderId = bigint;
-export type OrderId__1 = bigint;
+export type OrderId = string;
+export type OrderId__1 = string;
 export interface OrderProduct {
   id: ProductId;
   quantity: number;
@@ -112,7 +112,7 @@ export interface UserProduct {
   price: number;
 }
 export interface _SERVICE {
-  checkOrderStatus: ActorMethod<[bigint], Result_12>;
+  checkOrderStatus: ActorMethod<[string], Result_12>;
   createOrder: ActorMethod<[NewOrder], Result_6>;
   create_category: ActorMethod<[string], Result_11>;
   create_product: ActorMethod<[UserProduct], Result_10>;
@@ -120,7 +120,7 @@ export interface _SERVICE {
   delete_category: ActorMethod<[SlugId], Result_9>;
   delete_product: ActorMethod<[SlugId], Result_8>;
   generateNextPaymentAddress: ActorMethod<[], Result_7>;
-  getOrder: ActorMethod<[bigint], Result_6>;
+  getOrder: ActorMethod<[string], Result_6>;
   getOwnerXPUB: ActorMethod<[], string>;
   get_category: ActorMethod<[SlugId], Result_5>;
   get_product: ActorMethod<[SlugId], Result_4>;

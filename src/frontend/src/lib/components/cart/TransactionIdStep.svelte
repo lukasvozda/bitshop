@@ -4,7 +4,7 @@
   import { goto } from "$app/navigation";
   import { clearCart, paymentAddress } from "@/stores/cart";
   import { setUserInputTransactionId } from "@/stores/orders";
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
 
   const formTransactionId = field("transactionId", "", [required()]);
   const transactionForm = form(formTransactionId);
@@ -28,6 +28,11 @@
 
   onMount(() => {
     scrollTo(0, 0);
+  });
+
+  onDestroy(() => {
+    // at this point an order has been created with this address, this must be cleared even if not paid
+    paymentAddress.clear();
   });
 </script>
 

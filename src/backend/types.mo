@@ -89,7 +89,7 @@ module {
     county : Text;
   };
 
-  public type OrderId = Nat;
+  public type OrderId = Text;
   public type OrderProduct = {
     id : ProductId;
     quantity : Nat8;

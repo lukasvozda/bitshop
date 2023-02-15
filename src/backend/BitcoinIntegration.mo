@@ -3,7 +3,7 @@ import Blob "mo:base/Blob";
 import Array "mo:base/Array";
 import Nat64 "mo:base/Nat64";
 
-import BitcoinTypes "motoko-bitcoin/src/bitcoin/Types";
+import BitcoinTypes "mo:bitcoin/bitcoin/Types";
 import BitcoinApi "bitcoin-api/BitcoinApi";
 import BitcoinApiUtils "bitcoin-api/Utils";
 import BitcoinApiTypes "bitcoin-api/Types";

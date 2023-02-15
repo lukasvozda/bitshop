@@ -116,8 +116,8 @@ type OrderProduct = record {
   id : ProductId;
   quantity : nat8;
 };
-type OrderId__1 = nat;
-type OrderId = nat;
+type OrderId__1 = text;
+type OrderId = text;
 type OrderError = variant {
   MissingData;
   OrderNotFound;
@@ -165,7 +165,7 @@ type Category = record {
   slug : text;
 };
 service : {
-  checkOrderStatus : (nat) -> (Result_12);
+  checkOrderStatus : (text) -> (Result_12);
   createOrder : (NewOrder) -> (Result_6);
   create_category : (text) -> (Result_11);
   create_product : (UserProduct) -> (Result_10);
@@ -173,7 +173,7 @@ service : {
   delete_category : (SlugId) -> (Result_9);
   delete_product : (SlugId) -> (Result_8);
   generateNextPaymentAddress : () -> (Result_7);
-  getOrder : (nat) -> (Result_6) query;
+  getOrder : (text) -> (Result_6) query;
   getOwnerXPUB : () -> (text) query;
   get_category : (SlugId) -> (Result_5) query;
   get_product : (SlugId) -> (Result_4) query;

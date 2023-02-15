@@ -24,6 +24,17 @@ Install `dfx` by running
 sh -ci "$(curl -fsSL https://smartcontracts.org/install.sh)"
 ```
 
+## vessel
+
+Install `vessel` by running
+
+```
+wget -qO /usr/local/bin/vessel https://github.com/dfinity/vessel/releases/download/v0.6.5/vessel-linux64
+chmod +x /usr/local/bin/vessel
+```
+
+Note if you have a different OS, you can find the correct version [here](https://github.com/dfinity/vessel/releases/tag/v0.6.5).
+
 ### Start and stop the local replica
 
 Open a new terminal window _in the project directory_, and run the following command to start the local replica. The replica will not start unless `dfx.json` exists in the current directory.

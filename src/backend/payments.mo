@@ -1,10 +1,10 @@
-import Common "./motoko-bitcoin/src/Common";
-import Hmac "./motoko-bitcoin/src/Hmac";
-import Hash "./motoko-bitcoin/src/Hash";
-import Base58Check "./motoko-bitcoin/src/Base58Check";
-import Curves "./motoko-bitcoin/src/ec/Curves";
-import Jacobi "./motoko-bitcoin/src/ec/Jacobi";
-import Affine "./motoko-bitcoin/src/ec/Affine";
+import Common "mo:bitcoin/Common";
+import Hmac "mo:bitcoin/Hmac";
+import Hash "mo:bitcoin/Hash";
+import Base58Check "mo:bitcoin/Base58Check";
+import Curves "mo:bitcoin/ec/Curves";
+import Jacobi "mo:bitcoin/ec/Jacobi";
+import Affine "mo:bitcoin/ec/Affine";
 import Array "mo:base/Array";
 import Iter "mo:base/Iter";
 import Text "mo:base/Text";
@@ -14,9 +14,9 @@ import Nat32 "mo:base/Nat32";
 import Result "mo:base/Result";
 import Debug "mo:base/Debug";
 import Nat "mo:base/Nat";
-import Types "motoko-bitcoin/src/bitcoin/Types";
-import Ripemd160 "motoko-bitcoin/src/Ripemd160";
-import SHA256 "motoko-bitcoin//motoko-sha/src/SHA256";
+import Types "mo:bitcoin/bitcoin/Types";
+import Ripemd160 "mo:bitcoin/Ripemd160";
+import SHA256 "mo:sha/SHA256";
 
 module {
 
