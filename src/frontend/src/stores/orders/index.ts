@@ -21,7 +21,7 @@ export const cartOrder = derived(
         county: ""
       },
       products: [...$productsInCart].map((item) => ({
-        id: parseInt(item.product.id),
+        id: parseInt(item.product.id.toString()),
         quantity: item.quantity
       })),
       totalPrice: parseFloat($totalPrice),
@@ -51,7 +51,7 @@ export const createOrder = async () => {
 
 export const checkOrderVerified = async (orderId: string) => {
   return get(actor)
-    .checkOrderStatus(parseInt(orderId))
+    .checkOrderStatus(orderId)
     .then((response: ApiResponse) => {
       if ("ok" in response) {
         return response.ok;

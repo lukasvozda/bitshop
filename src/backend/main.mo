@@ -15,18 +15,17 @@ import Types "types";
 import BitcoinIntegration "./BitcoinIntegration";
 import BitcoinApiTypes "bitcoin-api/Types";
 
-//import Bip32 "motoko-bitcoin/src/Bip32";
-import Debug "mo:base/Debug";
-//import Base58Check "motoko-bitcoin/src/Base58Check";
-//import SHA256 "motoko-bitcoin/motoko-sha/src/SHA256";
+import Source "mo:uuid/async/SourceV4";
+import UUID "mo:uuid/UUID";
 
-import BitcoinTypes "motoko-bitcoin/src/bitcoin/Types";
+import Debug "mo:base/Debug";
+
+import BitcoinTypes "mo:bitcoin/bitcoin/Types";
 import Payments "./payments";
 
 actor {
 
   private stable var nextProduct : Types.ProductId = 1;
-  private stable var nextOrderId : Types.OrderId = 1;
 
   // Type import
   type ProductId = Types.ProductId;
@@ -62,7 +61,7 @@ actor {
   // to preserve products between updates (hashmap is not stable)
   private stable var stablecategories : [(SlugId, Category)] = [];
 
-  private var orders = Map.HashMap<OrderId, Order>(0, Nat.equal, Hash.hash);
+  private var orders = Map.HashMap<OrderId, Order>(0, Text.equal, Text.hash);
   private var addressToOrder = Map.HashMap<Text, OrderId>(0, Text.equal, Text.hash);
   private stable var stableorders : [(OrderId, Order)] = [];
   private stable var stableaddresstoorder : [(Text, OrderId)] = [];
@@ -94,6 +93,8 @@ actor {
     name = "T-shirts";
     slug = "t-shirts";
   };
+
+  let g = Source.Source();
 
   categories.put("t-shirts", c);
 
@@ -285,8 +286,8 @@ actor {
     orders := Map.fromIter<OrderId, Order>(
       stableorders.vals(),
       10,
-      Nat.equal,
-      Hash.hash
+      Text.equal,
+      Text.hash
     );
     addressToOrder := Map.fromIter<Text, OrderId>(
       stableaddresstoorder.vals(),
@@ -345,8 +346,7 @@ actor {
     return switch (addressToOrder.get(order.paymentAddress)) {
       case (?order) return #err(#PaymentAddressAlreadyUsed);
       case null {
-        let orderId : OrderId = nextOrderId;
-        nextOrderId += 1;
+        let orderId : OrderId = UUID.toText(await g.new());
 
         var newOrder : Order = {
           id = orderId;
@@ -372,7 +372,7 @@ actor {
     return Iter.toArray(orders.entries());
   };
 
-  public query func getOrder(orderId : Nat) : async Result.Result<Order, OrderError> {
+  public query func getOrder(orderId : Text) : async Result.Result<Order, OrderError> {
     let order = orders.get(orderId);
     return Result.fromOption(order, #OrderNotFound);
   };
@@ -402,7 +402,7 @@ actor {
     };
   };
 
-  public func checkOrderStatus(orderId : Nat) : async Result.Result<OrderStatus, OrderError> {
+  public func checkOrderStatus(orderId : Text) : async Result.Result<OrderStatus, OrderError> {
     return switch (orders.get(orderId)) {
       case null return #err(#OrderNotFound);
       case (?order) {

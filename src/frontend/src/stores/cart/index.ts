@@ -129,7 +129,6 @@ const fetchPaymentAddress = () => {
 
   const clear = (): any => {
     set(null);
-    return null;
   };
 
   const getNewPaymentAddress = async () => {
@@ -152,6 +151,7 @@ const fetchPaymentAddress = () => {
   return {
     subscribe,
     clear,
+    set,
     getNewPaymentAddress
   };
 };

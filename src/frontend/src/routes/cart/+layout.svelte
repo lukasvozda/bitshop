@@ -13,7 +13,6 @@
 
   let steps = [];
   let loading = false;
-  let orderId = "";
 
   onMount(() => {
     $currentStep = 0;
@@ -42,7 +41,6 @@
         loading = true;
         let result = await createOrder();
         if (result) {
-          orderId = result.id;
           $currentStep = Steps.TRANSACTION_SET;
         }
         loading = false;
