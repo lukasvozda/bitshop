@@ -8,10 +8,24 @@ export type Product = {
   category: string;
   inventory: number;
   description: string;
-  status: string;
+  active: boolean;
   time_updated: number;
   time_created: number;
   img: Uint8Array;
+};
+
+export type UserProduct = {
+  title: string;
+  //id: number;
+  //slug: string;
+  price: number;
+  category: string;
+  inventory: number;
+  description: string;
+  active: boolean;
+  //time_updated: number;
+  //time_created: number;
+  //img: Uint8Array;
 };
 
 export type CartProduct = {

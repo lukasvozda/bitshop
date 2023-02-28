@@ -11,7 +11,7 @@
     let category = {
       name: name
     };
-    let res = await $actor.create_category(name);
+    let res = await $actor.createCategory(name);
     // TODO handle errors
     console.log(res);
 

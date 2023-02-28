@@ -1,5 +1,7 @@
+import { Status } from "@/lib/utils";
 import { actor } from "@/stores";
-import type { Category, Product } from "@/types";
+import { alerts, alertVisibility } from "@/stores/alerts";
+import type { ApiResponse, Category, Product, UserProduct } from "@/types";
 import { get, writable } from "svelte/store";
 
 function fetchProducts() {
@@ -7,7 +9,7 @@ function fetchProducts() {
 
   const loadProducts = async () => {
     const actorStore = await get(actor);
-    let productList = await actorStore.list_products();
+    let productList = await actorStore.listProducts();
 
     // TODO remove once we have actual image functionality
     productList = productList.map((product: any) => [
@@ -22,10 +24,64 @@ function fetchProducts() {
     products.set(productList);
   };
 
+  const createProduct = async (product: UserProduct) => {
+    return get(actor)
+      .createProduct(product)
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          products.loadProducts();
+          alerts.addAlert("Product succesfully created.", Status.SUCCESS);
+          alertVisibility.showAlert();
+          return response.ok;
+        } else {
+          alerts.addAlert(
+            "Unable to create product: " + Object.keys(response.err)[0],
+            Status.ERROR
+          );
+          alertVisibility.showAlert();
+          return null;
+        }
+      })
+      .catch((err: any): any => {
+        console.log(Status.ERROR);
+        alerts.addAlert("Unable to create product.", Status.ERROR);
+        alertVisibility.showAlert();
+        return null;
+      });
+  };
+
+  const updateProduct = async (slug: string, product: UserProduct) => {
+    return get(actor)
+      .updateProduct(slug, product)
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          //products.loadProducts();
+          alerts.addAlert("Product succesfully updated.", Status.SUCCESS);
+          alertVisibility.showAlert();
+          return response.ok;
+        } else {
+          alerts.addAlert(
+            "Unable to update product: " + Object.keys(response.err)[0],
+            Status.ERROR
+          );
+          alertVisibility.showAlert();
+          return null;
+        }
+      })
+      .catch((err: any): any => {
+        console.log(Status.ERROR);
+        alerts.addAlert("Unable to update product.", Status.ERROR);
+        alertVisibility.showAlert();
+        return null;
+      });
+  };
+
   return {
     subscribe,
     set,
-    loadProducts
+    loadProducts,
+    createProduct,
+    updateProduct
   };
 }
 
@@ -36,7 +92,7 @@ function fetchCategories() {
 
   const loadCategories = async () => {
     const categoryStore = await get(actor);
-    const categorytList = await categoryStore.list_categories();
+    const categorytList = await categoryStore.listCategories();
     categories.set(categorytList);
   };
 

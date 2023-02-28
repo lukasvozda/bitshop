@@ -1,12 +1,9 @@
 type UserProduct = record {
+  active : bool;
   category : SlugId__1;
   description : text;
   inventory : nat8;
   price : float64;
-  status : variant {
-    active;
-    paused;
-  };
   title : text;
 };
 type UpdateProductError = variant {
@@ -46,12 +43,12 @@ type Result_7 = variant {
   ok : text;
 };
 type Result_6 = variant {
-  err : OrderError;
-  ok : Order;
-};
-type Result_5 = variant {
   err : GetCategoryError;
   ok : Category;
+};
+type Result_5 = variant {
+  err : OrderError;
+  ok : Order;
 };
 type Result_4 = variant {
   err : GetProductError;
@@ -87,6 +84,7 @@ type Result = variant {
 };
 type ProductId = nat;
 type Product = record {
+  active : bool;
   category : SlugId__1;
   description : text;
   id : ProductId;
@@ -94,10 +92,6 @@ type Product = record {
   inventory : nat8;
   price : float64;
   slug : text;
-  status : variant {
-    active;
-    paused;
-  };
   time_created : Time;
   time_updated : Time;
   title : text;
@@ -166,30 +160,30 @@ type Category = record {
 };
 service : {
   checkOrderStatus : (text) -> (Result_12);
-  createOrder : (NewOrder) -> (Result_6);
-  create_category : (text) -> (Result_11);
-  create_product : (UserProduct) -> (Result_10);
+  createCategory : (text) -> (Result_11);
+  createOrder : (NewOrder) -> (Result_5);
+  createProduct : (UserProduct) -> (Result_10);
+  deleteCategory : (SlugId) -> (Result_9);
   deleteOwnerXPUB : () -> () oneway;
-  delete_category : (SlugId) -> (Result_9);
-  delete_product : (SlugId) -> (Result_8);
+  deleteProduct : (SlugId) -> (Result_8);
   generateNextPaymentAddress : () -> (Result_7);
-  getOrder : (text) -> (Result_6) query;
+  getCategory : (SlugId) -> (Result_6) query;
+  getOrder : (text) -> (Result_5) query;
   getOwnerXPUB : () -> (text) query;
-  get_category : (SlugId) -> (Result_5) query;
-  get_product : (SlugId) -> (Result_4) query;
+  getProduct : (SlugId) -> (Result_4) query;
+  listCategories : () -> (
+    vec record {
+      SlugId;
+      Category;
+    }
+  ) query;
   listOrders : () -> (
     vec record {
       OrderId;
       Order;
     }
   ) query;
-  list_categories : () -> (
-    vec record {
-      SlugId;
-      Category;
-    }
-  ) query;
-  list_products : () -> (
+  listProducts : () -> (
     vec record {
       SlugId;
       Product;
@@ -197,6 +191,6 @@ service : {
   ) query;
   setOwnerXPUB : (text) -> (Result_3);
   setUserInputTransactionId : (text, text) -> (Result_2);
-  update_category : (SlugId, text) -> (Result_1);
-  update_product : (SlugId, UserProduct) -> (Result);
+  updateCategory : (SlugId, text) -> (Result_1);
+  updateProduct : (SlugId, UserProduct) -> (Result);
 };

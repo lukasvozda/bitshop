@@ -79,7 +79,7 @@ actor {
     price = 5.0;
     inventory = 10;
     description = "Test product";
-    status = #active;
+    active = true;
     img = Blob.fromArray([0]);
     slug = "test-product-0";
     time_created = Time.now();
@@ -98,7 +98,7 @@ actor {
 
   categories.put("t-shirts", c);
 
-  public shared (msg) func create_product(p : UserProduct) : async Result.Result<(), CreateProductError> {
+  public shared (msg) func createProduct(p : UserProduct) : async Result.Result<(), CreateProductError> {
 
     if (p.title == "") { return #err(#EmptyTitle) };
 
@@ -115,7 +115,7 @@ actor {
       category = p.category;
       inventory = p.inventory;
       description = p.description;
-      status = p.status;
+      active = p.active;
       img = Blob.fromArray([0]);
       // Lets deal with product images later
       slug = new_slug;
@@ -128,13 +128,13 @@ actor {
     // Return an OK result
   };
 
-  public query func get_product(id : SlugId) : async Result.Result<Product, GetProductError> {
+  public query func getProduct(id : SlugId) : async Result.Result<Product, GetProductError> {
     let product = products.get(id);
     return Result.fromOption(product, #ProductNotFound);
     // If the post is not found, this will return an error as result.
   };
 
-  public shared (msg) func update_product(
+  public shared (msg) func updateProduct(
     id : SlugId,
     p : UserProduct
   ) : async Result.Result<(), UpdateProductError> {
@@ -162,7 +162,7 @@ actor {
           category = p.category;
           inventory = p.inventory;
           description = p.description;
-          status = p.status;
+          active = p.active;
           img = Blob.fromArray([0]);
           // keep persistent URLS
           slug = v.slug;
@@ -177,7 +177,7 @@ actor {
     // If all goes fine, return an OK result.
   };
 
-  public shared (msg) func delete_product(id : SlugId) : async Result.Result<(), DeleteProductError> {
+  public shared (msg) func deleteProduct(id : SlugId) : async Result.Result<(), DeleteProductError> {
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -185,11 +185,11 @@ actor {
     return #ok(());
   };
 
-  public query func list_products() : async [(SlugId, Product)] {
+  public query func listProducts() : async [(SlugId, Product)] {
     return Iter.toArray(products.entries());
   };
 
-  public shared (msg) func create_category(name : Text) : async Result.Result<(), CreateCategoryError> {
+  public shared (msg) func createCategory(name : Text) : async Result.Result<(), CreateCategoryError> {
 
     if (name == "") { return #err(#EmptyName) };
 
@@ -214,7 +214,7 @@ actor {
     return #ok(());
   };
 
-  public shared (msg) func update_category(
+  public shared (msg) func updateCategory(
     id : SlugId,
     name : Text
   ) : async Result.Result<(), UpdateCategoryError> {
@@ -243,13 +243,13 @@ actor {
     return #ok(());
   };
 
-  public query func get_category(id : SlugId) : async Result.Result<Category, GetCategoryError> {
+  public query func getCategory(id : SlugId) : async Result.Result<Category, GetCategoryError> {
     let category = categories.get(id);
     return Result.fromOption(category, #CategoryNotFound);
     // If the post is not found, this will return an error as result.
   };
 
-  public shared (msg) func delete_category(id : SlugId) : async Result.Result<(), DeleteCategoryError> {
+  public shared (msg) func deleteCategory(id : SlugId) : async Result.Result<(), DeleteCategoryError> {
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -257,7 +257,7 @@ actor {
     return #ok(());
   };
 
-  public query func list_categories() : async [(SlugId, Category)] {
+  public query func listCategories() : async [(SlugId, Category)] {
     return Iter.toArray(categories.entries());
   };
 
