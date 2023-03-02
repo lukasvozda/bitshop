@@ -57,9 +57,9 @@ export type OrderStatus__1 =
 export interface Product {
   id: ProductId;
   img: Uint8Array;
-  status: { active: null } | { paused: null };
   time_created: Time;
   title: string;
+  active: boolean;
   inventory: number;
   slug: string;
   description: string;
@@ -76,8 +76,8 @@ export type Result_12 = { ok: OrderStatus__1 } | { err: OrderError };
 export type Result_2 = { ok: OrderId } | { err: OrderError };
 export type Result_3 = { ok: null } | { err: GetParseError };
 export type Result_4 = { ok: Product } | { err: GetProductError };
-export type Result_5 = { ok: Category } | { err: GetCategoryError };
-export type Result_6 = { ok: Order } | { err: OrderError };
+export type Result_5 = { ok: Order } | { err: OrderError };
+export type Result_6 = { ok: Category } | { err: GetCategoryError };
 export type Result_7 = { ok: string } | { err: GetDerivationError };
 export type Result_8 = { ok: null } | { err: DeleteProductError };
 export type Result_9 = { ok: null } | { err: DeleteCategoryError };
@@ -104,8 +104,8 @@ export type UpdateProductError =
   | { UserNotAuthenticated: null }
   | { EmptyTitle: null };
 export interface UserProduct {
-  status: { active: null } | { paused: null };
   title: string;
+  active: boolean;
   inventory: number;
   description: string;
   category: SlugId__1;
@@ -113,22 +113,22 @@ export interface UserProduct {
 }
 export interface _SERVICE {
   checkOrderStatus: ActorMethod<[string], Result_12>;
-  createOrder: ActorMethod<[NewOrder], Result_6>;
-  create_category: ActorMethod<[string], Result_11>;
-  create_product: ActorMethod<[UserProduct], Result_10>;
+  createCategory: ActorMethod<[string], Result_11>;
+  createOrder: ActorMethod<[NewOrder], Result_5>;
+  createProduct: ActorMethod<[UserProduct], Result_10>;
+  deleteCategory: ActorMethod<[SlugId], Result_9>;
   deleteOwnerXPUB: ActorMethod<[], undefined>;
-  delete_category: ActorMethod<[SlugId], Result_9>;
-  delete_product: ActorMethod<[SlugId], Result_8>;
+  deleteProduct: ActorMethod<[SlugId], Result_8>;
   generateNextPaymentAddress: ActorMethod<[], Result_7>;
-  getOrder: ActorMethod<[string], Result_6>;
+  getCategory: ActorMethod<[SlugId], Result_6>;
+  getOrder: ActorMethod<[string], Result_5>;
   getOwnerXPUB: ActorMethod<[], string>;
-  get_category: ActorMethod<[SlugId], Result_5>;
-  get_product: ActorMethod<[SlugId], Result_4>;
+  getProduct: ActorMethod<[SlugId], Result_4>;
+  listCategories: ActorMethod<[], Array<[SlugId, Category]>>;
   listOrders: ActorMethod<[], Array<[OrderId, Order]>>;
-  list_categories: ActorMethod<[], Array<[SlugId, Category]>>;
-  list_products: ActorMethod<[], Array<[SlugId, Product]>>;
+  listProducts: ActorMethod<[], Array<[SlugId, Product]>>;
   setOwnerXPUB: ActorMethod<[string], Result_3>;
   setUserInputTransactionId: ActorMethod<[string, string], Result_2>;
-  update_category: ActorMethod<[SlugId, string], Result_1>;
-  update_product: ActorMethod<[SlugId, UserProduct], Result>;
+  updateCategory: ActorMethod<[SlugId, string], Result_1>;
+  updateProduct: ActorMethod<[SlugId, UserProduct], Result>;
 }

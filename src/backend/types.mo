@@ -66,7 +66,7 @@ module {
     inventory : Nat8;
     description : Text;
     category : SlugId;
-    status : { #active; #paused };
+    active : Bool;
   };
 
   // Backend data

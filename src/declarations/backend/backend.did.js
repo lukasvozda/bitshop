@@ -12,6 +12,15 @@ export const idlFactory = ({ IDL }) => {
     UnableToUpdate: IDL.Null
   });
   const Result_12 = IDL.Variant({ ok: OrderStatus__1, err: OrderError });
+  const CreateCategoryError = IDL.Variant({
+    CategoryAlreadyExists: IDL.Null,
+    UserNotAuthenticated: IDL.Null,
+    EmptyName: IDL.Null
+  });
+  const Result_11 = IDL.Variant({
+    ok: IDL.Null,
+    err: CreateCategoryError
+  });
   const ShippingAddress = IDL.Record({
     postCode: IDL.Text,
     street: IDL.Text,
@@ -48,20 +57,11 @@ export const idlFactory = ({ IDL }) => {
     totalPrice: Satoshi,
     transactionId: IDL.Text
   });
-  const Result_6 = IDL.Variant({ ok: Order, err: OrderError });
-  const CreateCategoryError = IDL.Variant({
-    CategoryAlreadyExists: IDL.Null,
-    UserNotAuthenticated: IDL.Null,
-    EmptyName: IDL.Null
-  });
-  const Result_11 = IDL.Variant({
-    ok: IDL.Null,
-    err: CreateCategoryError
-  });
+  const Result_5 = IDL.Variant({ ok: Order, err: OrderError });
   const SlugId__1 = IDL.Text;
   const UserProduct = IDL.Record({
-    status: IDL.Variant({ active: IDL.Null, paused: IDL.Null }),
     title: IDL.Text,
+    active: IDL.Bool,
     inventory: IDL.Nat8,
     description: IDL.Text,
     category: SlugId__1,
@@ -93,13 +93,13 @@ export const idlFactory = ({ IDL }) => {
   const Result_7 = IDL.Variant({ ok: IDL.Text, err: GetDerivationError });
   const Category = IDL.Record({ name: IDL.Text, slug: IDL.Text });
   const GetCategoryError = IDL.Variant({ CategoryNotFound: IDL.Null });
-  const Result_5 = IDL.Variant({ ok: Category, err: GetCategoryError });
+  const Result_6 = IDL.Variant({ ok: Category, err: GetCategoryError });
   const Product = IDL.Record({
     id: ProductId,
     img: IDL.Vec(IDL.Nat8),
-    status: IDL.Variant({ active: IDL.Null, paused: IDL.Null }),
     time_created: Time,
     title: IDL.Text,
+    active: IDL.Bool,
     inventory: IDL.Nat8,
     slug: IDL.Text,
     description: IDL.Text,
@@ -132,24 +132,24 @@ export const idlFactory = ({ IDL }) => {
   const Result = IDL.Variant({ ok: IDL.Null, err: UpdateProductError });
   return IDL.Service({
     checkOrderStatus: IDL.Func([IDL.Text], [Result_12], []),
-    createOrder: IDL.Func([NewOrder], [Result_6], []),
-    create_category: IDL.Func([IDL.Text], [Result_11], []),
-    create_product: IDL.Func([UserProduct], [Result_10], []),
+    createCategory: IDL.Func([IDL.Text], [Result_11], []),
+    createOrder: IDL.Func([NewOrder], [Result_5], []),
+    createProduct: IDL.Func([UserProduct], [Result_10], []),
+    deleteCategory: IDL.Func([SlugId], [Result_9], []),
     deleteOwnerXPUB: IDL.Func([], [], ["oneway"]),
-    delete_category: IDL.Func([SlugId], [Result_9], []),
-    delete_product: IDL.Func([SlugId], [Result_8], []),
+    deleteProduct: IDL.Func([SlugId], [Result_8], []),
     generateNextPaymentAddress: IDL.Func([], [Result_7], []),
-    getOrder: IDL.Func([IDL.Text], [Result_6], ["query"]),
+    getCategory: IDL.Func([SlugId], [Result_6], ["query"]),
+    getOrder: IDL.Func([IDL.Text], [Result_5], ["query"]),
     getOwnerXPUB: IDL.Func([], [IDL.Text], ["query"]),
-    get_category: IDL.Func([SlugId], [Result_5], ["query"]),
-    get_product: IDL.Func([SlugId], [Result_4], ["query"]),
+    getProduct: IDL.Func([SlugId], [Result_4], ["query"]),
+    listCategories: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Category))], ["query"]),
     listOrders: IDL.Func([], [IDL.Vec(IDL.Tuple(OrderId, Order))], ["query"]),
-    list_categories: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Category))], ["query"]),
-    list_products: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Product))], ["query"]),
+    listProducts: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Product))], ["query"]),
     setOwnerXPUB: IDL.Func([IDL.Text], [Result_3], []),
     setUserInputTransactionId: IDL.Func([IDL.Text, IDL.Text], [Result_2], []),
-    update_category: IDL.Func([SlugId, IDL.Text], [Result_1], []),
-    update_product: IDL.Func([SlugId, UserProduct], [Result], [])
+    updateCategory: IDL.Func([SlugId, IDL.Text], [Result_1], []),
+    updateProduct: IDL.Func([SlugId, UserProduct], [Result], [])
   });
 };
 export const init = ({ IDL }) => {
