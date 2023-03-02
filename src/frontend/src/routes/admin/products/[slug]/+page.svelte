@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { actor } from "@/stores";
   import { page } from "$app/stores";
   import { products } from "@/stores/products";
   import type { Product } from "@/types";

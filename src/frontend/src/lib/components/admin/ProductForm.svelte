@@ -2,7 +2,7 @@
   import { categories } from "@/stores/products";
   import type { UserProduct } from "@/types";
   import { field, form } from "svelte-forms";
-  import { required } from "svelte-forms/validators";
+  import { required, min } from "svelte-forms/validators";
 
   export let disabled: boolean;
   export let product: UserProduct;
@@ -11,7 +11,7 @@
   const formTitle = field("title", product.title, [required()]);
   const formDescription = field("description", product.description, []);
   const formCategory = field("category", product.category, [required()]);
-  const formPrice = field("price", product.price, [required()]);
+  const formPrice = field("price", product.price, [required(), min(1)]);
   const formInventory = field("inventory", product.inventory, [required()]);
   const formActive = field("active", product.active, []);
   const productForm = form(
@@ -45,6 +45,7 @@
         alt="title"
         type="text"
         placeholder="Title"
+        required
         class="input mt-1 input-md block w-full rounded-lg border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {isValidField(
           $productForm.hasError('title.required')
         )}"
@@ -92,16 +93,21 @@
           alt="price"
           type="number"
           placeholder="1"
+          min="1"
+          required
           class="input mt-1 input-md block w-full rounded-lg border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {isValidField(
-            $productForm.hasError('price.required')
+            $productForm.hasError('price.required') || $productForm.hasError('price.min')
           )}"
           bind:value={$formPrice.value}
           {disabled}
         />
       </label>
       {#if $productForm.hasError("price.required")}
-        <span class="text-red-500 text-sm ml-1 mt-1"> Price is required </span>
+        <span class="text-red-500 text-sm ml-1 mt-1"> Price is required</span>
       {/if}
+      {#if $productForm.hasError("price.min")}
+        <span class="text-red-500 text-sm ml-1 mt-1"> Minimum price is 1</span>
+      {/if}      
     </div>
     <div class="form-control w-full my-4">
       <label for="inventory" class="block text-sm font-medium text-gray-700">
@@ -111,6 +117,8 @@
           alt="inventory"
           type="number"
           placeholder="1"
+          min="1"
+          required
           class="input mt-1 input-md block w-full rounded-lg border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm {isValidField(
             $productForm.hasError('inventory.required')
           )}"
