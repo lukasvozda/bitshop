@@ -76,12 +76,39 @@ function fetchProducts() {
       });
   };
 
+  const deleteProduct = async (slug: string) => {
+    return get(actor)
+      .deleteProduct(slug)
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          alerts.addAlert("Product succesfully deleted.", Status.SUCCESS);
+          alertVisibility.showAlert();
+          products.loadProducts();
+          return true;
+        } else {
+          alerts.addAlert(
+            "Unable to delete product: " + Object.keys(response.err)[0],
+            Status.ERROR
+          );
+          alertVisibility.showAlert();
+          return false;
+        }
+      })
+      .catch((err: any): any => {
+        console.log(Status.ERROR);
+        alerts.addAlert("Unable to delete product.", Status.ERROR);
+        alertVisibility.showAlert();
+        return false;
+      });
+  };
+
   return {
     subscribe,
     set,
     loadProducts,
     createProduct,
-    updateProduct
+    updateProduct,
+    deleteProduct
   };
 }
 
@@ -96,10 +123,91 @@ function fetchCategories() {
     categories.set(categorytList);
   };
 
+  const createCategory = async (name: string) => {
+    return get(actor)
+      .createCategory(name)
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          categories.loadCategories();
+          alerts.addAlert("Category succesfully created.", Status.SUCCESS);
+          alertVisibility.showAlert();
+          return response.ok;
+        } else {
+          alerts.addAlert(
+            "Unable to create category: " + Object.keys(response.err)[0],
+            Status.ERROR
+          );
+          alertVisibility.showAlert();
+          return null;
+        }
+      })
+      .catch((err: any): any => {
+        console.log(Status.ERROR);
+        alerts.addAlert("Unable to create category.", Status.ERROR);
+        alertVisibility.showAlert();
+        return null;
+      });
+  };
+
+  const updateCategory = async (slug: string, name: string) => {
+    return get(actor)
+      .updateCategory(slug, name)
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          categories.loadCategories();
+          alerts.addAlert("Category succesfully updated.", Status.SUCCESS);
+          alertVisibility.showAlert();
+          return response.ok;
+        } else {
+          alerts.addAlert(
+            "Unable to update category: " + Object.keys(response.err)[0],
+            Status.ERROR
+          );
+          alertVisibility.showAlert();
+          return null;
+        }
+      })
+      .catch((err: any): any => {
+        console.log(Status.ERROR);
+        alerts.addAlert("Unable to update category.", Status.ERROR);
+        alertVisibility.showAlert();
+        return null;
+      });
+  };
+
+  const deleteCategory = async (slug: string) => {
+    return get(actor)
+      .deleteCategory(slug)
+      .then((response: ApiResponse) => {
+        if ("ok" in response) {
+          categories.loadCategories();
+          alerts.addAlert("Category succesfully deleted.", Status.SUCCESS);
+          alertVisibility.showAlert();
+          return true;
+        } else {
+          alerts.addAlert(
+            "Unable to delete category: " + Object.keys(response.err)[0],
+            Status.ERROR
+          );
+          alertVisibility.showAlert();
+          return false;
+        }
+      })
+      .catch((err: any): any => {
+        console.log(Status.ERROR);
+        alerts.addAlert("Unable to delete category.", Status.ERROR);
+        alertVisibility.showAlert();
+        return false;
+      });
+  };
+
   return {
     subscribe,
     set,
-    loadCategories
+    loadCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory
   };
 }
 

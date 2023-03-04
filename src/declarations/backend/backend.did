@@ -68,19 +68,19 @@ type Result_12 = variant {
 };
 type Result_11 = variant {
   err : CreateCategoryError;
-  ok;
+  ok : Category;
 };
 type Result_10 = variant {
   err : CreateProductError;
-  ok;
+  ok : Product;
 };
 type Result_1 = variant {
   err : UpdateCategoryError;
-  ok;
+  ok : Category;
 };
 type Result = variant {
   err : UpdateProductError;
-  ok;
+  ok : Product;
 };
 type ProductId = nat;
 type Product = record {

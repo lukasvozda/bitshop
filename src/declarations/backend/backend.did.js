@@ -12,13 +12,14 @@ export const idlFactory = ({ IDL }) => {
     UnableToUpdate: IDL.Null
   });
   const Result_12 = IDL.Variant({ ok: OrderStatus__1, err: OrderError });
+  const Category = IDL.Record({ name: IDL.Text, slug: IDL.Text });
   const CreateCategoryError = IDL.Variant({
     CategoryAlreadyExists: IDL.Null,
     UserNotAuthenticated: IDL.Null,
     EmptyName: IDL.Null
   });
   const Result_11 = IDL.Variant({
-    ok: IDL.Null,
+    ok: Category,
     err: CreateCategoryError
   });
   const ShippingAddress = IDL.Record({
@@ -67,14 +68,24 @@ export const idlFactory = ({ IDL }) => {
     category: SlugId__1,
     price: IDL.Float64
   });
+  const Product = IDL.Record({
+    id: ProductId,
+    img: IDL.Vec(IDL.Nat8),
+    time_created: Time,
+    title: IDL.Text,
+    active: IDL.Bool,
+    inventory: IDL.Nat8,
+    slug: IDL.Text,
+    description: IDL.Text,
+    time_updated: Time,
+    category: SlugId__1,
+    price: IDL.Float64
+  });
   const CreateProductError = IDL.Variant({
     UserNotAuthenticated: IDL.Null,
     EmptyTitle: IDL.Null
   });
-  const Result_10 = IDL.Variant({
-    ok: IDL.Null,
-    err: CreateProductError
-  });
+  const Result_10 = IDL.Variant({ ok: Product, err: CreateProductError });
   const SlugId = IDL.Text;
   const DeleteCategoryError = IDL.Variant({
     UserNotAuthenticated: IDL.Null
@@ -91,22 +102,8 @@ export const idlFactory = ({ IDL }) => {
     Base58PubKeyWrongFormatError: IDL.Null
   });
   const Result_7 = IDL.Variant({ ok: IDL.Text, err: GetDerivationError });
-  const Category = IDL.Record({ name: IDL.Text, slug: IDL.Text });
   const GetCategoryError = IDL.Variant({ CategoryNotFound: IDL.Null });
   const Result_6 = IDL.Variant({ ok: Category, err: GetCategoryError });
-  const Product = IDL.Record({
-    id: ProductId,
-    img: IDL.Vec(IDL.Nat8),
-    time_created: Time,
-    title: IDL.Text,
-    active: IDL.Bool,
-    inventory: IDL.Nat8,
-    slug: IDL.Text,
-    description: IDL.Text,
-    time_updated: Time,
-    category: SlugId__1,
-    price: IDL.Float64
-  });
   const GetProductError = IDL.Variant({ ProductNotFound: IDL.Null });
   const Result_4 = IDL.Variant({ ok: Product, err: GetProductError });
   const OrderId = IDL.Text;
@@ -121,7 +118,7 @@ export const idlFactory = ({ IDL }) => {
     EmptyName: IDL.Null
   });
   const Result_1 = IDL.Variant({
-    ok: IDL.Null,
+    ok: Category,
     err: UpdateCategoryError
   });
   const UpdateProductError = IDL.Variant({
@@ -129,7 +126,7 @@ export const idlFactory = ({ IDL }) => {
     UserNotAuthenticated: IDL.Null,
     EmptyTitle: IDL.Null
   });
-  const Result = IDL.Variant({ ok: IDL.Null, err: UpdateProductError });
+  const Result = IDL.Variant({ ok: Product, err: UpdateProductError });
   return IDL.Service({
     checkOrderStatus: IDL.Func([IDL.Text], [Result_12], []),
     createCategory: IDL.Func([IDL.Text], [Result_11], []),

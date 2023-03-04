@@ -68,10 +68,10 @@ export interface Product {
   price: number;
 }
 export type ProductId = bigint;
-export type Result = { ok: null } | { err: UpdateProductError };
-export type Result_1 = { ok: null } | { err: UpdateCategoryError };
-export type Result_10 = { ok: null } | { err: CreateProductError };
-export type Result_11 = { ok: null } | { err: CreateCategoryError };
+export type Result = { ok: Product } | { err: UpdateProductError };
+export type Result_1 = { ok: Category } | { err: UpdateCategoryError };
+export type Result_10 = { ok: Product } | { err: CreateProductError };
+export type Result_11 = { ok: Category } | { err: CreateCategoryError };
 export type Result_12 = { ok: OrderStatus__1 } | { err: OrderError };
 export type Result_2 = { ok: OrderId } | { err: OrderError };
 export type Result_3 = { ok: null } | { err: GetParseError };
