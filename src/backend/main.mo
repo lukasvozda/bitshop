@@ -98,7 +98,7 @@ actor {
 
   categories.put("t-shirts", c);
 
-  public shared (msg) func createProduct(p : UserProduct) : async Result.Result<(), CreateProductError> {
+  public shared (msg) func createProduct(p : UserProduct) : async Result.Result<(Product), CreateProductError> {
 
     if (p.title == "") { return #err(#EmptyTitle) };
 
@@ -124,7 +124,7 @@ actor {
     };
 
     products.put(new_slug, product);
-    return #ok(());
+    return #ok(product);
     // Return an OK result
   };
 
@@ -137,7 +137,7 @@ actor {
   public shared (msg) func updateProduct(
     id : SlugId,
     p : UserProduct
-  ) : async Result.Result<(), UpdateProductError> {
+  ) : async Result.Result<(Product), UpdateProductError> {
     // commented for local development
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
@@ -171,10 +171,9 @@ actor {
           time_updated = Time.now();
         };
         products.put(id, product);
+        return #ok(product);
       };
     };
-    return #ok(());
-    // If all goes fine, return an OK result.
   };
 
   public shared (msg) func deleteProduct(id : SlugId) : async Result.Result<(), DeleteProductError> {
@@ -189,7 +188,7 @@ actor {
     return Iter.toArray(products.entries());
   };
 
-  public shared (msg) func createCategory(name : Text) : async Result.Result<(), CreateCategoryError> {
+  public shared (msg) func createCategory(name : Text) : async Result.Result<(Category), CreateCategoryError> {
 
     if (name == "") { return #err(#EmptyName) };
 
@@ -204,43 +203,43 @@ actor {
         };
 
         categories.put(new_slug, category);
-        return #ok(());
+        return #ok(category);
       };
       case (?v) {
         // We want category to exist only once
         return #err(#CategoryAlreadyExists);
       };
     };
-    return #ok(());
   };
 
   public shared (msg) func updateCategory(
     id : SlugId,
     name : Text
-  ) : async Result.Result<(), UpdateCategoryError> {
+  ) : async Result.Result<(Category), UpdateCategoryError> {
     // commented for local development
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
     // };
 
-    if (c.name == "") {
+    if (name == "") {
       return #err(#EmptyName);
     };
 
     let result = categories.get(id);
+
     switch (result) {
       case null {
         return #err(#CategoryNotFound);
       };
       case (?v) {
         let category : Category = {
-          name = c.name;
+          name = name;
           slug = v.slug; // URL should stay the same
         };
         categories.put(id, category);
+        return #ok(category);
       };
     };
-    return #ok(());
   };
 
   public query func getCategory(id : SlugId) : async Result.Result<Category, GetCategoryError> {

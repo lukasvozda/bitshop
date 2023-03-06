@@ -38,6 +38,10 @@ export type Category = {
   slug: string;
 };
 
+export type UserCategory = {
+  name: string;
+};
+
 export type ShippingAddress = {
   email: string;
   firstName: string;

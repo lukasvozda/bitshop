@@ -1,8 +1,6 @@
 <script>
-  import { actor } from "@/stores";
   import { products } from "@/stores/products";
   import { Btc } from "svelte-cryptoicon";
-  console.log($products);
 </script>
 
 <section>

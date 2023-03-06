@@ -30,7 +30,7 @@
   $: product.inventory = $formInventory.value;
   $: product.active = $formActive.value;
 
-  const isValidField = (invalid) =>
+  const isValidField = (invalid: boolean) =>
     invalid
       ? "invalid:border-red-500 invalid:text-red-500 focus:invalid:border-red-500 focus:invalid:text-red-500 focus:invalid:ring-red-500"
       : "";
@@ -107,7 +107,7 @@
       {/if}
       {#if $productForm.hasError("price.min")}
         <span class="text-red-500 text-sm ml-1 mt-1"> Minimum price is 1</span>
-      {/if}      
+      {/if}
     </div>
     <div class="form-control w-full my-4">
       <label for="inventory" class="block text-sm font-medium text-gray-700">
@@ -152,10 +152,12 @@
         />
       </label>
     </div>
-    {#if disabled === true}
-      <button type="submit" class="btn my-4 loading ">Submit product</button>
-    {:else}
-      <button type="submit" class="btn my-4">Submit product</button>
-    {/if}
+    <div class="flex justify-end">
+      {#if disabled === true}
+        <button type="submit" class="btn my-4 loading ">Submit product</button>
+      {:else}
+        <button type="submit" class="btn my-4">Submit product</button>
+      {/if}
+    </div>
   </form>
 {/if}
