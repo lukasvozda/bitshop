@@ -1,2 +1,3 @@
-<h2>Admin panel</h2>
-<p>Recent orders</p>
+<div class="flex my-4">
+  <h1>Admin panel</h1>
+</div>

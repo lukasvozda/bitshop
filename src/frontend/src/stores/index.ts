@@ -6,11 +6,13 @@ const host = import.meta.env.VITE_HOST;
 
 function fetchActor() {
   const { subscribe, set } = writable(null);
-  const init = () => set(createActor(canisterId, { agentOptions: { host } }));
+  const init = () => set(createActor(canisterId, { agentOptions: { host: host } }));
   return {
     subscribe,
     init
   };
 }
 
+export const loggedIn = writable(false);
+export const userId = writable("");
 export const actor = fetchActor();

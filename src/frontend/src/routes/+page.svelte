@@ -7,9 +7,6 @@
 
   let showAllCategories = false;
 
-  // todo substitute with real categories
-  //let categories = ["t-shirts", "sunglasses", "hoodies", "socks", "caps", "jeans", "trousers"];
-
   let scroll;
   let speed = 0.35;
 

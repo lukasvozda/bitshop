@@ -171,6 +171,7 @@ service : {
   getOrder : (text) -> (Result_5) query;
   getOwnerXPUB : () -> (text) query;
   getProduct : (SlugId) -> (Result_4) query;
+  greet : (text) -> (text) query;
   listCategories : () -> (
     vec record {
       SlugId;

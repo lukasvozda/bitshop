@@ -11,7 +11,6 @@
   let created: boolean = false;
   let newCategory: Category;
 
-  // This will later be in the admin section
   const createCategory = async () => {
     disabled = true;
     console.log("create category", category.name);
@@ -36,6 +35,9 @@
   <CategoryForm {disabled} {category} submitFunction={createCategory} />
 {:else}
   <div>
-    Category was created. You can edit it here: <a href="/admin/categories/{newCategory.slug}" class="link">{newCategory.name}</a>
+    Category was created. You can edit it here: <a
+      href="/admin/categories/{newCategory.slug}"
+      class="link">{newCategory.name}</a
+    >
   </div>
 {/if}
