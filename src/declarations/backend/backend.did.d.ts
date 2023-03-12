@@ -124,6 +124,7 @@ export interface _SERVICE {
   getOrder: ActorMethod<[string], Result_5>;
   getOwnerXPUB: ActorMethod<[], string>;
   getProduct: ActorMethod<[SlugId], Result_4>;
+  greet: ActorMethod<[string], string>;
   listCategories: ActorMethod<[], Array<[SlugId, Category]>>;
   listOrders: ActorMethod<[], Array<[OrderId, Order]>>;
   listProducts: ActorMethod<[], Array<[SlugId, Product]>>;

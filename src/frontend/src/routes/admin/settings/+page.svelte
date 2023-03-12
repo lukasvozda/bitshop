@@ -8,7 +8,9 @@
   });
 </script>
 
-<h2>Settings</h2>
+<div class="flex my-4">
+  <h1>Settings</h1>
+</div>
 
 <div>
   <input

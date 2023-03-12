@@ -12,7 +12,9 @@
 </script>
 
 <section>
-  <h2>Orders</h2>
+  <div class="flex my-4">
+    <h1>Orders</h1>
+  </div>
 
   <div class="overflow-x-auto">
     <table class="table table-zebra w-full table-compact">
