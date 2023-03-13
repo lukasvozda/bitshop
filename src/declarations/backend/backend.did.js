@@ -148,6 +148,7 @@ export const idlFactory = ({ IDL }) => {
     getOrder: IDL.Func([IDL.Text], [Result_5], ["query"]),
     getOwnerXPUB: IDL.Func([], [IDL.Text], []),
     getProduct: IDL.Func([SlugId], [Result_4], ["query"]),
+    greet: IDL.Func([IDL.Text], [IDL.Text], ["query"]),
     listCategories: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Category))], ["query"]),
     listOrders: IDL.Func([], [IDL.Vec(IDL.Tuple(OrderId, Order))], ["query"]),
     listProducts: IDL.Func([], [IDL.Vec(IDL.Tuple(SlugId, Product))], ["query"]),

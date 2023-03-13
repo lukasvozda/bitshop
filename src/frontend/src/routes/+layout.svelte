@@ -1,13 +1,10 @@
 <script>
-  import { page } from "$app/stores";
   import "@/app.postcss";
   import Alert from "@/lib/components/ui/Alert.svelte";
   import { alertVisibility } from "@/stores/alerts";
   import { productsInCart } from "@/stores/cart";
   import BitshopLogo from "@/lib/components/ui/BitshopLogo.svelte";
   import { UserIcon, ShoppingBagIcon, TwitterIcon, GithubIcon } from "svelte-feathers";
-
-  $: routeId = $page.route.id;
 
   alertVisibility.hideAlert();
 </script>

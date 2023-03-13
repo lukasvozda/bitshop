@@ -43,7 +43,6 @@ function fetchProducts() {
         }
       })
       .catch((err: any): any => {
-        console.log(Status.ERROR);
         alerts.addAlert("Unable to create product.", Status.ERROR);
         alertVisibility.showAlert();
         return null;
@@ -69,7 +68,6 @@ function fetchProducts() {
         }
       })
       .catch((err: any): any => {
-        console.log(Status.ERROR);
         alerts.addAlert("Unable to update product.", Status.ERROR);
         alertVisibility.showAlert();
         return null;
@@ -95,7 +93,6 @@ function fetchProducts() {
         }
       })
       .catch((err: any): any => {
-        console.log(Status.ERROR);
         alerts.addAlert("Unable to delete product.", Status.ERROR);
         alertVisibility.showAlert();
         return false;
@@ -142,7 +139,6 @@ function fetchCategories() {
         }
       })
       .catch((err: any): any => {
-        console.log(Status.ERROR);
         alerts.addAlert("Unable to create category.", Status.ERROR);
         alertVisibility.showAlert();
         return null;
@@ -168,7 +164,6 @@ function fetchCategories() {
         }
       })
       .catch((err: any): any => {
-        console.log(Status.ERROR);
         alerts.addAlert("Unable to update category.", Status.ERROR);
         alertVisibility.showAlert();
         return null;
@@ -194,7 +189,6 @@ function fetchCategories() {
         }
       })
       .catch((err: any): any => {
-        console.log(Status.ERROR);
         alerts.addAlert("Unable to delete category.", Status.ERROR);
         alertVisibility.showAlert();
         return false;
