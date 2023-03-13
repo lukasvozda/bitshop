@@ -9,6 +9,7 @@ import Time "mo:base/Time";
 import Blob "mo:base/Blob";
 import Text "mo:base/Text";
 import Nat "mo:base/Nat";
+import Nat64 "mo:base/Nat64";
 import Utils "utils";
 import Types "types";
 
@@ -46,6 +47,7 @@ actor {
   type OrderId = Types.OrderId;
   type OrderError = Types.OrderError;
   type OrderStatus = Types.OrderStatus;
+  type PanelInfo = Types.PanelInfo;
 
   // Bitcoin Types
   type GetUtxosResponse = BitcoinApiTypes.GetUtxosResponse;
@@ -69,7 +71,7 @@ actor {
   // for testing
   private stable var ownerExtendedPublicKeyBase58Check : Text = "tpubDD9S94RYo2MraS7QbRhA64Nr56BzCYN2orJUkk2LE4RkB2npb9SFyiCuofbapC9wNW2hLJqkWwSpGoaE9pZC6fLBQdms5HYS9dsvw79nSWy";
   private stable var currentChildKeyIndex : Nat = 0;
-  Debug.print(debug_show ("currentChildKeyIndex: ", currentChildKeyIndex));
+  //  Debug.print(debug_show ("currentChildKeyIndex: ", currentChildKeyIndex));
 
   // create a default product, we will remove it later
   let p : Product = {
@@ -298,8 +300,11 @@ actor {
 
   // payments
 
-  public shared (msg) func getOwnerXPUB() : async Text {
-    return ownerExtendedPublicKeyBase58Check;
+  public shared (msg) func getOwnerXPUB() : async Result.Result<Text, Payments.XPUBManipulationError> {
+    // if(Principal.isAnonymous(msg.caller)){
+    //     return #err(#UserNotAuthenticated);
+    // };
+    return #ok(ownerExtendedPublicKeyBase58Check);
   };
 
   public shared (msg) func setOwnerXPUB(xpub : Text) : async Result.Result<(), Payments.GetParseError> {
@@ -322,6 +327,30 @@ actor {
     ownerExtendedPublicKeyBase58Check := "";
     currentChildKeyIndex := 0;
     return #ok(());
+  };
+
+  public shared (msg) func getAdminPanelInfo() : async Result.Result<PanelInfo, Payments.XPUBManipulationError> {
+    // if(Principal.isAnonymous(msg.caller)){
+    //     return #err(#UserNotAuthenticated);
+    // };
+
+    let getTotalPrice = func(order : Order) : Satoshi {
+      return order.totalPrice;
+    };
+    // hashmap values iter to array of orders
+    var orderValues = Iter.toArray<Order>(orders.vals());
+    // orders array to totalPrices array
+    var values = Array.map<Order, Satoshi>(orderValues, getTotalPrice);
+    // reduce totalPrices
+    var totalRevenue : Satoshi = Array.foldLeft<Satoshi, Satoshi>(values, 0, Nat64.add);
+
+    var info : PanelInfo = {
+      ordersCount = orders.size();
+      totalRevenue = totalRevenue;
+      accountBalance = 1000;
+    };
+
+    return #ok(info);
   };
 
   public func generateNextPaymentAddress() : async Result.Result<Text, Payments.GetDerivationError> {
@@ -412,8 +441,8 @@ actor {
     return switch (orders.get(orderId)) {
       case null return #err(#OrderNotFound);
       case (?order) {
-        let transactionBalance : BitcoinTypes.Satoshi = await BitcoinIntegration.get_balance_of_transaction(order.paymentAddress, order.transactionId);
-        Debug.print(debug_show (transactionBalance, order.totalPrice));
+        let transactionBalance : Satoshi = await BitcoinIntegration.get_balance_of_transaction(order.paymentAddress, order.transactionId);
+        //        Debug.print(debug_show (transactionBalance, order.totalPrice));
         if (transactionBalance == order.totalPrice) {
           var newOrder = {
             id = orderId;

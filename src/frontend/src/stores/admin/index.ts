@@ -24,5 +24,39 @@ export const setOwnerXPUB = async (newOwnerXPUB: string) => {
 };
 
 export const getOwnerXPUB = async () => {
-  return await get(actor).getOwnerXPUB();
+  return await get(actor)
+    .getOwnerXPUB()
+    .then((response: ApiResponse) => {
+      if ("ok" in response) {
+        return response.ok;
+      } else {
+        alerts.addAlert("Unable to get public key.", Status.ERROR);
+        alertVisibility.showAlert();
+        return null;
+      }
+    })
+    .catch((): null => {
+      alerts.addAlert("Unable to get public key.", Status.ERROR);
+      alertVisibility.showAlert();
+      return null;
+    });
+};
+
+export const getAdminPanelInfo = async () => {
+  return await get(actor)
+    .getAdminPanelInfo()
+    .then((response: ApiResponse) => {
+      if ("ok" in response) {
+        return response.ok;
+      } else {
+        alerts.addAlert("Unable to get admin panel info.", Status.ERROR);
+        alertVisibility.showAlert();
+        return null;
+      }
+    })
+    .catch((): null => {
+      alerts.addAlert("Unable to get admin panel info.", Status.ERROR);
+      alertVisibility.showAlert();
+      return null;
+    });
 };
