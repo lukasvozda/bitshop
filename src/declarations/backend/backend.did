@@ -1,3 +1,4 @@
+type XPUBManipulationError = variant { UserNotAuthenticated };
 type UserProduct = record {
   active : bool;
   category : SlugId__1;
@@ -31,7 +32,7 @@ type ShippingAddress = record {
 };
 type Satoshi = nat64;
 type Result_9 = variant {
-  err : DeleteCategoryError;
+  err : XPUBManipulationError;
   ok;
 };
 type Result_8 = variant {
@@ -62,17 +63,21 @@ type Result_2 = variant {
   err : OrderError;
   ok : OrderId;
 };
-type Result_12 = variant {
+type Result_13 = variant {
   err : OrderError;
   ok : OrderStatus__1;
 };
-type Result_11 = variant {
+type Result_12 = variant {
   err : CreateCategoryError;
   ok : Category;
 };
-type Result_10 = variant {
+type Result_11 = variant {
   err : CreateProductError;
   ok : Product;
+};
+type Result_10 = variant {
+  err : DeleteCategoryError;
+  ok;
 };
 type Result_1 = variant {
   err : UpdateCategoryError;
@@ -136,7 +141,10 @@ type NewOrder = record {
   totalPrice : Satoshi;
 };
 type GetProductError = variant { ProductNotFound };
-type GetParseError = variant { Base58PubKeyWrongFormatError };
+type GetParseError = variant {
+  Base58PubKeyWrongFormatError;
+  UserNotAuthenticated;
+};
 type GetDerivationError = variant {
   Base58PubKeyWrongFormatError;
   ChildKeyDerivationError;
@@ -159,17 +167,17 @@ type Category = record {
   slug : text;
 };
 service : {
-  checkOrderStatus : (text) -> (Result_12);
-  createCategory : (text) -> (Result_11);
+  checkOrderStatus : (text) -> (Result_13);
+  createCategory : (text) -> (Result_12);
   createOrder : (NewOrder) -> (Result_5);
-  createProduct : (UserProduct) -> (Result_10);
-  deleteCategory : (SlugId) -> (Result_9);
-  deleteOwnerXPUB : () -> () oneway;
+  createProduct : (UserProduct) -> (Result_11);
+  deleteCategory : (SlugId) -> (Result_10);
+  deleteOwnerXPUB : () -> (Result_9);
   deleteProduct : (SlugId) -> (Result_8);
   generateNextPaymentAddress : () -> (Result_7);
   getCategory : (SlugId) -> (Result_6) query;
   getOrder : (text) -> (Result_5) query;
-  getOwnerXPUB : () -> (text) query;
+  getOwnerXPUB : () -> (text);
   getProduct : (SlugId) -> (Result_4) query;
   listCategories : () -> (
     vec record {

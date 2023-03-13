@@ -298,11 +298,14 @@ actor {
 
   // payments
 
-  public query func getOwnerXPUB() : async Text {
+  public shared (msg) func getOwnerXPUB() : async Text {
     return ownerExtendedPublicKeyBase58Check;
   };
 
-  public func setOwnerXPUB(xpub : Text) : async Result.Result<(), Payments.GetParseError> {
+  public shared (msg) func setOwnerXPUB(xpub : Text) : async Result.Result<(), Payments.GetParseError> {
+    // if(Principal.isAnonymous(msg.caller)){
+    //     return #err(#UserNotAuthenticated);
+    // };
     switch (Payments.parse(xpub, #Testnet)) {
       case null return #err(#Base58PubKeyWrongFormatError);
       case (?parsedPublicKey) {
@@ -312,9 +315,13 @@ actor {
     };
   };
 
-  public func deleteOwnerXPUB() {
+  public shared (msg) func deleteOwnerXPUB() : async Result.Result<(), Payments.XPUBManipulationError> {
+    // if(Principal.isAnonymous(msg.caller)){
+    //     return #err(#UserNotAuthenticated);
+    // };
     ownerExtendedPublicKeyBase58Check := "";
     currentChildKeyIndex := 0;
+    return #ok(());
   };
 
   public func generateNextPaymentAddress() : async Result.Result<Text, Payments.GetDerivationError> {

@@ -16,7 +16,7 @@ export type GetDerivationError =
   | { OwnerExtendedPubKeyNotSet: null }
   | { ChildKeyDerivationError: null }
   | { Base58PubKeyWrongFormatError: null };
-export type GetParseError = { Base58PubKeyWrongFormatError: null };
+export type GetParseError = { UserNotAuthenticated: null } | { Base58PubKeyWrongFormatError: null };
 export type GetProductError = { ProductNotFound: null };
 export interface NewOrder {
   paymentAddress: string;
@@ -70,9 +70,10 @@ export interface Product {
 export type ProductId = bigint;
 export type Result = { ok: Product } | { err: UpdateProductError };
 export type Result_1 = { ok: Category } | { err: UpdateCategoryError };
-export type Result_10 = { ok: Product } | { err: CreateProductError };
-export type Result_11 = { ok: Category } | { err: CreateCategoryError };
-export type Result_12 = { ok: OrderStatus__1 } | { err: OrderError };
+export type Result_10 = { ok: null } | { err: DeleteCategoryError };
+export type Result_11 = { ok: Product } | { err: CreateProductError };
+export type Result_12 = { ok: Category } | { err: CreateCategoryError };
+export type Result_13 = { ok: OrderStatus__1 } | { err: OrderError };
 export type Result_2 = { ok: OrderId } | { err: OrderError };
 export type Result_3 = { ok: null } | { err: GetParseError };
 export type Result_4 = { ok: Product } | { err: GetProductError };
@@ -80,7 +81,7 @@ export type Result_5 = { ok: Order } | { err: OrderError };
 export type Result_6 = { ok: Category } | { err: GetCategoryError };
 export type Result_7 = { ok: string } | { err: GetDerivationError };
 export type Result_8 = { ok: null } | { err: DeleteProductError };
-export type Result_9 = { ok: null } | { err: DeleteCategoryError };
+export type Result_9 = { ok: null } | { err: XPUBManipulationError };
 export type Satoshi = bigint;
 export interface ShippingAddress {
   postCode: string;
@@ -111,13 +112,14 @@ export interface UserProduct {
   category: SlugId__1;
   price: number;
 }
+export type XPUBManipulationError = { UserNotAuthenticated: null };
 export interface _SERVICE {
-  checkOrderStatus: ActorMethod<[string], Result_12>;
-  createCategory: ActorMethod<[string], Result_11>;
+  checkOrderStatus: ActorMethod<[string], Result_13>;
+  createCategory: ActorMethod<[string], Result_12>;
   createOrder: ActorMethod<[NewOrder], Result_5>;
-  createProduct: ActorMethod<[UserProduct], Result_10>;
-  deleteCategory: ActorMethod<[SlugId], Result_9>;
-  deleteOwnerXPUB: ActorMethod<[], undefined>;
+  createProduct: ActorMethod<[UserProduct], Result_11>;
+  deleteCategory: ActorMethod<[SlugId], Result_10>;
+  deleteOwnerXPUB: ActorMethod<[], Result_9>;
   deleteProduct: ActorMethod<[SlugId], Result_8>;
   generateNextPaymentAddress: ActorMethod<[], Result_7>;
   getCategory: ActorMethod<[SlugId], Result_6>;

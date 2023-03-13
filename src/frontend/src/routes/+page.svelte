@@ -7,9 +7,6 @@
 
   let showAllCategories = false;
 
-  // todo substitute with real categories
-  //let categories = ["t-shirts", "sunglasses", "hoodies", "socks", "caps", "jeans", "trousers"];
-
   let scroll;
   let speed = 0.35;
 
@@ -91,7 +88,7 @@
         </div>
       {:else}
         {#each $products as product, _}
-          <div class="w-full w-full sm:w-1/2 md:1/3 lg:w-1/4 px-2 py-2">
+          <div class="w-full sm:w-1/2 md:1/3 lg:w-1/4 px-2 py-2">
             <ProductCard product={product[1]} />
           </div>
         {/each}
