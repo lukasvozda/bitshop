@@ -115,4 +115,10 @@ module {
     transactionId : Text;
   };
 
+  public type PanelInfo = {
+    ordersCount : Nat;
+    totalRevenue : BitcoinApiTypes.Satoshi;
+    accountBalance : BitcoinApiTypes.Satoshi;
+  }
+
 };

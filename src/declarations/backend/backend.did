@@ -1,3 +1,4 @@
+type XPUBManipulationError = variant { UserNotAuthenticated };
 type UserProduct = record {
   active : bool;
   category : SlugId__1;
@@ -31,24 +32,24 @@ type ShippingAddress = record {
 };
 type Satoshi = nat64;
 type Result_9 = variant {
-  err : DeleteCategoryError;
-  ok;
-};
-type Result_8 = variant {
-  err : DeleteProductError;
-  ok;
-};
-type Result_7 = variant {
   err : GetDerivationError;
   ok : text;
 };
-type Result_6 = variant {
+type Result_8 = variant {
+  err : XPUBManipulationError;
+  ok : PanelInfo;
+};
+type Result_7 = variant {
   err : GetCategoryError;
   ok : Category;
 };
-type Result_5 = variant {
+type Result_6 = variant {
   err : OrderError;
   ok : Order;
+};
+type Result_5 = variant {
+  err : XPUBManipulationError;
+  ok : text;
 };
 type Result_4 = variant {
   err : GetProductError;
@@ -62,17 +63,29 @@ type Result_2 = variant {
   err : OrderError;
   ok : OrderId;
 };
-type Result_12 = variant {
+type Result_15 = variant {
   err : OrderError;
   ok : OrderStatus__1;
 };
-type Result_11 = variant {
+type Result_14 = variant {
   err : CreateCategoryError;
   ok : Category;
 };
-type Result_10 = variant {
+type Result_13 = variant {
   err : CreateProductError;
   ok : Product;
+};
+type Result_12 = variant {
+  err : DeleteCategoryError;
+  ok;
+};
+type Result_11 = variant {
+  err : XPUBManipulationError;
+  ok;
+};
+type Result_10 = variant {
+  err : DeleteProductError;
+  ok;
 };
 type Result_1 = variant {
   err : UpdateCategoryError;
@@ -95,6 +108,11 @@ type Product = record {
   time_created : Time;
   time_updated : Time;
   title : text;
+};
+type PanelInfo = record {
+  accountBalance : Satoshi;
+  ordersCount : nat;
+  totalRevenue : Satoshi;
 };
 type OrderStatus__1 = variant {
   TransactionIdSet;
@@ -136,7 +154,10 @@ type NewOrder = record {
   totalPrice : Satoshi;
 };
 type GetProductError = variant { ProductNotFound };
-type GetParseError = variant { Base58PubKeyWrongFormatError };
+type GetParseError = variant {
+  Base58PubKeyWrongFormatError;
+  UserNotAuthenticated;
+};
 type GetDerivationError = variant {
   Base58PubKeyWrongFormatError;
   ChildKeyDerivationError;
@@ -159,17 +180,18 @@ type Category = record {
   slug : text;
 };
 service : {
-  checkOrderStatus : (text) -> (Result_12);
-  createCategory : (text) -> (Result_11);
-  createOrder : (NewOrder) -> (Result_5);
-  createProduct : (UserProduct) -> (Result_10);
-  deleteCategory : (SlugId) -> (Result_9);
-  deleteOwnerXPUB : () -> () oneway;
-  deleteProduct : (SlugId) -> (Result_8);
-  generateNextPaymentAddress : () -> (Result_7);
-  getCategory : (SlugId) -> (Result_6) query;
-  getOrder : (text) -> (Result_5) query;
-  getOwnerXPUB : () -> (text) query;
+  checkOrderStatus : (text) -> (Result_15);
+  createCategory : (text) -> (Result_14);
+  createOrder : (NewOrder) -> (Result_6);
+  createProduct : (UserProduct) -> (Result_13);
+  deleteCategory : (SlugId) -> (Result_12);
+  deleteOwnerXPUB : () -> (Result_11);
+  deleteProduct : (SlugId) -> (Result_10);
+  generateNextPaymentAddress : () -> (Result_9);
+  getAdminPanelInfo : () -> (Result_8);
+  getCategory : (SlugId) -> (Result_7) query;
+  getOrder : (text) -> (Result_6) query;
+  getOwnerXPUB : () -> (Result_5);
   getProduct : (SlugId) -> (Result_4) query;
   greet : (text) -> (text) query;
   listCategories : () -> (

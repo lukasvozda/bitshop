@@ -2,11 +2,14 @@ import Text "mo:base/Text";
 import Blob "mo:base/Blob";
 import Array "mo:base/Array";
 import Nat64 "mo:base/Nat64";
+import Iter "mo:base/Iter";
 
 import BitcoinTypes "mo:bitcoin/bitcoin/Types";
 import BitcoinApi "bitcoin-api/BitcoinApi";
 import BitcoinApiUtils "bitcoin-api/Utils";
 import BitcoinApiTypes "bitcoin-api/Types";
+
+import Payments "./payments";
 
 module {
   // Bitcoin Types
@@ -57,5 +60,32 @@ module {
       };
     };
     return 0;
+  };
+
+  public func get_total_balance(ownerExtendedPublicKeyBase58Check : Text, currentChildKeyIndex : Nat) : async Satoshi {
+    var totalBalance : Satoshi = 0;
+    if (ownerExtendedPublicKeyBase58Check == "") {
+      return totalBalance;
+    };
+    for (i in Iter.range(0, currentChildKeyIndex)) {
+      switch (Payments.parse(ownerExtendedPublicKeyBase58Check, #Testnet)) {
+        case null totalBalance += 0;
+        case (?parsedPublicKey) {
+          switch (parsedPublicKey.derivePath(Payments.getRelativePath(0))) {
+            case null totalBalance += 0;
+            case (?derivedFirstNonHardenedChild) {
+              switch (derivedFirstNonHardenedChild.derivePath(Payments.getRelativePath(i))) {
+                case null totalBalance += 0;
+                case (?derived) {
+                  let address : Text = Payments.getP2PKHAddress(derived.key, #Testnet);
+                  totalBalance += await get_balance(address);
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+    return totalBalance;
   };
 };

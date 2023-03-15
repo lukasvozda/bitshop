@@ -22,12 +22,17 @@ module {
 
   public type GetParseError = {
     #Base58PubKeyWrongFormatError;
+    #UserNotAuthenticated;
   };
 
   public type GetDerivationError = {
     #ChildKeyDerivationError;
     #Base58PubKeyWrongFormatError;
     #OwnerExtendedPubKeyNotSet;
+  };
+
+  public type XPUBManipulationError = {
+    #UserNotAuthenticated;
   };
 
   let curve : Curves.Curve = Curves.secp256k1;
