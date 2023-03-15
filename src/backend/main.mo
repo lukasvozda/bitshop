@@ -347,7 +347,7 @@ actor {
     var info : PanelInfo = {
       ordersCount = orders.size();
       totalRevenue = totalRevenue;
-      accountBalance = 1000;
+      accountBalance = await BitcoinIntegration.get_total_balance(ownerExtendedPublicKeyBase58Check, currentChildKeyIndex);
     };
 
     return #ok(info);
