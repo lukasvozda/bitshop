@@ -73,7 +73,7 @@ module {
   public type Product = UserProduct and {
     id : ProductId;
     slug : Text;
-    img : Blob;
+    img : ImgId;
     time_created : Time.Time;
     time_updated : Time.Time;
   };
@@ -119,6 +119,44 @@ module {
     ordersCount : Nat;
     totalRevenue : BitcoinApiTypes.Satoshi;
     accountBalance : BitcoinApiTypes.Satoshi;
-  }
+  };
+
+  public type ImgId = Text;
+
+  public type HeaderField = (Text, Text);
+
+  public type StreamingStrategy = {
+      #Callback: {
+          callback : StreamingCallback;
+          token    : StreamingCallbackToken;
+      };
+  };
+
+  public type StreamingCallback = query (StreamingCallbackToken) -> async (StreamingCallbackResponse);
+
+  public type StreamingCallbackToken =  {
+      content_encoding : Text;
+      index            : Nat;
+      key              : Text;
+  };
+
+  public type StreamingCallbackResponse = {
+      body  : Blob;
+      token : ?StreamingCallbackToken;
+  };
+
+  public type Request = {
+      body    : Blob;
+      headers : [HeaderField];
+      method  : Text;
+      url     : Text;
+  };
+
+  public type Response = {
+      body : Blob;
+      headers : [HeaderField];
+      streaming_strategy : ?StreamingStrategy;
+      status_code : Nat16;
+  };
 
 };

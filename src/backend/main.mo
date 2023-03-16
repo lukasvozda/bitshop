@@ -9,9 +9,11 @@ import Time "mo:base/Time";
 import Blob "mo:base/Blob";
 import Text "mo:base/Text";
 import Nat "mo:base/Nat";
+import Nat32 "mo:base/Nat32";
 import Nat64 "mo:base/Nat64";
 import Utils "utils";
 import Types "types";
+import Memory "mo:base/ExperimentalStableMemory";
 
 import BitcoinIntegration "./BitcoinIntegration";
 import BitcoinApiTypes "bitcoin-api/Types";
@@ -48,6 +50,9 @@ actor {
   type OrderError = Types.OrderError;
   type OrderStatus = Types.OrderStatus;
   type PanelInfo = Types.PanelInfo;
+  type ImgId = Types.ImgId;
+  type Request =  Types.Request;
+  type Response = Types.Response;
 
   // Bitcoin Types
   type GetUtxosResponse = BitcoinApiTypes.GetUtxosResponse;
@@ -60,7 +65,6 @@ actor {
   private var products = Map.HashMap<SlugId, Product>(0, Text.equal, Text.hash);
   private var categories = Map.HashMap<SlugId, Category>(0, Text.equal, Text.hash);
   private stable var stableproducts : [(SlugId, Product)] = [];
-  // to preserve products between updates (hashmap is not stable)
   private stable var stablecategories : [(SlugId, Category)] = [];
 
   private var orders = Map.HashMap<OrderId, Order>(0, Text.equal, Text.hash);
@@ -73,6 +77,13 @@ actor {
   private stable var currentChildKeyIndex : Nat = 0;
   //  Debug.print(debug_show ("currentChildKeyIndex: ", currentChildKeyIndex));
 
+  // Image storage
+  private stable var currentMemoryOffset : Nat64  = 2;
+  private stable var stableimgOffset : [(ImgId, Nat64)] = [];
+  private var imgOffset : Map.HashMap<ImgId, Nat64> = Map.fromIter(stableimgOffset.vals(), 0, Text.equal, Text.hash);
+  private stable var stableimgSize : [(ImgId, Nat)] = [];
+  private var imgSize : Map.HashMap<ImgId, Nat> = Map.fromIter(stableimgSize.vals(), 0, Text.equal, Text.hash);
+
   // create a default product, we will remove it later
   let p : Product = {
     id = 0;
@@ -82,7 +93,7 @@ actor {
     inventory = 10;
     description = "Test product";
     active = true;
-    img = Blob.fromArray([0]);
+    img = "";
     slug = "test-product-0";
     time_created = Time.now();
     time_updated = Time.now();
@@ -268,6 +279,9 @@ actor {
     stablecategories := Iter.toArray(categories.entries());
     stableorders := Iter.toArray(orders.entries());
     stableaddresstoorder := Iter.toArray(addressToOrder.entries());
+    stableimgOffset := Iter.toArray(imgOffset.entries());
+    stableimgSize := Iter.toArray(imgSize.entries());
+
   };
 
   // Postupgrade function will then poppulate HashMap with posts after the update is finished
@@ -296,6 +310,8 @@ actor {
       Text.equal,
       Text.hash
     );
+    stableimgOffset := [];
+    stableimgSize := [];
   };
 
   // payments
@@ -465,5 +481,102 @@ actor {
   public shared query ({ caller }) func greet(name : Text) : async Text {
     return "Hello, " # name # "! " # "Your PrincipalId is: " # Principal.toText(caller);
   };
+
+  // Images
+
+  public shared(msg) func uploadImg(imgId : ImgId, image : Blob) {
+    storeBlobImg(imgId, image);
+  };
+
+  public query({ caller }) func getPic(id : ImgId): async Blob {
+    var pic = loadBlobImg(id);
+    switch(pic) {
+      case (null) {
+          return Blob.fromArray([]);
+      };
+      case (?existingPic) {
+        return existingPic;
+      };
+    };
+  };
+
+  private func storeBlobImg(imgId : ImgId, value : Blob)  {
+    var size : Nat = Nat32.toNat(Nat32.fromIntWrap(value.size()));
+    // Each page is 64KiB (65536 bytes)
+    var growBy : Nat = size / 65536 + 1;
+    let a = Memory.grow(Nat64.fromNat(growBy));
+    Memory.storeBlob(currentMemoryOffset, value);
+    imgOffset.put(imgId, currentMemoryOffset);
+    imgSize.put(imgId, size);
+    size := size + 4;
+    currentMemoryOffset += Nat64.fromNat(size);
+  };  
+
+  private func loadBlobImg(imgId : ImgId) : ?Blob {
+    let offset = imgOffset.get(imgId);
+    switch(offset) {
+      case (null) {
+        return null;
+      };
+      case (?offset) {
+        let size = imgSize.get(imgId);
+          switch(size) {
+            case (null) {
+              return null;
+            };
+            case (?size) {
+              return ?Memory.loadBlob(offset, size);
+            };
+        };
+      };
+    };
+  };  
+
+  public query func http_request(request : Request) : async Response {
+    if (Text.contains(request.url, #text("imgid"))) {
+      let imgId = Iter.toArray(Text.tokens(request.url, #text("imgid=")))[1];
+      var pic = loadBlobImg(imgId);
+      switch(pic) {
+        case (null) {
+          return http404(?"no picture available");
+        };
+        case (?existingPic) {
+          return picture(existingPic);
+        };
+      };
+    };
+    return http404(?"Path not found.");
+  };  
+
+  // A 200 Ok response with picture
+  private func picture(pic : Blob) : Response {
+    {
+      body = pic;
+      headers = [
+        ("Content-Type", "image/jpg"),
+        ("Access-Control-Allow-Origin", "*"),
+        ("Expires", "Wed, 9 Jan 2099 09:09:09 GMT")
+      ];
+      status_code = 200;
+      streaming_strategy = null;
+    };
+  };
+
+  // A 404 response with an optional error message.
+  private func http404(msg : ?Text) : Response {
+    {
+      body = Text.encodeUtf8(
+        switch (msg) {
+          case (?msg) msg;
+          case null "Not found.";
+        }
+      );
+      headers = [
+        ("Content-Type", "text/plain"),
+      ];
+      status_code = 404;
+      streaming_strategy = null;
+    };
+  };  
 
 };
