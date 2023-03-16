@@ -5,6 +5,14 @@
 
   let orders: [string, Order][] = [];
 
+  function nanosecondsToDatetime(nanoseconds) {
+    let date = new Date(Number(nanoseconds / 1000000n));
+    const offset = date.getTimezoneOffset();
+    date = new Date(date.getTime() - offset * 60 * 1000);
+    let iso = date.toISOString().split("T");
+    return `${iso[0]} ${iso[1].split(".")[0]}`;
+  }
+
   onMount(async () => {
     orders = await listOrders();
     console.log(orders);
@@ -17,9 +25,10 @@
   </div>
 
   <div class="overflow-x-auto">
-    <table class="table table-zebra w-full table-compact">
+    <table class="table w-full table-compact">
       <thead>
         <tr>
+          <th />
           <th>UUID</th>
           <th>Time</th>
           <th>Status</th>
@@ -31,14 +40,15 @@
         </tr>
       </thead>
       <tbody>
-        {#each orders as [uuid, order], _}
+        {#each orders as [uuid, order], index}
           <tr>
-            <td>{uuid}</td>
-            <td>{order.timeCreated}</td>
-            <td>{order.status}</td>
-            <td>{order.paymentAddress}</td>
-            <td>{order.transactionId}</td>
-            <td>{order.totalPrice} BTC</td>
+            <td>{index + 1}</td>
+            <td class="font-mono text-sm">{uuid}</td>
+            <td>{nanosecondsToDatetime(order.timeCreated)}</td>
+            <td>{Object.keys(order.status)[0]}</td>
+            <td class="font-mono text-sm">{order.paymentAddress}</td>
+            <td class="font-mono text-sm">{order.transactionId}</td>
+            <td class="font-mono text-sm">{order.totalPrice} Satoshi</td>
             <td>
               {#each order.products as product, _}
                 <div>
