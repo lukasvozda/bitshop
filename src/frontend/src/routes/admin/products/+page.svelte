@@ -13,7 +13,6 @@
     </div>
   </div>
   <div class="overflow-x-auto w-full">
-    image <img src="http://127.0.0.1:8008/?canisterId={import.meta.env.VITE_BACKEND_CANISTER_ID}&imgid=1" />
     <table class="table w-full table-zebra">
       <!-- head -->
       <thead>

@@ -11,6 +11,7 @@
   let productList: [string, Product][] = $products;
   let disabled = false;
   let productId = "";
+  let imgBlob : Blob | null;
 
   $: {
     productId = $page.params.slug;
@@ -22,7 +23,7 @@
 
   const updateProduct = async () => {
     disabled = true;
-    console.log(product);
+    console.log("Calling update, blob:", imgBlob)
     await products.updateProduct(productId, product);
     disabled = false;
   };
@@ -49,7 +50,7 @@
       <GoBackButton />
     </div>
   </div>
-  <ProductForm {disabled} {product} submitFunction={updateProduct} />
+  <ProductForm {disabled} {product} submitFunction={updateProduct} {imgBlob} />
   <div class="flex justify-end">
     {#if disabled === true}
       <button type="button" class="btn btn-warning my-4 loading" on:click={deleteProduct}>
