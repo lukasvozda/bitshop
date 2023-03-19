@@ -190,7 +190,7 @@ export const idlFactory = ({ IDL }) => {
     checkOrderStatus: IDL.Func([IDL.Text], [Result_15], []),
     createCategory: IDL.Func([IDL.Text], [Result_14], []),
     createOrder: IDL.Func([NewOrder], [Result_6], []),
-    createProduct: IDL.Func([UserProduct], [Result_13], []),
+    createProduct: IDL.Func([UserProduct, IDL.Opt(IDL.Vec(IDL.Nat8))], [Result_13], []),
     deleteCategory: IDL.Func([SlugId], [Result_12], []),
     deleteOwnerXPUB: IDL.Func([], [Result_11], []),
     deleteProduct: IDL.Func([SlugId], [Result_10], []),
@@ -209,7 +209,7 @@ export const idlFactory = ({ IDL }) => {
     setOwnerXPUB: IDL.Func([IDL.Text], [Result_3], []),
     setUserInputTransactionId: IDL.Func([IDL.Text, IDL.Text], [Result_2], []),
     updateCategory: IDL.Func([SlugId, IDL.Text], [Result_1], []),
-    updateProduct: IDL.Func([SlugId, UserProduct], [Result], []),
+    updateProduct: IDL.Func([SlugId, UserProduct, IDL.Opt(IDL.Vec(IDL.Nat8))], [Result], []),
     uploadImg: IDL.Func([ImgId, IDL.Vec(IDL.Nat8)], [], ["oneway"])
   });
 };

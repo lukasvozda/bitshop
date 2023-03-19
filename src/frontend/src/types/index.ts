@@ -11,7 +11,7 @@ export type Product = {
   active: boolean;
   time_updated: number;
   time_created: number;
-  img: Uint8Array;
+  img: string;
 };
 
 export type UserProduct = {

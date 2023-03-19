@@ -1,9 +1,10 @@
 <script lang="ts">
   import { categories } from "@/stores/products";
-  import { actor } from "@/stores";
   import type { UserProduct } from "@/types";
   import { field, form } from "svelte-forms";
   import { required, min } from "svelte-forms/validators";
+  import { page } from "$app/stores";
+  import { blobFromFile } from "@/lib/utils/imageProcessing";
 
   export let disabled: boolean;
   export let product: UserProduct;
@@ -32,43 +33,21 @@
   $: product.inventory = $formInventory.value;
   $: product.active = $formActive.value;
 
+  $: productId = $page.params.slug;
+  let blobInput;
+
   $: {
-    imgBlob = blobFromFile();
+    if (blobInput) {
+      blobFromFile().then((blob) => {
+        imgBlob = blob;
+      });
+    }
   }
 
   const isValidField = (invalid: boolean) =>
     invalid
       ? "invalid:border-red-500 invalid:text-red-500 focus:invalid:border-red-500 focus:invalid:text-red-500 focus:invalid:ring-red-500"
       : "";
-
-  const uploadImage = async () => {
-    console.log("Getting file");
-    let input = (<HTMLInputElement>document.getElementById("image"))
-    if (input.files && input.files[0]) {
-      let ab = await input.files[0].arrayBuffer();
-      console.info([...new Uint8Array(ab)]);
-      $actor.uploadImg("img002", [...new Uint8Array(ab)]); // upload image with hardcoded name
-      (<HTMLInputElement>document.getElementById("product-image")).src =  "http://127.0.0.1:8008/?canisterId=" + import.meta.env.VITE_BACKEND_CANISTER_ID + "&t=" + new Date().getTime() +  "&imgid=img002" ;
-    } else {
-      console.log("No input image found.")
-    }
-
-
-  };
-
-
-  const blobFromFile = async () => {
-    console.log("Getting file");
-    let input = (<HTMLInputElement>document.getElementById("image"))
-    if (input && input.files && input.files[0]) {
-      let ab = await input.files[0].arrayBuffer();
-      return [...new Uint8Array(ab)];
-    } else {
-      console.log("No input image found.")
-    }
-
-
-  };
 </script>
 
 {#if product}
@@ -167,25 +146,28 @@
     </div>
     <div class="form-control w-full my-4">
       <label for="image" class="label block text-sm font-medium text-gray-700">
-        <span class="label-text">Image (not done yet):</span>
+        <span class="label-text">Image:</span>
       </label>
       <input
         type="file"
+        bind:value={blobInput}
         id="image"
         class="file-input file-input-bordered w-full border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         {disabled}
       />
+      <div class="text-xs my-2 text-slate-500">
+        Please try to avoid uploading huge images. Ideal size of image is 1000x500 px. If you don't
+        want to create/update image, leave this empty.
+      </div>
       <div>
         <img
           id="product-image"
-          alt="product image"
+          alt="Product image"
           src="http://127.0.0.1:8008/?canisterId={import.meta.env
-            .VITE_BACKEND_CANISTER_ID }&imgid=img002"
-          class="my-4"
+            .VITE_BACKEND_CANISTER_ID}&imgid={productId}"
+          class="my-4 w-48"
+          onerror="this.style.display='none'"
         />
-        <button type="button" class="btn btn-warning my-4 " on:click={uploadImage}>
-          Upload image
-        </button>
       </div>
     </div>
     <div class="form-control my-4 max-w-0">

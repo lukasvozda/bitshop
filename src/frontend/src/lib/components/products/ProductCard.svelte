@@ -9,11 +9,20 @@
   href="/products/{product.slug}"
 >
   <figure class="cursor-pointer">
-    <img
-      src={product.img}
-      alt={product.title}
-      class="group-hover:scale-105 ease-in group-hover:opacity-75 transition duration-300 transform-gpu"
-    />
+    {#if product.img != ""}
+      <img
+        src="http://127.0.0.1:8008/?canisterId={import.meta.env
+          .VITE_BACKEND_CANISTER_ID}&imgid={product.img}"
+        alt={product.title}
+        class="group-hover:scale-105 ease-in group-hover:opacity-75 transition duration-300 transform-gpu"
+      />
+    {:else}
+      <img
+        src="/product.jpg"
+        alt={product.title}
+        class="group-hover:scale-105 ease-in group-hover:opacity-75 transition duration-300 transform-gpu"
+      />
+    {/if}
   </figure>
   <div class="card-body !px-4 !py-3 z-40">
     <div class="capitalize text-md font-bold mb-0">{product.title}</div>

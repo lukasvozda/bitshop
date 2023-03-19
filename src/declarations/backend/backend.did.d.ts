@@ -155,7 +155,7 @@ export interface _SERVICE {
   checkOrderStatus: ActorMethod<[string], Result_15>;
   createCategory: ActorMethod<[string], Result_14>;
   createOrder: ActorMethod<[NewOrder], Result_6>;
-  createProduct: ActorMethod<[UserProduct], Result_13>;
+  createProduct: ActorMethod<[UserProduct, [] | [Uint8Array]], Result_13>;
   deleteCategory: ActorMethod<[SlugId], Result_12>;
   deleteOwnerXPUB: ActorMethod<[], Result_11>;
   deleteProduct: ActorMethod<[SlugId], Result_10>;
@@ -174,6 +174,6 @@ export interface _SERVICE {
   setOwnerXPUB: ActorMethod<[string], Result_3>;
   setUserInputTransactionId: ActorMethod<[string, string], Result_2>;
   updateCategory: ActorMethod<[SlugId, string], Result_1>;
-  updateProduct: ActorMethod<[SlugId, UserProduct], Result>;
+  updateProduct: ActorMethod<[SlugId, UserProduct, [] | [Uint8Array]], Result>;
   uploadImg: ActorMethod<[ImgId, Uint8Array], undefined>;
 }

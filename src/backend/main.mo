@@ -111,7 +111,7 @@ actor {
 
   categories.put("t-shirts", c);
 
-  public shared (msg) func createProduct(p : UserProduct) : async Result.Result<(Product), CreateProductError> {
+  public shared (msg) func createProduct(p : UserProduct, img : ?Blob) : async Result.Result<(Product), CreateProductError> {
 
     if (p.title == "") { return #err(#EmptyTitle) };
 
@@ -119,7 +119,18 @@ actor {
     nextProduct += 1;
     // increment the counter so we never try to create a product under the same index
 
-    let new_slug = Utils.slugify(p.title) # "-" # Nat.toText(nextProduct); //this should keep slug always unique and we can key hashMap with it
+    let newSlug = Utils.slugify(p.title) # "-" # Nat.toText(nextProduct); //this should keep slug always unique and we can key hashMap with it
+
+    var imgSlug : SlugId = "";
+    switch (img) {
+      case null {
+        // do nothing if there is no image attached
+      };
+      case (?imageBlob) {
+        storeBlobImg(newSlug, imageBlob);
+        imgSlug := newSlug;
+      };
+    };
 
     let product : Product = {
       title = p.title;
@@ -129,14 +140,13 @@ actor {
       inventory = p.inventory;
       description = p.description;
       active = p.active;
-      img = new_slug;
-      // Lets deal with product images later
-      slug = new_slug;
+      img = imgSlug;
+      slug = newSlug;
       time_created = Time.now();
       time_updated = Time.now();
     };
 
-    products.put(new_slug, product);
+    products.put(newSlug, product);
     return #ok(product);
     // Return an OK result
   };
@@ -149,7 +159,8 @@ actor {
 
   public shared (msg) func updateProduct(
     id : SlugId,
-    p : UserProduct
+    p : UserProduct,
+    img : ?Blob
   ) : async Result.Result<(Product), UpdateProductError> {
     // commented for local development
     // if(Principal.isAnonymous(msg.caller)){
@@ -167,7 +178,18 @@ actor {
         return #err(#ProductNotFound);
       };
       case (?v) {
-        // If the post was found, we try to update it.
+        //If the product was found, we try to update it.
+        var imgSlug : SlugId = "";
+        switch (img) {
+          case null {
+            // do nothing if there is no image update
+          };
+          case (?imageBlob) {
+            storeBlobImg(v.slug, imageBlob);
+            imgSlug := v.slug;
+          };
+        };
+
         let product : Product = {
           title = p.title;
           id = v.id;
@@ -176,7 +198,7 @@ actor {
           inventory = p.inventory;
           description = p.description;
           active = p.active;
-          img = v.slug;
+          img = imgSlug;
           // keep persistent URLS
           slug = v.slug;
           time_created = v.time_created;

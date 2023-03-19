@@ -10,23 +10,12 @@ function fetchProducts() {
   const loadProducts = async () => {
     const actorStore = await get(actor);
     let productList = await actorStore.listProducts();
-
-    // TODO remove once we have actual image functionality
-    productList = productList.map((product: any) => [
-      product[0],
-      {
-        ...product[1],
-        img: "/product.jpg"
-        //description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque volutpat malesuada malesuada. Phasellus in ligula laoreet, rhoncus dui vel, hendrerit leo. Sed aliquet blandit justo suscipit blandit."
-      }
-    ]);
-
     products.set(productList);
   };
 
-  const createProduct = async (product: UserProduct) => {
+  const createProduct = async (product: UserProduct, img: Blob | null) => {
     return get(actor)
-      .createProduct(product)
+      .createProduct(product, img)
       .then((response: ApiResponse) => {
         if ("ok" in response) {
           products.loadProducts();
@@ -49,12 +38,12 @@ function fetchProducts() {
       });
   };
 
-  const updateProduct = async (slug: string, product: UserProduct) => {
+  const updateProduct = async (slug: string, product: UserProduct, img: Blob | null) => {
     return get(actor)
-      .updateProduct(slug, product)
+      .updateProduct(slug, product, img)
       .then((response: ApiResponse) => {
         if ("ok" in response) {
-          //products.loadProducts();
+          products.loadProducts();
           alerts.addAlert("Product succesfully updated.", Status.SUCCESS);
           alertVisibility.showAlert();
           return response.ok;
@@ -69,6 +58,7 @@ function fetchProducts() {
       })
       .catch((err: any): any => {
         alerts.addAlert("Unable to update product.", Status.ERROR);
+        console.log(err);
         alertVisibility.showAlert();
         return null;
       });
