@@ -8,6 +8,11 @@
   let created = false;
   let newProduct: Product;
 
+  let imgBlob;
+  $: {
+    console.log("in create:", imgBlob);
+  }
+
   let product: UserProduct = {
     title: "",
     price: 1,
@@ -37,7 +42,7 @@
   </div>
 </div>
 {#if !created}
-  <ProductForm {disabled} {product} submitFunction={createProduct} />
+  <ProductForm {disabled} {product} submitFunction={createProduct} bind:imgBlob />
 {:else}
   <div>
     Product was successfully created. You can edit it here: <a
