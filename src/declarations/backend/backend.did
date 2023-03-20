@@ -18,6 +18,22 @@ type UpdateCategoryError = variant {
   UserNotAuthenticated;
 };
 type Time = int;
+type StreamingStrategy = variant {
+  Callback : record {
+    callback : StreamingCallback;
+    token : StreamingCallbackToken;
+  };
+};
+type StreamingCallbackToken = record {
+  content_encoding : text;
+  index : nat;
+  key : text;
+};
+type StreamingCallbackResponse = record {
+  body : blob;
+  token : opt StreamingCallbackToken;
+};
+type StreamingCallback = func(StreamingCallbackToken) -> (StreamingCallbackResponse) query;
 type SlugId__1 = text;
 type SlugId = text;
 type ShippingAddress = record {
@@ -95,13 +111,25 @@ type Result = variant {
   err : UpdateProductError;
   ok : Product;
 };
+type Response = record {
+  body : blob;
+  headers : vec HeaderField;
+  status_code : nat16;
+  streaming_strategy : opt StreamingStrategy;
+};
+type Request = record {
+  body : blob;
+  headers : vec HeaderField;
+  method : text;
+  url : text;
+};
 type ProductId = nat;
 type Product = record {
   active : bool;
   category : SlugId__1;
   description : text;
   id : ProductId;
-  img : blob;
+  img : ImgId__1;
   inventory : nat8;
   price : float64;
   slug : text;
@@ -153,6 +181,12 @@ type NewOrder = record {
   shippingAddress : ShippingAddress;
   totalPrice : Satoshi;
 };
+type ImgId__1 = text;
+type ImgId = text;
+type HeaderField = record {
+  text;
+  text;
+};
 type GetProductError = variant { ProductNotFound };
 type GetParseError = variant {
   Base58PubKeyWrongFormatError;
@@ -183,7 +217,7 @@ service : {
   checkOrderStatus : (text) -> (Result_15);
   createCategory : (text) -> (Result_14);
   createOrder : (NewOrder) -> (Result_6);
-  createProduct : (UserProduct) -> (Result_13);
+  createProduct : (UserProduct, opt blob) -> (Result_13);
   deleteCategory : (SlugId) -> (Result_12);
   deleteOwnerXPUB : () -> (Result_11);
   deleteProduct : (SlugId) -> (Result_10);
@@ -192,8 +226,10 @@ service : {
   getCategory : (SlugId) -> (Result_7) query;
   getOrder : (text) -> (Result_6) query;
   getOwnerXPUB : () -> (Result_5);
+  getPic : (ImgId) -> (blob) query;
   getProduct : (SlugId) -> (Result_4) query;
   greet : (text) -> (text) query;
+  http_request : (Request) -> (Response) query;
   listCategories : () -> (
     vec record {
       SlugId;
@@ -215,5 +251,6 @@ service : {
   setOwnerXPUB : (text) -> (Result_3);
   setUserInputTransactionId : (text, text) -> (Result_2);
   updateCategory : (SlugId, text) -> (Result_1);
-  updateProduct : (SlugId, UserProduct) -> (Result);
+  updateProduct : (SlugId, UserProduct, opt blob) -> (Result);
+  uploadImg : (ImgId, blob) -> () oneway;
 };

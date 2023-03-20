@@ -18,6 +18,9 @@ export type GetDerivationError =
   | { Base58PubKeyWrongFormatError: null };
 export type GetParseError = { UserNotAuthenticated: null } | { Base58PubKeyWrongFormatError: null };
 export type GetProductError = { ProductNotFound: null };
+export type HeaderField = [string, string];
+export type ImgId = string;
+export type ImgId__1 = string;
 export interface NewOrder {
   paymentAddress: string;
   shippingAddress: ShippingAddress;
@@ -61,7 +64,7 @@ export interface PanelInfo {
 }
 export interface Product {
   id: ProductId;
-  img: Uint8Array;
+  img: ImgId__1;
   time_created: Time;
   title: string;
   active: boolean;
@@ -73,6 +76,18 @@ export interface Product {
   price: number;
 }
 export type ProductId = bigint;
+export interface Request {
+  url: string;
+  method: string;
+  body: Uint8Array;
+  headers: Array<HeaderField>;
+}
+export interface Response {
+  body: Uint8Array;
+  headers: Array<HeaderField>;
+  streaming_strategy: [] | [StreamingStrategy];
+  status_code: number;
+}
 export type Result = { ok: Product } | { err: UpdateProductError };
 export type Result_1 = { ok: Category } | { err: UpdateCategoryError };
 export type Result_10 = { ok: null } | { err: DeleteProductError };
@@ -102,6 +117,22 @@ export interface ShippingAddress {
 }
 export type SlugId = string;
 export type SlugId__1 = string;
+export type StreamingCallback = ActorMethod<[StreamingCallbackToken], StreamingCallbackResponse>;
+export interface StreamingCallbackResponse {
+  token: [] | [StreamingCallbackToken];
+  body: Uint8Array;
+}
+export interface StreamingCallbackToken {
+  key: string;
+  index: bigint;
+  content_encoding: string;
+}
+export type StreamingStrategy = {
+  Callback: {
+    token: StreamingCallbackToken;
+    callback: StreamingCallback;
+  };
+};
 export type Time = bigint;
 export type UpdateCategoryError =
   | { CategoryNotFound: null }
@@ -124,7 +155,7 @@ export interface _SERVICE {
   checkOrderStatus: ActorMethod<[string], Result_15>;
   createCategory: ActorMethod<[string], Result_14>;
   createOrder: ActorMethod<[NewOrder], Result_6>;
-  createProduct: ActorMethod<[UserProduct], Result_13>;
+  createProduct: ActorMethod<[UserProduct, [] | [Uint8Array]], Result_13>;
   deleteCategory: ActorMethod<[SlugId], Result_12>;
   deleteOwnerXPUB: ActorMethod<[], Result_11>;
   deleteProduct: ActorMethod<[SlugId], Result_10>;
@@ -133,13 +164,16 @@ export interface _SERVICE {
   getCategory: ActorMethod<[SlugId], Result_7>;
   getOrder: ActorMethod<[string], Result_6>;
   getOwnerXPUB: ActorMethod<[], Result_5>;
+  getPic: ActorMethod<[ImgId], Uint8Array>;
   getProduct: ActorMethod<[SlugId], Result_4>;
   greet: ActorMethod<[string], string>;
+  http_request: ActorMethod<[Request], Response>;
   listCategories: ActorMethod<[], Array<[SlugId, Category]>>;
   listOrders: ActorMethod<[], Array<[OrderId, Order]>>;
   listProducts: ActorMethod<[], Array<[SlugId, Product]>>;
   setOwnerXPUB: ActorMethod<[string], Result_3>;
   setUserInputTransactionId: ActorMethod<[string, string], Result_2>;
   updateCategory: ActorMethod<[SlugId, string], Result_1>;
-  updateProduct: ActorMethod<[SlugId, UserProduct], Result>;
+  updateProduct: ActorMethod<[SlugId, UserProduct, [] | [Uint8Array]], Result>;
+  uploadImg: ActorMethod<[ImgId, Uint8Array], undefined>;
 }

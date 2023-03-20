@@ -13,7 +13,12 @@
             href="/products/{item.product.slug}"
             class="hover:opacity-75 transition duration-200 ease-in rounded-md"
           >
-            <img src={item.product.img} alt={item.product.title} />
+            {#if item.product.img != ""}
+              <img src="http://127.0.0.1:8008/?canisterId={import.meta.env
+                .VITE_BACKEND_CANISTER_ID}&imgid={item.product.img}" alt={item.product.title} />
+            {:else}
+              <img src="/product.jpg" alt={item.product.title} />
+            {/if}
           </a>
         </div>
       </div>

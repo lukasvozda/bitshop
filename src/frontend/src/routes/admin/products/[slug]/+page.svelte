@@ -4,13 +4,13 @@
   import type { Product } from "@/types";
   import ProductForm from "@/lib/components/admin/ProductForm.svelte";
   import GoBackButton from "@/lib/components/admin/GoBackButton.svelte";
-  import { ArrowLeftIcon } from "svelte-feathers";
   //import { Btc } from "svelte-cryptoicon";
 
   let product: Product;
   let productList: [string, Product][] = $products;
   let disabled = false;
   let productId = "";
+  let imgBlob: Blob | null = [];
 
   $: {
     productId = $page.params.slug;
@@ -22,8 +22,7 @@
 
   const updateProduct = async () => {
     disabled = true;
-    console.log(product);
-    await products.updateProduct(productId, product);
+    await products.updateProduct(productId, product, imgBlob);
     disabled = false;
   };
 
@@ -49,7 +48,7 @@
       <GoBackButton />
     </div>
   </div>
-  <ProductForm {disabled} {product} submitFunction={updateProduct} />
+  <ProductForm {disabled} {product} submitFunction={updateProduct} bind:imgBlob />
   <div class="flex justify-end">
     {#if disabled === true}
       <button type="button" class="btn btn-warning my-4 loading" on:click={deleteProduct}>

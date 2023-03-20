@@ -9,9 +9,11 @@ import Time "mo:base/Time";
 import Blob "mo:base/Blob";
 import Text "mo:base/Text";
 import Nat "mo:base/Nat";
+import Nat32 "mo:base/Nat32";
 import Nat64 "mo:base/Nat64";
 import Utils "utils";
 import Types "types";
+import Memory "mo:base/ExperimentalStableMemory";
 
 import BitcoinIntegration "./BitcoinIntegration";
 import BitcoinApiTypes "bitcoin-api/Types";
@@ -48,6 +50,9 @@ actor {
   type OrderError = Types.OrderError;
   type OrderStatus = Types.OrderStatus;
   type PanelInfo = Types.PanelInfo;
+  type ImgId = Types.ImgId;
+  type Request = Types.Request;
+  type Response = Types.Response;
 
   // Bitcoin Types
   type GetUtxosResponse = BitcoinApiTypes.GetUtxosResponse;
@@ -60,7 +65,6 @@ actor {
   private var products = Map.HashMap<SlugId, Product>(0, Text.equal, Text.hash);
   private var categories = Map.HashMap<SlugId, Category>(0, Text.equal, Text.hash);
   private stable var stableproducts : [(SlugId, Product)] = [];
-  // to preserve products between updates (hashmap is not stable)
   private stable var stablecategories : [(SlugId, Category)] = [];
 
   private var orders = Map.HashMap<OrderId, Order>(0, Text.equal, Text.hash);
@@ -73,6 +77,13 @@ actor {
   private stable var currentChildKeyIndex : Nat = 0;
   //  Debug.print(debug_show ("currentChildKeyIndex: ", currentChildKeyIndex));
 
+  // Image storage
+  private stable var currentMemoryOffset : Nat64 = 2;
+  private stable var stableimgOffset : [(ImgId, Nat64)] = [];
+  private var imgOffset : Map.HashMap<ImgId, Nat64> = Map.fromIter(stableimgOffset.vals(), 0, Text.equal, Text.hash);
+  private stable var stableimgSize : [(ImgId, Nat)] = [];
+  private var imgSize : Map.HashMap<ImgId, Nat> = Map.fromIter(stableimgSize.vals(), 0, Text.equal, Text.hash);
+
   // create a default product, we will remove it later
   let p : Product = {
     id = 0;
@@ -82,7 +93,7 @@ actor {
     inventory = 10;
     description = "Test product";
     active = true;
-    img = Blob.fromArray([0]);
+    img = "";
     slug = "test-product-0";
     time_created = Time.now();
     time_updated = Time.now();
@@ -100,7 +111,7 @@ actor {
 
   categories.put("t-shirts", c);
 
-  public shared (msg) func createProduct(p : UserProduct) : async Result.Result<(Product), CreateProductError> {
+  public shared (msg) func createProduct(p : UserProduct, img : ?Blob) : async Result.Result<(Product), CreateProductError> {
 
     if (p.title == "") { return #err(#EmptyTitle) };
 
@@ -108,7 +119,18 @@ actor {
     nextProduct += 1;
     // increment the counter so we never try to create a product under the same index
 
-    let new_slug = Utils.slugify(p.title) # "-" # Nat.toText(nextProduct); //this should keep slug always unique and we can key hashMap with it
+    let newSlug = Utils.slugify(p.title) # "-" # Nat.toText(nextProduct); //this should keep slug always unique and we can key hashMap with it
+
+    var imgSlug : SlugId = "";
+    switch (img) {
+      case null {
+        // do nothing if there is no image attached
+      };
+      case (?imageBlob) {
+        storeBlobImg(newSlug, imageBlob);
+        imgSlug := newSlug;
+      };
+    };
 
     let product : Product = {
       title = p.title;
@@ -118,14 +140,13 @@ actor {
       inventory = p.inventory;
       description = p.description;
       active = p.active;
-      img = Blob.fromArray([0]);
-      // Lets deal with product images later
-      slug = new_slug;
+      img = imgSlug;
+      slug = newSlug;
       time_created = Time.now();
       time_updated = Time.now();
     };
 
-    products.put(new_slug, product);
+    products.put(newSlug, product);
     return #ok(product);
     // Return an OK result
   };
@@ -138,7 +159,8 @@ actor {
 
   public shared (msg) func updateProduct(
     id : SlugId,
-    p : UserProduct
+    p : UserProduct,
+    img : ?Blob
   ) : async Result.Result<(Product), UpdateProductError> {
     // commented for local development
     // if(Principal.isAnonymous(msg.caller)){
@@ -156,7 +178,18 @@ actor {
         return #err(#ProductNotFound);
       };
       case (?v) {
-        // If the post was found, we try to update it.
+        //If the product was found, we try to update it.
+        var imgSlug : SlugId = v.img;
+        switch (img) {
+          case null {
+            // do nothing if there is no image update
+          };
+          case (?imageBlob) {
+            storeBlobImg(v.slug, imageBlob);
+            imgSlug := v.slug;
+          };
+        };
+
         let product : Product = {
           title = p.title;
           id = v.id;
@@ -165,7 +198,7 @@ actor {
           inventory = p.inventory;
           description = p.description;
           active = p.active;
-          img = Blob.fromArray([0]);
+          img = imgSlug;
           // keep persistent URLS
           slug = v.slug;
           time_created = v.time_created;
@@ -268,6 +301,9 @@ actor {
     stablecategories := Iter.toArray(categories.entries());
     stableorders := Iter.toArray(orders.entries());
     stableaddresstoorder := Iter.toArray(addressToOrder.entries());
+    stableimgOffset := Iter.toArray(imgOffset.entries());
+    stableimgSize := Iter.toArray(imgSize.entries());
+
   };
 
   // Postupgrade function will then poppulate HashMap with posts after the update is finished
@@ -296,6 +332,8 @@ actor {
       Text.equal,
       Text.hash
     );
+    stableimgOffset := [];
+    stableimgSize := [];
   };
 
   // payments
@@ -466,4 +504,52 @@ actor {
     return "Hello, " # name # "! " # "Your PrincipalId is: " # Principal.toText(caller);
   };
 
+  // Images
+  private func storeBlobImg(imgId : ImgId, value : Blob) {
+    var size : Nat = Nat32.toNat(Nat32.fromIntWrap(value.size()));
+    // Each page is 64KiB (65536 bytes)
+    var growBy : Nat = size / 65536 + 1;
+    let a = Memory.grow(Nat64.fromNat(growBy));
+    Memory.storeBlob(currentMemoryOffset, value);
+    imgOffset.put(imgId, currentMemoryOffset);
+    imgSize.put(imgId, size);
+    size := size + 4;
+    currentMemoryOffset += Nat64.fromNat(size);
+  };
+
+  private func loadBlobImg(imgId : ImgId) : ?Blob {
+    let offset = imgOffset.get(imgId);
+    switch (offset) {
+      case (null) {
+        return null;
+      };
+      case (?offset) {
+        let size = imgSize.get(imgId);
+        switch (size) {
+          case (null) {
+            return null;
+          };
+          case (?size) {
+            return ?Memory.loadBlob(offset, size);
+          };
+        };
+      };
+    };
+  };
+
+  public query func http_request(request : Request) : async Response {
+    if (Text.contains(request.url, #text("imgid"))) {
+      let imgId = Iter.toArray(Text.tokens(request.url, #text("imgid=")))[1];
+      var pic = loadBlobImg(imgId);
+      switch (pic) {
+        case (null) {
+          return Utils.http404(?"no picture available");
+        };
+        case (?existingPic) {
+          return Utils.picture(existingPic);
+        };
+      };
+    };
+    return Utils.http404(?"Path not found.");
+  };
 };

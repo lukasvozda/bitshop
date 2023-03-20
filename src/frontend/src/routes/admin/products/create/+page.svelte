@@ -7,6 +7,7 @@
   let disabled = false;
   let created = false;
   let newProduct: Product;
+  let imgBlob: Blob | null = [];
 
   let product: UserProduct = {
     title: "",
@@ -19,8 +20,8 @@
 
   const createProduct = async () => {
     disabled = true;
-    let res = await products.createProduct(product);
-    if (res.slug != "") {
+    let res = await products.createProduct(product, imgBlob);
+    if (res && res.slug != "") {
       created = true;
       newProduct = res;
     }
@@ -37,7 +38,7 @@
   </div>
 </div>
 {#if !created}
-  <ProductForm {disabled} {product} submitFunction={createProduct} />
+  <ProductForm {disabled} {product} submitFunction={createProduct} bind:imgBlob />
 {:else}
   <div>
     Product was successfully created. You can edit it here: <a

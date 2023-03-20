@@ -29,11 +29,16 @@
   {#if product}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-20 py-10">
       <div class="overflow-hidden order-last md:order-1">
-        <img
-          src={product.img}
-          alt={product.title}
-          class="hover:scale-110 transition ease-in duration-300 opacity-90 hover:opacity-100"
-        />
+        {#if product.img != ""}
+          <img
+            src="http://127.0.0.1:8008/?canisterId={import.meta.env
+              .VITE_BACKEND_CANISTER_ID}&imgid={product.img}"
+            alt={product.title}
+            class="hover:scale-110 transition ease-in duration-300 opacity-90 hover:opacity-100"
+          />
+        {:else}
+          <img src="/product.jpg" alt="Default image" />
+        {/if}
       </div>
       <div class="flex flex-col order-2">
         <h1 class="text-5xl font-semibold text-gray-800 mb-3 capitalize">{product.title}</h1>

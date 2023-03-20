@@ -3,10 +3,13 @@
   import type { UserProduct } from "@/types";
   import { field, form } from "svelte-forms";
   import { required, min } from "svelte-forms/validators";
+  import { page } from "$app/stores";
+  import { blobFromFile } from "@/lib/utils/imageProcessing";
 
   export let disabled: boolean;
   export let product: UserProduct;
   export let submitFunction;
+  export let imgBlob;
 
   const formTitle = field("title", product.title, [required()]);
   const formDescription = field("description", product.description, []);
@@ -29,6 +32,17 @@
   $: product.price = $formPrice.value;
   $: product.inventory = $formInventory.value;
   $: product.active = $formActive.value;
+
+  $: productId = $page.params.slug;
+  let blobInput;
+
+  $: {
+    if (blobInput) {
+      blobFromFile().then((blob) => {
+        imgBlob = blob;
+      });
+    }
+  }
 
   const isValidField = (invalid: boolean) =>
     invalid
@@ -132,14 +146,29 @@
     </div>
     <div class="form-control w-full my-4">
       <label for="image" class="label block text-sm font-medium text-gray-700">
-        <span class="label-text">Image (not done yet):</span>
+        <span class="label-text">Image:</span>
       </label>
       <input
         type="file"
+        bind:value={blobInput}
         id="image"
         class="file-input file-input-bordered w-full border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         {disabled}
       />
+      <div class="text-xs my-2 text-slate-500">
+        Please try to avoid uploading huge images. Ideal size of image is 1000x500 px. If you don't
+        want to create/update image, leave this empty.
+      </div>
+      <div>
+        <img
+          id="product-image"
+          alt="Product image"
+          src="http://127.0.0.1:8008/?canisterId={import.meta.env
+            .VITE_BACKEND_CANISTER_ID}&imgid={productId}"
+          class="my-4 w-48"
+          onerror="this.style.display='none'"
+        />
+      </div>
     </div>
     <div class="form-control my-4 max-w-0">
       <label class="label cursor-pointer">

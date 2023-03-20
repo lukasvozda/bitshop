@@ -31,7 +31,15 @@
               <div class="flex items-center space-x-3">
                 <div class="avatar">
                   <div class="mask mask-squircle w-12 h-12">
-                    <img src="/product.jpg" alt="Avatar Tailwind CSS Component" />
+                    {#if p[1].img != ""}
+                      <img
+                        src="http://127.0.0.1:8008/?canisterId={import.meta.env
+                          .VITE_BACKEND_CANISTER_ID}&imgid={p[1].img}"
+                        alt="{p[1].title}"
+                      />
+                    {:else}
+                      <img src="/product.jpg" alt="Default image" />
+                    {/if}
                   </div>
                 </div>
                 <div>
