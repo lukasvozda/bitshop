@@ -1,7 +1,12 @@
 import Text "mo:base/Text";
 import Char "mo:base/Char";
+import Blob "mo:base/Blob";
+import Types "types";
+
 
 module {
+
+  type Response = Types.Response;
 
   func process_character(char : Char) : Char {
     let unicode_value = Char.toNat32(char);
@@ -28,6 +33,36 @@ module {
       slug #= Char.toText(process_character(char));
     };
     slug;
+  };
+
+    
+  // A 200 Ok response with picture
+  public func picture(pic : Blob) : Response {
+    {
+      body = pic;
+      headers = [
+        ("Content-Type", "image/jpg"),
+        ("Access-Control-Allow-Origin", "*")
+        //("Expires", "Wed, 9 Jan 2099 09:09:09 GMT")
+      ];
+      status_code = 200;
+      streaming_strategy = null;
+    };
+  };
+
+  // A 404 response with an optional error message.
+  public func http404(msg : ?Text) : Response {
+    {
+      body = Text.encodeUtf8(
+        switch (msg) {
+          case (?msg) msg;
+          case null "Not found.";
+        }
+      );
+      headers = [("Content-Type", "text/plain")];
+      status_code = 404;
+      streaming_strategy = null;
+    };
   };
 
 };

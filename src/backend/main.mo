@@ -179,7 +179,7 @@ actor {
       };
       case (?v) {
         //If the product was found, we try to update it.
-        var imgSlug : SlugId = "";
+        var imgSlug : SlugId = v.img;
         switch (img) {
           case null {
             // do nothing if there is no image update
@@ -505,23 +505,6 @@ actor {
   };
 
   // Images
-
-  public shared (msg) func uploadImg(imgId : ImgId, image : Blob) {
-    storeBlobImg(imgId, image);
-  };
-
-  public query ({ caller }) func getPic(id : ImgId) : async Blob {
-    var pic = loadBlobImg(id);
-    switch (pic) {
-      case (null) {
-        return Blob.fromArray([]);
-      };
-      case (?existingPic) {
-        return existingPic;
-      };
-    };
-  };
-
   private func storeBlobImg(imgId : ImgId, value : Blob) {
     var size : Nat = Nat32.toNat(Nat32.fromIntWrap(value.size()));
     // Each page is 64KiB (65536 bytes)
@@ -560,43 +543,13 @@ actor {
       var pic = loadBlobImg(imgId);
       switch (pic) {
         case (null) {
-          return http404(?"no picture available");
+          return Utils.http404(?"no picture available");
         };
         case (?existingPic) {
-          return picture(existingPic);
+          return Utils.picture(existingPic);
         };
       };
     };
-    return http404(?"Path not found.");
+    return Utils.http404(?"Path not found.");
   };
-
-  // A 200 Ok response with picture
-  private func picture(pic : Blob) : Response {
-    {
-      body = pic;
-      headers = [
-        ("Content-Type", "image/jpg"),
-        ("Access-Control-Allow-Origin", "*")
-        //("Expires", "Wed, 9 Jan 2099 09:09:09 GMT")
-      ];
-      status_code = 200;
-      streaming_strategy = null;
-    };
-  };
-
-  // A 404 response with an optional error message.
-  private func http404(msg : ?Text) : Response {
-    {
-      body = Text.encodeUtf8(
-        switch (msg) {
-          case (?msg) msg;
-          case null "Not found.";
-        }
-      );
-      headers = [("Content-Type", "text/plain")];
-      status_code = 404;
-      streaming_strategy = null;
-    };
-  };
-
 };
