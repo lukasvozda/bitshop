@@ -10,15 +10,15 @@ export const cartOrder = derived(
   ([$shippingAddress, $productsInCart, $totalPrice, $paymentAddress]) => {
     return {
       shippingAddress: {
-        //...$shippingAddress
-        mail: "test@test.cz",
-        firstName: "test",
-        lastName: "test",
-        street: "test",
-        postCode: "test123",
-        country: "Test",
-        city: "TestTest",
-        county: ""
+        ...$shippingAddress
+        // mail: "test@test.cz",
+        // firstName: "test",
+        // lastName: "test",
+        // street: "test",
+        // postCode: "test123",
+        // country: "Test",
+        // city: "TestTest",
+        // county: ""
       },
       products: [...$productsInCart].map((item) => ({
         id: parseInt(item.product.id.toString()),

@@ -14,8 +14,11 @@
             class="hover:opacity-75 transition duration-200 ease-in rounded-md"
           >
             {#if item.product.img != ""}
-              <img src="http://127.0.0.1:8008/?canisterId={import.meta.env
-                .VITE_BACKEND_CANISTER_ID}&imgid={item.product.img}" alt={item.product.title} />
+              <img
+                src="http://127.0.0.1:8008/?canisterId={import.meta.env
+                  .VITE_BACKEND_CANISTER_ID}&imgid={item.product.img}"
+                alt={item.product.title}
+              />
             {:else}
               <img src="/product.jpg" alt={item.product.title} />
             {/if}
@@ -34,7 +37,8 @@
         <div class="flex items-center font-mono text-xs md:text-lg md:px-4">
           {(item.product.price * item.quantity).toFixed(8)}
           <div class="ml-1 opacity-80">
-            <Btc size="14" color="black" />
+            <span>SATs</span>
+            <!--            <Btc size="14" color="black" />-->
           </div>
         </div>
       </div>
@@ -68,7 +72,8 @@
     <div class="flex">
       <span class="font-bold text-gray-700 text-2xl font-mono">{$totalPrice}</span>
       <div class="ml-1 mt-1 opacity-80">
-        <Btc size="25" color="black" />
+        <span>SATs</span>
+        <!--        <Btc size="25" color="black" />-->
       </div>
     </div>
   </div>

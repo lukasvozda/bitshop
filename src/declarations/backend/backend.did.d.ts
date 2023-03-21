@@ -20,7 +20,6 @@ export type GetParseError = { UserNotAuthenticated: null } | { Base58PubKeyWrong
 export type GetProductError = { ProductNotFound: null };
 export type HeaderField = [string, string];
 export type ImgId = string;
-export type ImgId__1 = string;
 export interface NewOrder {
   paymentAddress: string;
   shippingAddress: ShippingAddress;
@@ -64,7 +63,7 @@ export interface PanelInfo {
 }
 export interface Product {
   id: ProductId;
-  img: ImgId__1;
+  img: ImgId;
   time_created: Time;
   title: string;
   active: boolean;
@@ -164,7 +163,6 @@ export interface _SERVICE {
   getCategory: ActorMethod<[SlugId], Result_7>;
   getOrder: ActorMethod<[string], Result_6>;
   getOwnerXPUB: ActorMethod<[], Result_5>;
-  getPic: ActorMethod<[ImgId], Uint8Array>;
   getProduct: ActorMethod<[SlugId], Result_4>;
   greet: ActorMethod<[string], string>;
   http_request: ActorMethod<[Request], Response>;
@@ -175,5 +173,4 @@ export interface _SERVICE {
   setUserInputTransactionId: ActorMethod<[string, string], Result_2>;
   updateCategory: ActorMethod<[SlugId, string], Result_1>;
   updateProduct: ActorMethod<[SlugId, UserProduct, [] | [Uint8Array]], Result>;
-  uploadImg: ActorMethod<[ImgId, Uint8Array], undefined>;
 }

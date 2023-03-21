@@ -4,7 +4,6 @@
   export let title = "";
   export let displayCancel = true;
   export let displayConfirm = true;
-  $: console.log("dnu", isOpen);
 </script>
 
 <div class="modal" class:modal-open={isOpen}>

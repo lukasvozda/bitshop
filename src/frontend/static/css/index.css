@@ -7,3 +7,7 @@
     rgba(246, 230, 187, 1) 100%
   );
 }
+
+html {
+    scroll-behavior: smooth;
+}

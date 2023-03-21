@@ -4,11 +4,24 @@
   import { ArrowDownIcon, ArrowRightIcon, ArrowLeftIcon } from "svelte-feather-icons";
   import BitshopLogo from "@/lib/components/ui/BitshopLogo.svelte";
   import { Circle } from "svelte-loading-spinners";
+  import { onMount } from "svelte";
+  import { fly } from "svelte/transition";
 
   let showAllCategories = false;
+  let selectedCategories = {};
+  let filterActive;
 
   let scroll;
   let speed = 0.35;
+
+  $: filterActive = Object.values(selectedCategories).find((item) => item) !== undefined;
+  $: filteredProducts = !filterActive
+    ? $products
+    : $products.filter((product) => selectedCategories[product[1].category]);
+
+  function toggleCategory(category) {
+    selectedCategories[category[0]] = !selectedCategories[category[0]];
+  }
 
   function scrollIntoView({ target }) {
     const el = document.querySelector(target.getAttribute("href"));
@@ -16,7 +29,15 @@
     el.scrollIntoView({
       behavior: "smooth"
     });
+    1;
   }
+
+  onMount(() => {
+    for (let category of $categories) {
+      console.log(category);
+      selectedCategories[category[1].name] = false;
+    }
+  });
 </script>
 
 <svelte:window bind:scrollY={scroll} />
@@ -61,14 +82,17 @@
     <div class="flex flex-wrap mb-8">
       {#each showAllCategories ? $categories : $categories.slice(0, 5) as category, _}
         <button
-          class="btn btn-sm btn-outline mx-1 my-1 rounded-xl border-1 font-semibold px-3 text-md !px-5 !h-2 !py-0"
+          on:click={() => toggleCategory(category)}
+          class="btn btn-sm mx-1 my-1 rounded-xl border-1 font-semibold px-3 text-md !px-5 !h-2 !py-0"
+          class:btn-outline={!selectedCategories[category[0]]}
+          in:fly={{ x: 100, duration: 100 }}
         >
           {category[1].name}
         </button>
       {/each}
       <button
         on:click={() => (showAllCategories = !showAllCategories)}
-        class="btn btn-sm  mx-1 my-1 rounded-xl border-1 font-semibold px-3 text-md !px-5 !h-2 !py-0 gap-2"
+        class="btn btn-sm mx-1 my-1 rounded-xl border-1 font-semibold px-3 text-md !px-5 !h-2 !py-0 gap-2"
       >
         {showAllCategories ? "show less" : "show all"}
         <span class="swap swap-rotate" class:swap-active={showAllCategories}>
@@ -81,16 +105,26 @@
         </span>
       </button>
     </div>
+
     <div class="flex flex-wrap">
       {#if $products.length === 0}
         <div class="flex w-full items-center justify-center my-24">
           <Circle size="100" color="gray" />
         </div>
+      {:else if filteredProducts.length === 0}
+        <div class="flex w-full items-center justify-center my-24">
+          No products in selected categories :(
+        </div>
       {:else}
-        {#each $products as product, _}
-          <div class="w-full sm:w-1/2 md:1/3 lg:w-1/4 px-2 py-2">
-            <ProductCard product={product[1]} />
-          </div>
+        {#each filteredProducts as product, _}
+          {#key filteredProducts.length}
+            <div
+              class="w-full sm:w-1/2 md:1/3 lg:w-1/4 px-2 py-2"
+              in:fly={{ x: -50, duration: 1000 }}
+            >
+              <ProductCard product={product[1]} />
+            </div>
+          {/key}
         {/each}
       {/if}
     </div>

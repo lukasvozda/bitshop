@@ -52,7 +52,8 @@
           </span>
           <div class="col-span-4">
             <ClipboardCopy copyValue={$totalPrice}>
-              <Btc color="black" size="20" />
+              <span>SATs</span>
+              <!--              <Btc color="black" size="20" />-->
             </ClipboardCopy>
           </div>
         </div>

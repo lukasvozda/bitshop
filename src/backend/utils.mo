@@ -3,7 +3,6 @@ import Char "mo:base/Char";
 import Blob "mo:base/Blob";
 import Types "types";
 
-
 module {
 
   type Response = Types.Response;
@@ -35,7 +34,6 @@ module {
     slug;
   };
 
-    
   // A 200 Ok response with picture
   public func picture(pic : Blob) : Response {
     {

@@ -35,7 +35,7 @@
                       <img
                         src="http://127.0.0.1:8008/?canisterId={import.meta.env
                           .VITE_BACKEND_CANISTER_ID}&imgid={p[1].img}"
-                        alt="{p[1].title}"
+                        alt={p[1].title}
                       />
                     {:else}
                       <img src="/product.jpg" alt="Default image" />
@@ -55,7 +55,8 @@
               <div class="flex items-center">
                 <span>{p[1].price}</span>
                 <span class="ml-1">
-                  <Btc color="black" size="15" />
+                  <span>SATs</span>
+                  <!--                  <Btc color="black" size="15" />-->
                 </span>
               </div>
             </td>

@@ -129,7 +129,7 @@ type Product = record {
   category : SlugId__1;
   description : text;
   id : ProductId;
-  img : ImgId__1;
+  img : ImgId;
   inventory : nat8;
   price : float64;
   slug : text;
@@ -181,7 +181,6 @@ type NewOrder = record {
   shippingAddress : ShippingAddress;
   totalPrice : Satoshi;
 };
-type ImgId__1 = text;
 type ImgId = text;
 type HeaderField = record {
   text;
@@ -226,7 +225,6 @@ service : {
   getCategory : (SlugId) -> (Result_7) query;
   getOrder : (text) -> (Result_6) query;
   getOwnerXPUB : () -> (Result_5);
-  getPic : (ImgId) -> (blob) query;
   getProduct : (SlugId) -> (Result_4) query;
   greet : (text) -> (text) query;
   http_request : (Request) -> (Response) query;
@@ -252,5 +250,4 @@ service : {
   setUserInputTransactionId : (text, text) -> (Result_2);
   updateCategory : (SlugId, text) -> (Result_1);
   updateProduct : (SlugId, UserProduct, opt blob) -> (Result);
-  uploadImg : (ImgId, blob) -> () oneway;
 };

@@ -15,7 +15,6 @@
 
   onMount(async () => {
     orders = await listOrders();
-    console.log(orders);
   });
 </script>
 

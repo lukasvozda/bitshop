@@ -68,10 +68,10 @@ export const idlFactory = ({ IDL }) => {
     category: SlugId__1,
     price: IDL.Float64
   });
-  const ImgId__1 = IDL.Text;
+  const ImgId = IDL.Text;
   const Product = IDL.Record({
     id: ProductId,
-    img: ImgId__1,
+    img: ImgId,
     time_created: Time,
     title: IDL.Text,
     active: IDL.Bool,
@@ -128,7 +128,6 @@ export const idlFactory = ({ IDL }) => {
     ok: IDL.Text,
     err: XPUBManipulationError
   });
-  const ImgId = IDL.Text;
   const GetProductError = IDL.Variant({ ProductNotFound: IDL.Null });
   const Result_4 = IDL.Variant({ ok: Product, err: GetProductError });
   const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
@@ -199,7 +198,6 @@ export const idlFactory = ({ IDL }) => {
     getCategory: IDL.Func([SlugId], [Result_7], ["query"]),
     getOrder: IDL.Func([IDL.Text], [Result_6], ["query"]),
     getOwnerXPUB: IDL.Func([], [Result_5], []),
-    getPic: IDL.Func([ImgId], [IDL.Vec(IDL.Nat8)], ["query"]),
     getProduct: IDL.Func([SlugId], [Result_4], ["query"]),
     greet: IDL.Func([IDL.Text], [IDL.Text], ["query"]),
     http_request: IDL.Func([Request], [Response], ["query"]),
@@ -209,8 +207,7 @@ export const idlFactory = ({ IDL }) => {
     setOwnerXPUB: IDL.Func([IDL.Text], [Result_3], []),
     setUserInputTransactionId: IDL.Func([IDL.Text, IDL.Text], [Result_2], []),
     updateCategory: IDL.Func([SlugId, IDL.Text], [Result_1], []),
-    updateProduct: IDL.Func([SlugId, UserProduct, IDL.Opt(IDL.Vec(IDL.Nat8))], [Result], []),
-    uploadImg: IDL.Func([ImgId, IDL.Vec(IDL.Nat8)], [], ["oneway"])
+    updateProduct: IDL.Func([SlugId, UserProduct, IDL.Opt(IDL.Vec(IDL.Nat8))], [Result], [])
   });
 };
 export const init = ({ IDL }) => {
