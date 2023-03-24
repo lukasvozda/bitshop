@@ -13,7 +13,6 @@
 
   const createCategory = async () => {
     disabled = true;
-    console.log("create category", category.name);
     let res = await categories.createCategory(category.name);
     if (res.slug != "") {
       created = true;

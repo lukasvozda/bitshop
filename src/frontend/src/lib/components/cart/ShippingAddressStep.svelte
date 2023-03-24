@@ -4,11 +4,11 @@
   import CountryStateCityDropdown from "@/lib/components/ui/CountryStateCityDropdown.svelte";
   import { firstName, lastName, mail, postCode, street } from "@/stores/cart";
 
-  const formMail = field("mail", $mail?.value, [email()]);
-  const formFirstName = field("firstName", $firstName?.value, [required()]);
-  const formLastName = field("lastName", $lastName?.value, [required()]);
-  const formPostCode = field("postCode", $postCode?.value, [required()]);
-  const formStreet = field("street", $street?.value, [required()]);
+  const formMail = field("mail", $mail?.value || "", [email()]);
+  const formFirstName = field("firstName", $firstName?.value || "", [required()]);
+  const formLastName = field("lastName", $lastName?.value || "", [required()]);
+  const formPostCode = field("postCode", $postCode?.value || "", []);
+  const formStreet = field("street", $street?.value || "", []);
   const addressForm = form(formMail, formFirstName, formLastName, formPostCode, formStreet);
 
   $: mail.set($formMail);
@@ -78,7 +78,6 @@
               <input
                 placeholder="Your email address"
                 bind:value={$formMail.value}
-                required
                 type="email"
                 name="email-address"
                 id="email-address"
@@ -104,7 +103,6 @@
               <input
                 type="text"
                 bind:value={$formPostCode.value}
-                required
                 name="postal-code"
                 id="postal-code"
                 autocomplete="postal-code"
@@ -123,7 +121,6 @@
               >
               <input
                 type="text"
-                required
                 bind:value={$formStreet.value}
                 name="street-address"
                 id="street-address"

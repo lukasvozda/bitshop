@@ -23,7 +23,7 @@
                 <Circle size="20" color="gray" />
               </div>
             {:else}
-              <span>{info?.ordersCount}</span>
+              <span class="font-mono text-sm">{info?.ordersCount}</span>
             {/if}
           </div>
         </div>
@@ -37,7 +37,7 @@
                 <Circle size="20" color="gray" />
               </div>
             {:else}
-              <span>{info?.totalRevenue} Satoshi</span>
+              <span class="font-mono text-sm">{info?.totalRevenue} SATs</span>
             {/if}
           </div>
         </div>
@@ -51,7 +51,7 @@
                 <Circle size="20" color="gray" />
               </div>
             {:else}
-              <span>{info?.accountBalance} Satoshi</span>
+              <span class="font-mono text-sm">{info?.accountBalance} SATs</span>
             {/if}
           </div>
         </div>

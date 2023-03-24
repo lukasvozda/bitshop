@@ -34,7 +34,6 @@
 
   onMount(() => {
     for (let category of $categories) {
-      console.log(category);
       selectedCategories[category[1].name] = false;
     }
   });

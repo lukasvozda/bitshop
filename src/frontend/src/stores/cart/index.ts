@@ -20,7 +20,7 @@ function fetchProducts() {
   );
 
   const findProductIndex = (products: CartProduct[], productId: number) =>
-    products.findIndex((cartProduct) => cartProduct.product.id === productId);
+    products.findIndex((cartProduct) => cartProduct.product.id.toString() == productId.toString());
 
   const addProduct = (newProduct: Product) =>
     update((products: CartProduct[]) => {
@@ -73,14 +73,14 @@ productsInCart.subscribe((products) => {
   }
 });
 
-export const mail = writable(null);
+export const mail = writable("");
 export const firstName = writable(null);
 export const lastName = writable(null);
-export const street = writable(null);
-export const city = writable(null);
-export const postCode = writable(null);
-export const country = writable(null);
-export const county = writable(null);
+export const street = writable("");
+export const city = writable("");
+export const postCode = writable("");
+export const country = writable("");
+export const county = writable("");
 
 export const shippingPerson = derived(
   [mail, firstName, lastName, street, postCode],
@@ -158,29 +158,14 @@ const fetchPaymentAddress = () => {
 
 export const paymentAddress = fetchPaymentAddress();
 
-export const validateShippingDetailsStep = derived(
-  [shippingPerson, shippingLocation],
-  ([$shippingPerson, $shippingLocation]) => {
-    for (const field in $shippingPerson) {
-      const fieldValue = $shippingPerson[field as keyof typeof $shippingPerson];
-      if (fieldValue == null || fieldValue["invalid"] || !fieldValue["dirty"]) {
-        return false;
-      }
-    }
-    if (
-      $shippingLocation.country == null ||
-      $shippingLocation.country["invalid"] ||
-      !$shippingLocation.country["dirty"]
-    ) {
-      return false;
-    }
-    return !(
-      $shippingLocation.city == null ||
-      $shippingLocation.city["invalid"] ||
-      !$shippingLocation.city["dirty"]
-    );
+export const validateShippingDetailsStep = derived([shippingPerson], ([$shippingPerson]) => {
+  const firstName = $shippingPerson.firstName;
+  const lastName = $shippingPerson.lastName;
+  if (firstName === "" || (firstName && (firstName.invalid || !firstName.dirty))) {
+    return false;
   }
-);
+  return !(lastName === "" || (lastName && lastName.invalid && !lastName.dirty));
+});
 
 export const validateProductsStep = derived(
   productsInCart,
