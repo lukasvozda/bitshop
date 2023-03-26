@@ -28,6 +28,7 @@ These features are missing in order to be able to run an online store on Bitshop
 If you would like to use Bitshop for your own projects, please let us know what features are most important to you.
 
 <contact@bitshop.info>
+
 <https://twitter.com/bitshopicp>
 
 ## Getting started
