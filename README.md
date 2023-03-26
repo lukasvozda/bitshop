@@ -2,10 +2,34 @@
   <img width="240"  src="./src/frontend/static/bitshop_logo_small.jpg">
 </p>
 
-# BitShop
+# About this project
 
-Breaking the narrative that you can't buy anything in Bitcoin.
-Shopify alternative running on the Internet Computer.
+Bitshop if a proof of concept project that demonstrates capabilities of the Internet Computer blockchain. It is a Shopify alternative running 100 % on-chain with Bitcoin as a native payment. There is no need to install any additional software to use this app – it is all approachable via web browser.
+
+We implemented CRUD support for products, categories, orders. You can also upload images for each product that are also stored on-chain.
+
+Unique BTC address is generated for each order – the backend is able to verify the payment automatically.
+
+We used Sveltekit to build the frontend of this app and the backend is written in the Motoko language, designed to write smart contracts on the IC. All code is open source in this repository.
+
+
+These features are missing in order to be able to run an online store on Bitshop in real world:
+<ul>
+  <li>Product Variants</li>
+  <li>E-mail confirmations</li>
+  <li>Shipping providers integrations</li>
+  <li>More payment methods (USDC, ETH, VISA)</li>
+  <li>Support for discounts</li>
+  <li>Tax and invoices</li>
+  <li>Multiple images support</li>
+</ul>
+
+
+If you would like to use Bitshop for your own projects, please let us know what features are most important to you.
+
+<contact@bitshop.info>
+
+<https://twitter.com/bitshopicp>
 
 ## Getting started
 
