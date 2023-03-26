@@ -29,7 +29,7 @@
     mustHaveSpecifiedName()
   ]);
   let formRegion = field("fieldItem", $county?.value, []);
-  let formCity = field("fieldItem", $city?.value, [required()]);
+  let formCity = field("fieldItem", $city?.value, []);
 
   $: country.set($formCountry);
   $: county.set($formRegion);
@@ -71,7 +71,6 @@
     <input
       tabindex="0"
       type="text"
-      required
       disabled={$formCountry.invalid || !$formCountry.dirty}
       placeholder="Type in your city"
       bind:value={$formCity.value}

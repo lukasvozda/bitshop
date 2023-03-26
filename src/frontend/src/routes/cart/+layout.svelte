@@ -26,7 +26,7 @@
       title: "Your items in cart"
     },
     {
-      // disabled: !$validateShippingDetailsStep,
+      disabled: !$validateShippingDetailsStep,
       onClick: () => ($currentStep = Steps.SHIPPING),
       buttonText: "shipping",
       title: "Your shipping address"

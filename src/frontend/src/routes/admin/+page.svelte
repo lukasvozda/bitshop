@@ -13,7 +13,7 @@
 <div class="my-4">
   <h1>Admin panel</h1>
   <div class="mt-5">
-    <div class="grid grid-cols-12 gap-5 mt-5">
+    <div class="grid grid-cols-4 md:grid-cols-12 gap-5 mt-5">
       <div class="col-span-4">
         <div class="card w-100 glass">
           <div class="card-body py-5">
@@ -23,7 +23,7 @@
                 <Circle size="20" color="gray" />
               </div>
             {:else}
-              <span>{info?.ordersCount}</span>
+              <span class="font-mono text-sm">{info?.ordersCount}</span>
             {/if}
           </div>
         </div>
@@ -37,7 +37,7 @@
                 <Circle size="20" color="gray" />
               </div>
             {:else}
-              <span>{info?.totalRevenue} Satoshi</span>
+              <span class="font-mono text-sm">{info?.totalRevenue} SATs</span>
             {/if}
           </div>
         </div>
@@ -51,7 +51,7 @@
                 <Circle size="20" color="gray" />
               </div>
             {:else}
-              <span>{info?.accountBalance} Satoshi</span>
+              <span class="font-mono text-sm">{info?.accountBalance} SATs</span>
             {/if}
           </div>
         </div>

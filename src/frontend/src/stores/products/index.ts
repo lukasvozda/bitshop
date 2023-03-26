@@ -58,7 +58,6 @@ function fetchProducts() {
       })
       .catch((err: any): any => {
         alerts.addAlert("Unable to update product.", Status.ERROR);
-        console.log(err);
         alertVisibility.showAlert();
         return null;
       });

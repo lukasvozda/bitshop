@@ -15,7 +15,6 @@
 
   onMount(async () => {
     orders = await listOrders();
-    console.log(orders);
   });
 </script>
 
@@ -48,7 +47,7 @@
             <td>{Object.keys(order.status)[0]}</td>
             <td class="font-mono text-sm">{order.paymentAddress}</td>
             <td class="font-mono text-sm">{order.transactionId}</td>
-            <td class="font-mono text-sm">{order.totalPrice} Satoshi</td>
+            <td class="font-mono text-sm">{order.totalPrice} SATs</td>
             <td>
               {#each order.products as product, _}
                 <div>
