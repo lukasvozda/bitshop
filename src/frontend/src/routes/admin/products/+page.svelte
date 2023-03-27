@@ -32,11 +32,20 @@
                 <div class="avatar">
                   <div class="mask mask-squircle w-12 h-12">
                     {#if p[1].img != ""}
-                      <img
-                        src="http://127.0.0.1:8008/?canisterId={import.meta.env
-                          .VITE_BACKEND_CANISTER_ID}&imgid={p[1].img}"
-                        alt={p[1].title}
-                      />
+                      {#if import.meta.env.MODE == "development"}
+                        <img
+                          src="http://127.0.0.1:8008/?canisterId={import.meta.env
+                            .VITE_BACKEND_CANISTER_ID}&imgid={p[1].img}"
+                          alt={p[1].title}
+                        />
+                      {:else}
+                        <img
+                          src="https://{import.meta.env
+                            .VITE_BACKEND_CANISTER_ID}.raw.ic0.app/?imgid={p[1].img}"
+                          alt={p[1].title}
+                          class="hover:scale-110 transition ease-in duration-300 opacity-90 hover:opacity-100"
+                        />
+                      {/if}
                     {:else}
                       <img src="/product.jpg" alt="Default image" />
                     {/if}

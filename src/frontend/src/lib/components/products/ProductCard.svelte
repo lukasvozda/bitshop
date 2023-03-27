@@ -1,14 +1,24 @@
 <script lang="ts">
   import type { Product } from "@/types";
-  import { Btc } from "svelte-cryptoicon";
   export let product: Product;
 
   let imageSource = "";
-  $: imageSource = product?.img
-    ? `http://127.0.0.1:8008/?canisterId=${import.meta.env.VITE_BACKEND_CANISTER_ID}&imgid=${
-        product.img
-      }`
-    : "/product.jpg";
+
+  $: {
+    if (product?.img) {
+      if (import.meta.env.MODE == "development") {
+        imageSource = `http://127.0.0.1:8008/?canisterId=${
+          import.meta.env.VITE_BACKEND_CANISTER_ID
+        }&imgid=${product.img}`;
+      } else {
+        imageSource = `https://${import.meta.env.VITE_BACKEND_CANISTER_ID}.raw.ic0.app/?imgid=${
+          product.img
+        }`;
+      }
+    } else {
+      imageSource = "/product.jpg";
+    }
+  }
 </script>
 
 <a

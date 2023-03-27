@@ -32,12 +32,21 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-20 py-10">
         <div class="overflow-hidden order-last md:order-1">
           {#if product.img != ""}
-            <img
-              src="http://127.0.0.1:8008/?canisterId={import.meta.env
-                .VITE_BACKEND_CANISTER_ID}&imgid={product.img}"
-              alt={product.title}
-              class="hover:scale-110 transition ease-in duration-300 opacity-90 hover:opacity-100"
-            />
+            {#if import.meta.env.MODE == "development"}
+              <img
+                src="http://127.0.0.1:8008/?canisterId={import.meta.env
+                  .VITE_BACKEND_CANISTER_ID}&imgid={product.img}"
+                alt={product.title}
+                class="hover:scale-110 transition ease-in duration-300 opacity-90 hover:opacity-100"
+              />
+            {:else}
+              <img
+                src="https://{import.meta.env
+                  .VITE_BACKEND_CANISTER_ID}.raw.ic0.app/?imgid={product.img}"
+                alt={product.title}
+                class="hover:scale-110 transition ease-in duration-300 opacity-90 hover:opacity-100"
+              />
+            {/if}
           {:else}
             <img src="/product.jpg" alt="Default image" />
           {/if}

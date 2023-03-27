@@ -97,13 +97,15 @@ dfx start --enable-bitcoin --bitcoin-node 127.0.0.1:<your_custom_port>
 See [Internet Computer Bitcoin development](https://internetcomputer.org/docs/current/developer-docs/integrations/bitcoin/local-development) page for more details.
 
 ### Motoko
+
 `dfx.json` unfortunately does not support configuration of the Motoko backend.
 You can configure the network parameters in the `src/backend/src/config.mo`. The possible values are:
-````
+
+```
 #Mainnet
 #Testnet
 #Regtest
-````
+```
 
 ## Build & run the dapp
 
