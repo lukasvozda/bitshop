@@ -78,7 +78,7 @@ from the project directory will stop the local replica.
 
 ### DFX
 
-To connect to the Bitcoin network, you need to specify address to your (or remote) Bitcoin node in the `dfx.json` file, see .
+To connect to the Bitcoin network, you need to specify address to your (or remote) Bitcoin node in the `dfx.json` file.
 
 ```
 "bitcoin": {
