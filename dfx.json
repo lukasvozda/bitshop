@@ -16,7 +16,7 @@
   "defaults": {
     "bitcoin": {
       "enabled": true,
-      "nodes": ["94.112.189.115:18444"],
+      "nodes": [],
       "log_level": "info"
     },
     "build": {

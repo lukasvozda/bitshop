@@ -12,8 +12,8 @@ Unique BTC address is generated for each order – the backend is able to verify
 
 We used Sveltekit to build the frontend of this app and the backend is written in the Motoko language, designed to write smart contracts on the IC. All code is open source in this repository.
 
-
 These features are missing in order to be able to run an online store on Bitshop in real world:
+
 <ul>
   <li>Product Variants</li>
   <li>E-mail confirmations</li>
@@ -23,7 +23,6 @@ These features are missing in order to be able to run an online store on Bitshop
   <li>Tax and invoices</li>
   <li>Multiple images support</li>
 </ul>
-
 
 If you would like to use Bitshop for your own projects, please let us know what features are most important to you.
 
@@ -59,7 +58,7 @@ chmod +x /usr/local/bin/vessel
 
 Note if you have a different OS, you can find the correct version [here](https://github.com/dfinity/vessel/releases/tag/v0.6.5).
 
-### Start and stop the local replica
+## Start and stop the local replica
 
 Open a new terminal window _in the project directory_, and run the following command to start the local replica. The replica will not start unless `dfx.json` exists in the current directory.
 
@@ -74,6 +73,37 @@ dfx stop
 ```
 
 from the project directory will stop the local replica.
+
+## Configuration
+
+### DFX
+
+To connect to the Bitcoin network, you need to specify address to your (or remote) Bitcoin node in the `dfx.json` file.
+
+```
+"bitcoin": {
+  "enabled": true,
+  "nodes": ["node1-ip:port", "node2-ip:port"],
+  "log_level": "info"
+},
+```
+
+You can also achieve the same by running command:
+
+```
+dfx start --enable-bitcoin --bitcoin-node 127.0.0.1:<your_custom_port>
+```
+
+See [Internet Computer Bitcoin development](https://internetcomputer.org/docs/current/developer-docs/integrations/bitcoin/local-development) page for more details.
+
+### Motoko
+`dfx.json` unfortunately does not support configuration of the Motoko backend.
+You can configure the network parameters in the `src/backend/src/config.mo`. The possible values are:
+````
+#Mainnet
+#Testnet
+#Regtest
+````
 
 ## Build & run the dapp
 

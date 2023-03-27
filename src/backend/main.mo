@@ -21,6 +21,8 @@ import BitcoinApiTypes "bitcoin-api/Types";
 import Source "mo:uuid/async/SourceV4";
 import UUID "mo:uuid/UUID";
 
+import Config "config";
+
 import Debug "mo:base/Debug";
 
 import BitcoinTypes "mo:bitcoin/bitcoin/Types";
@@ -349,7 +351,7 @@ actor {
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
-    switch (Payments.parse(xpub, #Testnet)) {
+    switch (Payments.parse(xpub, Config.config.network)) {
       case null return #err(#Base58PubKeyWrongFormatError);
       case (?parsedPublicKey) {
         ownerExtendedPublicKeyBase58Check := xpub;
@@ -395,7 +397,7 @@ actor {
     if (ownerExtendedPublicKeyBase58Check == "") {
       return #err(#OwnerExtendedPubKeyNotSet);
     };
-    return switch (Payments.parse(ownerExtendedPublicKeyBase58Check, #Testnet)) {
+    return switch (Payments.parse(ownerExtendedPublicKeyBase58Check, Config.config.network)) {
       case null return #err(#Base58PubKeyWrongFormatError);
       case (?parsedPublicKey) {
         switch (parsedPublicKey.derivePath(Payments.getRelativePath(0))) {
@@ -405,7 +407,7 @@ actor {
               case null return #err(#ChildKeyDerivationError);
               case (?derived) {
                 currentChildKeyIndex := currentChildKeyIndex + 1;
-                let address : Text = Payments.getP2PKHAddress(derived.key, #Testnet);
+                let address : Text = Payments.getP2PKHAddress(derived.key, Config.config.network);
                 return #ok(address);
               };
             };
