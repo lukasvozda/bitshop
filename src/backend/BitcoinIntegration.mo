@@ -9,6 +9,8 @@ import BitcoinApi "bitcoin-api/BitcoinApi";
 import BitcoinApiUtils "bitcoin-api/Utils";
 import BitcoinApiTypes "bitcoin-api/Types";
 
+import Config "config";
+
 import Payments "./payments";
 
 module {
@@ -22,18 +24,18 @@ module {
 
   /// Returns the balance of the given Bitcoin address.
   public func get_balance(address : BitcoinAddress) : async Satoshi {
-    await BitcoinApi.get_balance(#Regtest, address);
+    await BitcoinApi.get_balance(Config.config.network, address);
   };
 
   /// Returns the UTXOs of the given Bitcoin address.
   public func get_utxos(address : BitcoinAddress) : async GetUtxosResponse {
-    await BitcoinApi.get_utxos(#Regtest, address);
+    await BitcoinApi.get_utxos(Config.config.network, address);
   };
 
   /// Returns the 100 fee percentiles measured in millisatoshi/byte.
   /// Percentiles are computed from the last 10,000 transactions (if available).
   public func get_current_fee_percentiles() : async [MillisatoshiPerByte] {
-    await BitcoinApi.get_current_fee_percentiles(#Regtest);
+    await BitcoinApi.get_current_fee_percentiles(Config.config.network);
   };
 
   private func parse_transaction_id(transactionId : Blob) : Text {
@@ -68,7 +70,7 @@ module {
       return totalBalance;
     };
     for (i in Iter.range(0, currentChildKeyIndex)) {
-      switch (Payments.parse(ownerExtendedPublicKeyBase58Check, #Testnet)) {
+      switch (Payments.parse(ownerExtendedPublicKeyBase58Check, Config.config.network)) {
         case null totalBalance += 0;
         case (?parsedPublicKey) {
           switch (parsedPublicKey.derivePath(Payments.getRelativePath(0))) {
@@ -77,7 +79,7 @@ module {
               switch (derivedFirstNonHardenedChild.derivePath(Payments.getRelativePath(i))) {
                 case null totalBalance += 0;
                 case (?derived) {
-                  let address : Text = Payments.getP2PKHAddress(derived.key, #Testnet);
+                  let address : Text = Payments.getP2PKHAddress(derived.key, Config.config.network);
                   totalBalance += await get_balance(address);
                 };
               };
