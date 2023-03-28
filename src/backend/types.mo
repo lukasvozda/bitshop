@@ -8,6 +8,7 @@ module {
 
   public type CreateProductError = {
     #UserNotAuthenticated;
+    #UserNotAdmin
     #EmptyTitle;
   };
 
@@ -17,16 +18,19 @@ module {
 
   public type UpdateProductError = {
     #UserNotAuthenticated;
+    #UserNotAdmin
     #EmptyTitle;
     #ProductNotFound;
   };
 
   public type DeleteProductError = {
+    #UserNotAdmin
     #UserNotAuthenticated;
   };
 
   public type CreateCategoryError = {
     #UserNotAuthenticated;
+    #UserNotAdmin
     #EmptyName;
     #CategoryAlreadyExists;
     // TODO add verification to category_create function
@@ -38,11 +42,13 @@ module {
 
   public type UpdateCategoryError = {
     #UserNotAuthenticated;
+    #UserNotAdmin
     #EmptyName;
     #CategoryNotFound;
   };
 
   public type DeleteCategoryError = {
+    #UserNotAdmin
     #UserNotAuthenticated;
   };
 

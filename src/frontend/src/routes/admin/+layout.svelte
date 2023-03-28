@@ -29,6 +29,7 @@
   const init = async () => {
     client = await AuthClient.create();
     if (await client.isAuthenticated()) {
+      console.log("Init, identity: ", client, client.getIdentity().getPrincipal().toString());
       if (import.meta.env.MODE != "development") {
         // Only assign identity on the mainnet to the agent, send anonymouse call locally for now
         Actor.agentOf($actor).replaceIdentity(client.getIdentity());

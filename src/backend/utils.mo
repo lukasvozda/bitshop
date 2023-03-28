@@ -2,6 +2,8 @@ import Text "mo:base/Text";
 import Char "mo:base/Char";
 import Blob "mo:base/Blob";
 import Types "types";
+import Principal "mo:base/Principal";
+import Array "mo:base/Array";
 
 module {
 
@@ -64,6 +66,26 @@ module {
       headers = [("Content-Type", "text/plain")];
       status_code = 404;
       streaming_strategy = null;
+    };
+  };
+
+  let adminPrincipals : [Text] = [
+    "4w6mb-vqaaa-aaaab-qac5q-cai",
+  ];
+
+
+  public func isAdmin(userPrincipal : Principal) : Bool {
+    let userPrincipalStr = Principal.toText(userPrincipal);
+    let foundAdmin = Array.find<Text>(
+      adminPrincipals,
+      func(adminPrincipal : Text) : Bool {
+        return userPrincipalStr == adminPrincipal;
+      },
+    );
+
+    switch (foundAdmin) {
+      case (null) { return false };
+      case (_) { return true };
     };
   };
 

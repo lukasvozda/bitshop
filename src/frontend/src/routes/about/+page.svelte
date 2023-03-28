@@ -38,7 +38,7 @@
         <li>Product Variants</li>
         <li>E-mail confirmations</li>
         <li>Shipping providers integrations</li>
-        <li>More payment methods (USDC, ETH, VISA)</li>
+        <li>Payment methods (ckBTC, USDC, ETH, VISA)</li>
         <li>Support for discounts</li>
         <li>Tax and invoices</li>
         <li>Multiple images support</li>

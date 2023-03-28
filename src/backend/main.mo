@@ -168,6 +168,9 @@ actor {
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
     // };
+    // if(Utils.isAdmin(msg.caller)){
+    //     return #err(#UserNotAdmin); // We require the user to be admin
+    // };
 
     if (p.title == "") {
       return #err(#EmptyTitle);
@@ -214,6 +217,9 @@ actor {
   };
 
   public shared (msg) func deleteProduct(id : SlugId) : async Result.Result<(), DeleteProductError> {
+    // if(Utils.isAdmin(msg.caller)){
+    //     return #err(#UserNotAdmin); // We require the user to be admin
+    // };    
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -253,6 +259,9 @@ actor {
     id : SlugId,
     name : Text
   ) : async Result.Result<(Category), UpdateCategoryError> {
+    // if(Utils.isAdmin(msg.caller)){
+    //     return #err(#UserNotAdmin); // We require the user to be admin
+    // };    
     // commented for local development
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated); // We require the user to be authenticated,
@@ -286,6 +295,9 @@ actor {
   };
 
   public shared (msg) func deleteCategory(id : SlugId) : async Result.Result<(), DeleteCategoryError> {
+    // if(Utils.isAdmin(msg.caller)){
+    //     return #err(#UserNotAdmin); // We require the user to be admin
+    // };    
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -341,6 +353,9 @@ actor {
   // payments
 
   public shared (msg) func getOwnerXPUB() : async Result.Result<Text, Payments.XPUBManipulationError> {
+    // if(Utils.isAdmin(msg.caller)){
+    //     return #err(#UserNotAdmin); // We require the user to be admin
+    // };    
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -348,6 +363,9 @@ actor {
   };
 
   public shared (msg) func setOwnerXPUB(xpub : Text) : async Result.Result<(), Payments.GetParseError> {
+    // if(Utils.isAdmin(msg.caller)){
+    //     return #err(#UserNotAdmin); // We require the user to be admin
+    // };    
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -361,6 +379,9 @@ actor {
   };
 
   public shared (msg) func deleteOwnerXPUB() : async Result.Result<(), Payments.XPUBManipulationError> {
+    // if(Utils.isAdmin(msg.caller)){
+    //     return #err(#UserNotAdmin); // We require the user to be admin
+    // };   
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -370,6 +391,9 @@ actor {
   };
 
   public shared (msg) func getAdminPanelInfo() : async Result.Result<PanelInfo, Payments.XPUBManipulationError> {
+    // if(Utils.isAdmin(msg.caller)){
+    //     return #err(#UserNotAdmin); // We require the user to be admin
+    // };    
     // if(Principal.isAnonymous(msg.caller)){
     //     return #err(#UserNotAuthenticated);
     // };
@@ -444,6 +468,9 @@ actor {
   };
 
   public query func listOrders() : async [(OrderId, Order)] {
+    // if(Utils.isAdmin(msg.caller)){
+    //     return #err(#UserNotAdmin); // We require the user to be admin
+    // };    
     return Iter.toArray(orders.entries());
   };
 
