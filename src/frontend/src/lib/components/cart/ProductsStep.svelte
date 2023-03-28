@@ -14,11 +14,20 @@
             class="hover:opacity-75 transition duration-200 ease-in rounded-md"
           >
             {#if item.product.img != ""}
-              <img
-                src="http://127.0.0.1:8008/?canisterId={import.meta.env
-                  .VITE_BACKEND_CANISTER_ID}&imgid={item.product.img}"
-                alt={item.product.title}
-              />
+              {#if import.meta.env.MODE == "development"}
+                <img
+                  src="http://127.0.0.1:8008/?canisterId={import.meta.env
+                    .VITE_BACKEND_CANISTER_ID}&imgid={item.product.img}"
+                  alt={item.product.title}
+                />
+              {:else}
+                <img
+                  src="https://{import.meta.env.VITE_BACKEND_CANISTER_ID}.raw.ic0.app/?imgid={item
+                    .product.img}"
+                  alt={item.product.title}
+                  class="hover:scale-110 transition ease-in duration-300 opacity-90 hover:opacity-100"
+                />
+              {/if}
             {:else}
               <img src="/product.jpg" alt={item.product.title} />
             {/if}

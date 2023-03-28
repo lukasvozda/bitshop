@@ -44,6 +44,19 @@
     }
   }
 
+  let imageSource = "";
+  $: {
+    if (import.meta.env.MODE == "development") {
+      imageSource = `http://127.0.0.1:8008/?canisterId=${
+        import.meta.env.VITE_BACKEND_CANISTER_ID
+      }&imgid=${productId}`;
+    } else {
+      imageSource = `https://${
+        import.meta.env.VITE_BACKEND_CANISTER_ID
+      }.raw.ic0.app/?imgid=${productId}`;
+    }
+  }
+
   const isValidField = (invalid: boolean) =>
     invalid
       ? "invalid:border-red-500 invalid:text-red-500 focus:invalid:border-red-500 focus:invalid:text-red-500 focus:invalid:ring-red-500"
@@ -163,8 +176,7 @@
         <img
           id="product-image"
           alt="Product image"
-          src="http://127.0.0.1:8008/?canisterId={import.meta.env
-            .VITE_BACKEND_CANISTER_ID}&imgid={productId}"
+          src={imageSource}
           class="my-4 w-48"
           onerror="this.style.display='none'"
         />

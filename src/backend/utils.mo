@@ -26,10 +26,14 @@ module {
     return Char.fromNat32(0);
   };
 
-  public func slugify(word : Text) : Text {
+  public func slugify(word : Text) :  Text {
     var slug : Text = "";
-    for (char in word.chars()) {
-      slug #= Char.toText(process_character(char));
+    var char : Char = '\u{0}';
+    for (c in word.chars()) {
+      char := process_character(c);
+      if (char != '\u{0}'){
+        slug #= Char.toText(char);
+      }
     };
     slug;
   };
