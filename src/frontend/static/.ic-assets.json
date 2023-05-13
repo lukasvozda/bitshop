@@ -1,0 +1,16 @@
+[
+  {
+    "match": ".well-known",
+    "headers": {
+      "Access-Control-Allow-Origin": "*"
+    },
+    "ignore": false
+  },
+  {
+    "match": ".ic-assets.json",
+    "headers": {
+      "Access-Control-Allow-Origin": "*"
+    },
+    "ignore": false
+  }
+]
