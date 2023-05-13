@@ -5,12 +5,16 @@ export interface Category {
   slug: string;
 }
 export type CreateCategoryError =
+  | { UserNotAdmin: null }
   | { CategoryAlreadyExists: null }
   | { UserNotAuthenticated: null }
   | { EmptyName: null };
-export type CreateProductError = { UserNotAuthenticated: null } | { EmptyTitle: null };
-export type DeleteCategoryError = { UserNotAuthenticated: null };
-export type DeleteProductError = { UserNotAuthenticated: null };
+export type CreateProductError =
+  | { UserNotAdmin: null }
+  | { UserNotAuthenticated: null }
+  | { EmptyTitle: null };
+export type DeleteCategoryError = { UserNotAdmin: null } | { UserNotAuthenticated: null };
+export type DeleteProductError = { UserNotAdmin: null } | { UserNotAuthenticated: null };
 export type GetCategoryError = { CategoryNotFound: null };
 export type GetDerivationError =
   | { OwnerExtendedPubKeyNotSet: null }
@@ -78,11 +82,11 @@ export type ProductId = bigint;
 export interface Request {
   url: string;
   method: string;
-  body: Uint8Array;
+  body: Uint8Array | number[];
   headers: Array<HeaderField>;
 }
 export interface Response {
-  body: Uint8Array;
+  body: Uint8Array | number[];
   headers: Array<HeaderField>;
   streaming_strategy: [] | [StreamingStrategy];
   status_code: number;
@@ -119,7 +123,7 @@ export type SlugId__1 = string;
 export type StreamingCallback = ActorMethod<[StreamingCallbackToken], StreamingCallbackResponse>;
 export interface StreamingCallbackResponse {
   token: [] | [StreamingCallbackToken];
-  body: Uint8Array;
+  body: Uint8Array | number[];
 }
 export interface StreamingCallbackToken {
   key: string;
@@ -134,10 +138,12 @@ export type StreamingStrategy = {
 };
 export type Time = bigint;
 export type UpdateCategoryError =
+  | { UserNotAdmin: null }
   | { CategoryNotFound: null }
   | { UserNotAuthenticated: null }
   | { EmptyName: null };
 export type UpdateProductError =
+  | { UserNotAdmin: null }
   | { ProductNotFound: null }
   | { UserNotAuthenticated: null }
   | { EmptyTitle: null };
@@ -154,7 +160,7 @@ export interface _SERVICE {
   checkOrderStatus: ActorMethod<[string], Result_15>;
   createCategory: ActorMethod<[string], Result_14>;
   createOrder: ActorMethod<[NewOrder], Result_6>;
-  createProduct: ActorMethod<[UserProduct, [] | [Uint8Array]], Result_13>;
+  createProduct: ActorMethod<[UserProduct, [] | [Uint8Array | number[]]], Result_13>;
   deleteCategory: ActorMethod<[SlugId], Result_12>;
   deleteOwnerXPUB: ActorMethod<[], Result_11>;
   deleteProduct: ActorMethod<[SlugId], Result_10>;
@@ -172,5 +178,5 @@ export interface _SERVICE {
   setOwnerXPUB: ActorMethod<[string], Result_3>;
   setUserInputTransactionId: ActorMethod<[string, string], Result_2>;
   updateCategory: ActorMethod<[SlugId, string], Result_1>;
-  updateProduct: ActorMethod<[SlugId, UserProduct, [] | [Uint8Array]], Result>;
+  updateProduct: ActorMethod<[SlugId, UserProduct, [] | [Uint8Array | number[]]], Result>;
 }

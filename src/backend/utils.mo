@@ -28,14 +28,14 @@ module {
     return Char.fromNat32(0);
   };
 
-  public func slugify(word : Text) :  Text {
+  public func slugify(word : Text) : Text {
     var slug : Text = "";
     var char : Char = '\u{0}';
     for (c in word.chars()) {
       char := process_character(c);
-      if (char != '\u{0}'){
+      if (char != '\u{0}') {
         slug #= Char.toText(char);
-      }
+      };
     };
     slug;
   };
@@ -70,9 +70,8 @@ module {
   };
 
   let adminPrincipals : [Text] = [
-    "4w6mb-vqaaa-aaaab-qac5q-cai",
+    "4w6mb-vqaaa-aaaab-qac5q-cai"
   ];
-
 
   public func isAdmin(userPrincipal : Principal) : Bool {
     let userPrincipalStr = Principal.toText(userPrincipal);
@@ -80,7 +79,7 @@ module {
       adminPrincipals,
       func(adminPrincipal : Text) : Bool {
         return userPrincipalStr == adminPrincipal;
-      },
+      }
     );
 
     switch (foundAdmin) {

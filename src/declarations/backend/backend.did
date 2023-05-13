@@ -10,11 +10,13 @@ type UserProduct = record {
 type UpdateProductError = variant {
   EmptyTitle;
   ProductNotFound;
+  UserNotAdmin;
   UserNotAuthenticated;
 };
 type UpdateCategoryError = variant {
   CategoryNotFound;
   EmptyName;
+  UserNotAdmin;
   UserNotAuthenticated;
 };
 type Time = int;
@@ -197,15 +199,23 @@ type GetDerivationError = variant {
   OwnerExtendedPubKeyNotSet;
 };
 type GetCategoryError = variant { CategoryNotFound };
-type DeleteProductError = variant { UserNotAuthenticated };
-type DeleteCategoryError = variant { UserNotAuthenticated };
+type DeleteProductError = variant {
+  UserNotAdmin;
+  UserNotAuthenticated;
+};
+type DeleteCategoryError = variant {
+  UserNotAdmin;
+  UserNotAuthenticated;
+};
 type CreateProductError = variant {
   EmptyTitle;
+  UserNotAdmin;
   UserNotAuthenticated;
 };
 type CreateCategoryError = variant {
   CategoryAlreadyExists;
   EmptyName;
+  UserNotAdmin;
   UserNotAuthenticated;
 };
 type Category = record {

@@ -14,6 +14,7 @@ export const idlFactory = ({ IDL }) => {
   const Result_15 = IDL.Variant({ ok: OrderStatus__1, err: OrderError });
   const Category = IDL.Record({ name: IDL.Text, slug: IDL.Text });
   const CreateCategoryError = IDL.Variant({
+    UserNotAdmin: IDL.Null,
     CategoryAlreadyExists: IDL.Null,
     UserNotAuthenticated: IDL.Null,
     EmptyName: IDL.Null
@@ -83,12 +84,14 @@ export const idlFactory = ({ IDL }) => {
     price: IDL.Float64
   });
   const CreateProductError = IDL.Variant({
+    UserNotAdmin: IDL.Null,
     UserNotAuthenticated: IDL.Null,
     EmptyTitle: IDL.Null
   });
   const Result_13 = IDL.Variant({ ok: Product, err: CreateProductError });
   const SlugId = IDL.Text;
   const DeleteCategoryError = IDL.Variant({
+    UserNotAdmin: IDL.Null,
     UserNotAuthenticated: IDL.Null
   });
   const Result_12 = IDL.Variant({
@@ -102,7 +105,10 @@ export const idlFactory = ({ IDL }) => {
     ok: IDL.Null,
     err: XPUBManipulationError
   });
-  const DeleteProductError = IDL.Variant({ UserNotAuthenticated: IDL.Null });
+  const DeleteProductError = IDL.Variant({
+    UserNotAdmin: IDL.Null,
+    UserNotAuthenticated: IDL.Null
+  });
   const Result_10 = IDL.Variant({
     ok: IDL.Null,
     err: DeleteProductError
@@ -171,6 +177,7 @@ export const idlFactory = ({ IDL }) => {
   const Result_3 = IDL.Variant({ ok: IDL.Null, err: GetParseError });
   const Result_2 = IDL.Variant({ ok: OrderId, err: OrderError });
   const UpdateCategoryError = IDL.Variant({
+    UserNotAdmin: IDL.Null,
     CategoryNotFound: IDL.Null,
     UserNotAuthenticated: IDL.Null,
     EmptyName: IDL.Null
@@ -180,6 +187,7 @@ export const idlFactory = ({ IDL }) => {
     err: UpdateCategoryError
   });
   const UpdateProductError = IDL.Variant({
+    UserNotAdmin: IDL.Null,
     ProductNotFound: IDL.Null,
     UserNotAuthenticated: IDL.Null,
     EmptyTitle: IDL.Null
